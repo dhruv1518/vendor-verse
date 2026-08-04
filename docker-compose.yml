@@ -1,0 +1,65 @@
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - media_data:/app/media
+    ports:
+      - "8000:8000"
+    env_file: .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.development
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: vendorverse
+      POSTGRES_USER: vendorverse
+      POSTGRES_PASSWORD: vendorverse_dev
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vendorverse"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  celery:
+    build: .
+    command: celery -A config worker --loglevel=info --concurrency=2
+    volumes:
+      - .:/app
+    env_file: .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings.development
+    depends_on:
+      - db
+      - redis
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"  # Web UI
+      - "1025:1025"  # SMTP
+
+volumes:
+  postgres_data:
+  media_data:

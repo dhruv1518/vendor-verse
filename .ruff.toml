@@ -1,0 +1,30 @@
+line-length = 99
+target-version = "py312"
+
+[lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "S",    # flake8-bandit (security)
+    "C4",   # flake8-comprehensions
+    "DJ",   # flake8-django
+    "T20",  # flake8-print
+]
+ignore = [
+    "S101",  # allow assert in tests
+    "S308",  # allow mark_safe in templates
+]
+
+[lint.per-file-ignores]
+"*/tests/*" = ["S101"]
+"*/migrations/*" = ["E501"]
+
+[lint.isort]
+known-first-party = ["apps", "config"]
+known-django = ["django", "rest_framework"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "DJANGO", "FIRSTPARTY", "LOCALFOLDER"]

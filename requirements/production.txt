@@ -1,0 +1,5 @@
+-r base.txt
+gunicorn>=21.2
+sentry-sdk[django]>=1.40
+django-storages[s3]>=1.14
+boto3>=1.34

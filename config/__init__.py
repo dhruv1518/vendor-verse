@@ -1,0 +1,1 @@
+# VendorVerse config package

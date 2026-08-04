@@ -1,0 +1,11 @@
+-r base.txt
+django-debug-toolbar
+pytest
+pytest-django
+pytest-cov
+factory-boy
+faker
+freezegun
+responses
+ruff
+pre-commit

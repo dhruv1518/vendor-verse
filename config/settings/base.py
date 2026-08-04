@@ -33,6 +33,7 @@ INSTALLED_APPS = [
 
     # Local apps
     "apps.core",
+    "apps.accounts",
 ]
 
 MIDDLEWARE = [
@@ -67,11 +68,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Database — SQLite by default for local development
+# Database — PostgreSQL via Supabase (parsing manually to avoid special char issues)
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": env("DB_PASSWORD", default="postgres"),
+        "HOST": "db.vzpbunqdvdaqtqpbpfnq.supabase.co",
+        "PORT": "5432",
     }
 }
 
@@ -117,3 +122,6 @@ LOGOUT_REDIRECT_URL = "/"
 # Email — console backend in development (prints to terminal)
 # --------------------------------------------------------------------------
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# Custom User Model
+AUTH_USER_MODEL = "accounts.User"

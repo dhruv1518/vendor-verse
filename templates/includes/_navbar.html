@@ -7,9 +7,16 @@
         </div>
       </div>
       <div class="flex items-center space-x-6">
-        <!-- Auth Links Placeholder -->
-        <a href="#" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">Sign in</a>
-        <a href="#" class="rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-all">Create Account</a>
+        {% if user.is_authenticated %}
+            <span class="text-sm font-medium text-gray-500">{{ user.email }}</span>
+            <form method="post" action="{% url 'account_logout' %}" class="inline">
+                {% csrf_token %}
+                <button type="submit" class="text-sm font-medium text-red-500 hover:text-red-700 transition-colors">Sign out</button>
+            </form>
+        {% else %}
+            <a href="{% url 'account_login' %}" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">Sign in</a>
+            <a href="{% url 'account_signup' %}" class="rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-all">Create Account</a>
+        {% endif %}
       </div>
     </div>
   </div>

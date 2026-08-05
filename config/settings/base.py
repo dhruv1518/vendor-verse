@@ -1,4 +1,5 @@
 from pathlib import Path
+# pyrefly: ignore [missing-import]
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -68,16 +69,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Database — PostgreSQL via Supabase (parsing manually to avoid special char issues)
+# Database — PostgreSQL (Reads from DATABASE_URL in .env)
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": env("DB_PASSWORD", default="postgres"),
-        "HOST": "db.vzpbunqdvdaqtqpbpfnq.supabase.co",
-        "PORT": "6543",
-    }
+    "default": env.db("DATABASE_URL", default="postgres://postgres:postgres@db.vzpbunqdvdaqtqpbpfnq.supabase.co:6543/postgres")
 }
 
 AUTH_PASSWORD_VALIDATORS = [

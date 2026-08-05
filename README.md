@@ -74,6 +74,13 @@ The project includes complete Sprint 0 planning, architectural blueprints, and o
    cp .env.example .env
    ```
 
+   **🚨 CRITICAL: Database Setup (Supabase) 🚨**
+   If you are connecting to a shared Supabase database, you *must* use the IPv4 Connection Pooler URL to avoid `Connection timed out` errors on networks without IPv6 support.
+   - Go to Supabase Dashboard -> **Settings** -> **Database**
+   - Click **Connect** (top right) -> **URI** -> Check **Use connection pooling** (Session Pooler)
+   - Copy the URL (it should contain `pooler.supabase.com`)
+   - Open your `.env` file and set `DATABASE_URL=your_copied_url` (replace `[YOUR-PASSWORD]`)
+
 3. **Start services with Docker Compose:**
 
    ```bash

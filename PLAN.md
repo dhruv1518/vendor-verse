@@ -99,7 +99,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Full password recovery flow.
 - **Completion Criteria**: User can request a reset link (sent to console in development) and change their password.
 
-### [ ] Task 11 — User Profile & Address Book Models
+### [x] Task 11 — User Profile & Address Book Models
 - **Page/Feature Name**: Profile Database Schema
 - **Objective**: Create `UserProfile` and `Address` models along with their database fields.
 - **Dependencies**: Task 6

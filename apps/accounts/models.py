@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 import uuid
+from apps.core.models import TimeStampedModel, PublicIDModel
 
 class CustomUserManager(BaseUserManager):
     """
@@ -48,3 +49,28 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+class UserProfile(TimeStampedModel, PublicIDModel):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    bio = models.TextField(max_length=500, blank=True)
+    phone_number = models.CharField(max_length=20, blank=True)
+    
+    def __str__(self):
+        return f"{self.user.email} Profile"
+
+class Address(TimeStampedModel, PublicIDModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='addresses')
+    title = models.CharField(max_length=100, help_text="e.g., Home, Work")
+    street_address = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    postal_code = models.CharField(max_length=20)
+    country = models.CharField(max_length=100, default='United States')
+    is_default = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name_plural = 'Addresses'
+
+    def __str__(self):
+        return f"{self.title} - {self.user.email}"

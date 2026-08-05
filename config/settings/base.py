@@ -71,7 +71,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database — PostgreSQL (Reads from DATABASE_URL in .env)
 DATABASES = {
-    "default": env.db("DATABASE_URL", default="postgres://postgres:postgres@db.vzpbunqdvdaqtqpbpfnq.supabase.co:6543/postgres")
+    "default": env.db("DATABASE_URL", default="sqlite:///db.sqlite3")
 }
 
 AUTH_PASSWORD_VALIDATORS = [

@@ -91,7 +91,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Working login page.
 - **Completion Criteria**: Registered user can log in and is successfully redirected to the home page.
 
-### [ ] Task 10 — Password Reset Pages
+### [x] Task 10 — Password Reset Pages
 - **Page/Feature Name**: Password Recovery UI
 - **Objective**: Implement simple password reset request and set new password pages.
 - **Dependencies**: Task 9

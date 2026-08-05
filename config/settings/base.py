@@ -76,7 +76,7 @@ DATABASES = {
         "USER": "postgres",
         "PASSWORD": env("DB_PASSWORD", default="postgres"),
         "HOST": "db.vzpbunqdvdaqtqpbpfnq.supabase.co",
-        "PORT": "5432",
+        "PORT": "6543",
     }
 }
 

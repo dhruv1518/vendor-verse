@@ -107,7 +107,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Profile and address data structures.
 - **Completion Criteria**: Models migrate successfully.
 
-### [ ] Task 12 — Customer Profile Page
+### [x] Task 12 — Customer Profile Page
 - **Page/Feature Name**: Edit Profile UI
 - **Objective**: Create the page for users to view/edit their profile details.
 - **Dependencies**: Task 11

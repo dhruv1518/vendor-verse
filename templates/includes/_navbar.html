@@ -9,6 +9,7 @@
       <div class="flex items-center space-x-6">
         {% if user.is_authenticated %}
             <span class="text-sm font-medium text-gray-500">{{ user.email }}</span>
+            <a href="{% url 'accounts:profile' %}" class="text-sm font-medium text-primary-600 hover:text-primary-500 transition-colors">My Profile</a>
             <form method="post" action="{% url 'account_logout' %}" class="inline">
                 {% csrf_token %}
                 <button type="submit" class="text-sm font-medium text-red-500 hover:text-red-700 transition-colors">Sign out</button>

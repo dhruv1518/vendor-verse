@@ -69,9 +69,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Database — PostgreSQL (Reads from DATABASE_URL in .env)
+# Database — PostgreSQL via Supabase
+# Reads DATABASE_URL from .env file. See SETUP_GUIDE.md for instructions.
 DATABASES = {
-    "default": env.db("DATABASE_URL", default="sqlite:///db.sqlite3")
+    "default": env.db("DATABASE_URL")
 }
 
 AUTH_PASSWORD_VALIDATORS = [

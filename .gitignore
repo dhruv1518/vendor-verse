@@ -1,6 +1,35 @@
+# Secrets & Environment
 .env
+.env.*
+!.env.example
+
+# Python
 venv/
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Database
 db.sqlite3
+*.sql
+
+# Static & Media (generated)
+staticfiles/
+media/
+
+# OS files
 .DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log

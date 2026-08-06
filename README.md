@@ -56,77 +56,79 @@ The project includes complete Sprint 0 planning, architectural blueprints, and o
 
 ### Prerequisites
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
-- [Make](https://www.gnu.org/software/make/) (optional, for developer convenience)
+- [Python 3.12+](https://www.python.org/downloads/) installed
+- Access to the team's [Supabase project](https://supabase.com/dashboard) (ask the team lead for credentials)
 
 ### Local Environment Setup
 
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-org/VendorVerse.git
-   cd VendorVerse
+   git clone https://github.com/dhruv1518/vendor-verse.git
+   cd vendor-verse
    ```
 
-2. **Set up environment variables:**
+2. **Create and activate a virtual environment:**
+
+   ```bash
+   # Windows
+   python -m venv venv
+   .\venv\Scripts\Activate.ps1
+
+   # macOS / Linux
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+3. **Install dependencies:**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Set up your database connection (Supabase):**
 
    ```bash
    cp .env.example .env
    ```
 
-   **🚨 CRITICAL: Database Setup (Supabase) 🚨**
-   If you are connecting to a shared Supabase database, you *must* use the IPv4 Connection Pooler URL to avoid `Connection timed out` errors on networks without IPv6 support.
-   - Go to Supabase Dashboard -> **Settings** -> **Database**
-   - Click **Connect** (top right) -> **URI** -> Check **Use connection pooling** (Session Pooler)
-   - Copy the URL (it should contain `pooler.supabase.com`)
-   - Open your `.env` file and set `DATABASE_URL=your_copied_url` (replace `[YOUR-PASSWORD]`)
+   > **🚨 IMPORTANT:** You must configure the `DATABASE_URL` in your `.env` file before running the project. Follow the step-by-step instructions in **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** to get your Supabase connection string.
 
-3. **Start services with Docker Compose:**
+5. **Apply database migrations:**
 
    ```bash
-   docker compose up --build -d
+   python manage.py migrate
    ```
 
-4. **Apply database migrations:**
+6. **Run the development server:**
 
    ```bash
-   docker compose exec web python manage.py migrate
-   ```
-
-5. **Create platform superadmin:**
-
-   ```bash
-   docker compose exec web python manage.py create_superadmin
-   ```
-
-6. **Seed initial demo data:**
-
-   ```bash
-   docker compose exec web python manage.py seed_data
+   python manage.py runserver
    ```
 
 7. **Access the application:**
    - **Storefront:** [http://localhost:8000](http://localhost:8000)
    - **Django Admin:** [http://localhost:8000/admin/](http://localhost:8000/admin/)
-   - **API Documentation:** [http://localhost:8000/api/v1/docs/](http://localhost:8000/api/v1/docs/)
-   - **Mailpit (Local Emails):** [http://localhost:8025](http://localhost:8025)
 
 ---
 
 ## 🛠️ Common Developer Commands
 
-Using `make` (or run equivalent `docker compose` commands directly):
-
 ```bash
-make run          # Start containers in background
-make stop         # Stop containers
-make test         # Run pytest suite with coverage
-make lint         # Run Ruff linter checks
-make format       # Format code with Ruff
-make migrate      # Apply database migrations
-make makemigrations # Create new migrations
-make shell        # Open Django shell_plus
-make logs         # Tail container logs
+# Activate virtual environment (run this first every time)
+.\venv\Scripts\Activate.ps1          # Windows
+source venv/bin/activate             # macOS / Linux
+
+# Database
+python manage.py makemigrations      # Create new migrations
+python manage.py migrate             # Apply migrations
+python manage.py createsuperuser     # Create admin user
+
+# Development server
+python manage.py runserver           # Start dev server at http://localhost:8000
+
+# Django shell
+python manage.py shell               # Open Django shell
 ```
 
 ---
@@ -134,12 +136,13 @@ make logs         # Tail container logs
 ## 🤝 Contribution & Workflow
 
 1. All development must follow the standards specified in [`12-coding-standards.md`](./docs/12-coding-standards.md).
-2. Create topic branches off `develop` (`feature/*`, `bugfix/*`).
-3. Ensure all tests pass (`make test`) and linting succeeds (`make lint`) before opening a PR.
-4. Reference requirement IDs in commit messages and PR descriptions.
+2. Create topic branches off `main` (e.g., `shabbir`, `dhruv`).
+3. Always `git pull origin main` before starting new work.
+4. Reference task numbers from `PLAN.md` in commit messages.
 
 ---
 
 ## 📜 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+

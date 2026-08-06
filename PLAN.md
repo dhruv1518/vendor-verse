@@ -17,7 +17,7 @@ This is the implementation plan simplified for a college project. All external s
 
 ### [x] Task 1 — Django Project Setup
 - **Page/Feature Name**: Initial Django Setup
-- **Objective**: Initialize the Django project, configure settings, and set up a local database (SQLite).
+- **Objective**: Initialize the Django project, configure settings, and set up the database (Supabase PostgreSQL).
 - **Dependencies**: None
 - **Files**: `config/settings.py`, `manage.py`, `requirements.txt`
 - **Expected Output**: A running local Django project.

@@ -1,15 +1,27 @@
-import psycopg2
+"""
+Reset the Supabase database schema.
+WARNING: This will DROP all tables and data! Use with extreme caution.
+
+Usage:
+    python reset_db.py
+"""
 import environ
+import dj_database_url
 
 env = environ.Env()
 environ.Env.read_env(".env")
 
+import psycopg2
+
+# Parse DATABASE_URL from .env (same one Django uses)
+db_config = dj_database_url.parse(env("DATABASE_URL"))
+
 conn = psycopg2.connect(
-    dbname="postgres",
-    user="postgres",
-    password=env("DB_PASSWORD"),
-    host="db.vzpbunqdvdaqtqpbpfnq.supabase.co",
-    port="5432"
+    dbname=db_config["NAME"],
+    user=db_config["USER"],
+    password=db_config["PASSWORD"],
+    host=db_config["HOST"],
+    port=db_config["PORT"],
 )
 conn.autocommit = True
 with conn.cursor() as cursor:

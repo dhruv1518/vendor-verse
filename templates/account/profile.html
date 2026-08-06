@@ -174,6 +174,20 @@
             </div>
         </form>
 
+        <!-- Address Book Link -->
+        <div class="mt-8 overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5">
+            <div class="px-6 py-5 flex items-center justify-between">
+                <div>
+                    <h3 class="text-base font-semibold text-gray-900">📍 Address Book</h3>
+                    <p class="mt-1 text-sm text-gray-500">Manage your shipping and billing addresses.</p>
+                </div>
+                <a href="{% url 'accounts:addresses' %}" 
+                   class="rounded-md bg-gray-50 px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-100 transition-colors" id="manage-addresses-link">
+                    Manage Addresses →
+                </a>
+            </div>
+        </div>
+
     </div>
 </div>
 {% endblock %}

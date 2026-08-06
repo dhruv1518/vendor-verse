@@ -115,7 +115,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Profile edit form.
 - **Completion Criteria**: User can update their details (name, avatar) and save changes.
 
-### [ ] Task 13 — Customer Address Book Page
+### [x] Task 13 — Customer Address Book Page
 - **Page/Feature Name**: Manage Addresses UI
 - **Objective**: Page to add, edit, and delete multiple shipping addresses.
 - **Dependencies**: Task 11
@@ -351,7 +351,7 @@ This is the implementation plan simplified for a college project. All external s
 
 ## Phase 6: Polish
 
-### [ ] Task 40 — Static Pages
+### [x] Task 40 — Static Pages
 - **Page/Feature Name**: Landing & Info Pages
 - **Objective**: Build the static public pages: Home (`/`), About, Contact, and Terms.
 - **Dependencies**: Task 3

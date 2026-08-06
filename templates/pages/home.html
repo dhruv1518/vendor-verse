@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block title %}VendorVerse — Your Multi-Vendor Marketplace{% endblock %}
+
+{% block content %}
+
+<!-- ========== HERO SECTION ========== -->
+<section class="relative overflow-hidden bg-gradient-to-br from-primary-700 via-primary-600 to-secondary-600">
+    <!-- Decorative blobs -->
+    <div class="absolute -top-24 -left-24 h-96 w-96 rounded-full bg-white/10 blur-3xl"></div>
+    <div class="absolute -bottom-32 -right-32 h-[30rem] w-[30rem] rounded-full bg-secondary-500/20 blur-3xl"></div>
+
+    <div class="relative mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:gap-x-10 lg:px-8 lg:py-40">
+        <div class="mx-auto max-w-2xl lg:mx-0 lg:flex-auto">
+            <div class="flex">
+                <div class="relative flex items-center gap-x-2 rounded-full px-4 py-1 text-sm leading-6 text-teal-100 ring-1 ring-white/20 backdrop-blur-sm">
+                    <span class="relative flex h-2 w-2">
+                        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
+                    </span>
+                    Now live — start selling today
+                </div>
+            </div>
+            <h1 class="mt-10 max-w-lg text-4xl font-bold tracking-tight text-white sm:text-6xl">
+                Your <span class="bg-gradient-to-r from-teal-200 to-violet-300 bg-clip-text text-transparent">Multi-Vendor</span> Marketplace
+            </h1>
+            <p class="mt-6 text-lg leading-8 text-teal-100">
+                Discover unique products from independent vendors all in one place. 
+                Whether you're shopping for handmade crafts, tech gadgets, or everyday essentials — VendorVerse brings the best sellers to you.
+            </p>
+            <div class="mt-10 flex items-center gap-x-4">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'accounts:profile' %}" 
+                       class="rounded-lg bg-white px-5 py-3 text-sm font-semibold text-primary-700 shadow-lg shadow-teal-900/30 hover:bg-teal-50 hover:shadow-xl transition-all duration-300" id="hero-cta-profile">
+                        My Profile →
+                    </a>
+                    <a href="/" 
+                       class="rounded-lg border border-white/30 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/20 transition-all duration-300" id="hero-cta-browse-auth">
+                        Browse Products
+                    </a>
+                {% else %}
+                    <a href="{% url 'account_signup' %}" 
+                       class="rounded-lg bg-white px-5 py-3 text-sm font-semibold text-primary-700 shadow-lg shadow-teal-900/30 hover:bg-teal-50 hover:shadow-xl transition-all duration-300" id="hero-cta-signup">
+                        Get Started — It's Free
+                    </a>
+                    <a href="{% url 'account_login' %}" 
+                       class="rounded-lg border border-white/30 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/20 transition-all duration-300" id="hero-cta-login">
+                        Sign In
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Hero visual -->
+        <div class="mt-16 sm:mt-24 lg:mt-0 lg:flex-shrink-0 lg:flex-grow">
+            <div class="relative mx-auto w-[22rem] lg:w-[28rem]">
+                <!-- Floating cards -->
+                <div class="absolute -top-4 -left-4 h-72 w-72 rounded-2xl bg-white/10 backdrop-blur-md ring-1 ring-white/20 rotate-6 animate-pulse" style="animation-duration: 4s;"></div>
+                <div class="relative rounded-2xl bg-white/15 p-8 shadow-2xl ring-1 ring-white/20 backdrop-blur-md">
+                    <div class="flex items-center gap-4">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-emerald-400 shadow-lg">
+                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-white">150+ Vendors</p>
+                            <p class="text-xs text-teal-200">Curated sellers worldwide</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 space-y-3">
+                        <div class="flex items-center gap-3 rounded-lg bg-white/10 px-4 py-3">
+                            <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-violet-400 to-purple-500"></div>
+                            <div class="flex-1">
+                                <div class="h-2.5 w-24 rounded-full bg-white/40"></div>
+                                <div class="mt-1.5 h-2 w-16 rounded-full bg-white/20"></div>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-300">$29.99</span>
+                        </div>
+                        <div class="flex items-center gap-3 rounded-lg bg-white/10 px-4 py-3">
+                            <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-500"></div>
+                            <div class="flex-1">
+                                <div class="h-2.5 w-20 rounded-full bg-white/40"></div>
+                                <div class="mt-1.5 h-2 w-12 rounded-full bg-white/20"></div>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-300">$49.99</span>
+                        </div>
+                        <div class="flex items-center gap-3 rounded-lg bg-white/10 px-4 py-3">
+                            <div class="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500"></div>
+                            <div class="flex-1">
+                                <div class="h-2.5 w-28 rounded-full bg-white/40"></div>
+                                <div class="mt-1.5 h-2 w-14 rounded-full bg-white/20"></div>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-300">$19.99</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex items-center justify-between">
+                        <div class="flex -space-x-2">
+                            <div class="h-8 w-8 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 ring-2 ring-white/20"></div>
+                            <div class="h-8 w-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 ring-2 ring-white/20"></div>
+                            <div class="h-8 w-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 ring-2 ring-white/20"></div>
+                        </div>
+                        <p class="text-xs text-teal-200">2,500+ happy customers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== FEATURE HIGHLIGHTS ========== -->
+<section class="bg-white py-24 sm:py-32" id="features">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+            <p class="text-sm font-semibold uppercase tracking-widest text-primary-600">Why VendorVerse</p>
+            <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                Everything you need in one marketplace
+            </h2>
+            <p class="mt-4 text-lg leading-8 text-gray-600">
+                A seamless shopping experience powered by independent vendors who care about quality.
+            </p>
+        </div>
+
+        <div class="mx-auto mt-16 max-w-5xl">
+            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                <!-- Feature 1: Multi-Vendor -->
+                <div class="group relative rounded-2xl bg-gray-50 p-8 ring-1 ring-gray-200 hover:bg-gradient-to-br hover:from-primary-50 hover:to-teal-50 hover:ring-primary-200 hover:shadow-lg hover:shadow-primary-100/50 transition-all duration-300" id="feature-multi-vendor">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-md shadow-primary-200 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+                        </svg>
+                    </div>
+                    <h3 class="mt-6 text-lg font-semibold text-gray-900">Multi-Vendor Platform</h3>
+                    <p class="mt-2 text-sm leading-6 text-gray-600">
+                        Shop from hundreds of independent sellers, each with their own unique storefront and product catalog.
+                    </p>
+                </div>
+
+                <!-- Feature 2: Secure Checkout -->
+                <div class="group relative rounded-2xl bg-gray-50 p-8 ring-1 ring-gray-200 hover:bg-gradient-to-br hover:from-violet-50 hover:to-purple-50 hover:ring-secondary-200 hover:shadow-lg hover:shadow-secondary-100/50 transition-all duration-300" id="feature-secure-checkout">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-md shadow-secondary-200 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+                        </svg>
+                    </div>
+                    <h3 class="mt-6 text-lg font-semibold text-gray-900">Secure Checkout</h3>
+                    <p class="mt-2 text-sm leading-6 text-gray-600">
+                        Your transactions are safe and secure. Buy with confidence through our streamlined checkout process.
+                    </p>
+                </div>
+
+                <!-- Feature 3: Fast Delivery -->
+                <div class="group relative rounded-2xl bg-gray-50 p-8 ring-1 ring-gray-200 hover:bg-gradient-to-br hover:from-amber-50 hover:to-orange-50 hover:ring-amber-200 hover:shadow-lg hover:shadow-amber-100/50 transition-all duration-300" id="feature-fast-delivery">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 shadow-md shadow-amber-200 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0H6.375m11.25-3v-3.375c0-.621-.504-1.125-1.125-1.125H12m7.5 4.5V7.5m0 0-.375-.375A3.375 3.375 0 0 0 16.744 6H12m7.5 1.5H12M5.07 14.25 3.75 6.75h7.5" />
+                        </svg>
+                    </div>
+                    <h3 class="mt-6 text-lg font-semibold text-gray-900">Fast Delivery</h3>
+                    <p class="mt-2 text-sm leading-6 text-gray-600">
+                        Vendors ship directly to you, ensuring quick delivery times and real-time order tracking.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== HOW IT WORKS ========== -->
+<section class="bg-gray-50 py-24 sm:py-32" id="how-it-works">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+            <p class="text-sm font-semibold uppercase tracking-widest text-primary-600">Simple & Easy</p>
+            <h2 class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                How it works
+            </h2>
+            <p class="mt-4 text-lg leading-8 text-gray-600">
+                Getting started takes just a few minutes.
+            </p>
+        </div>
+
+        <div class="mx-auto mt-16 max-w-5xl">
+            <div class="grid grid-cols-1 gap-12 lg:grid-cols-3">
+                <!-- Step 1 -->
+                <div class="relative text-center" id="step-browse">
+                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg shadow-primary-200">
+                        <span class="text-2xl font-bold text-white">1</span>
+                    </div>
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-900">Browse & Discover</h3>
+                        <p class="mt-2 text-sm leading-6 text-gray-600">
+                            Explore products from multiple vendors. Filter by category, price, or ratings to find exactly what you need.
+                        </p>
+                    </div>
+                    <!-- Connector line (desktop only) -->
+                    <div class="absolute top-8 left-[calc(50%+3rem)] hidden h-0.5 w-[calc(100%-3rem)] bg-gradient-to-r from-primary-300 to-secondary-300 lg:block"></div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative text-center" id="step-cart">
+                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-secondary-500 to-secondary-600 shadow-lg shadow-secondary-200">
+                        <span class="text-2xl font-bold text-white">2</span>
+                    </div>
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-900">Add to Cart</h3>
+                        <p class="mt-2 text-sm leading-6 text-gray-600">
+                            Mix and match from different vendors in a single cart. Choose sizes, colors, and quantities.
+                        </p>
+                    </div>
+                    <!-- Connector line (desktop only) -->
+                    <div class="absolute top-8 left-[calc(50%+3rem)] hidden h-0.5 w-[calc(100%-3rem)] bg-gradient-to-r from-secondary-300 to-amber-300 lg:block"></div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative text-center" id="step-checkout">
+                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 shadow-lg shadow-amber-200">
+                        <span class="text-2xl font-bold text-white">3</span>
+                    </div>
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold text-gray-900">Checkout & Enjoy</h3>
+                        <p class="mt-2 text-sm leading-6 text-gray-600">
+                            Pay securely in one go. Each vendor is notified and ships your items directly to your door.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== STATS BAR ========== -->
+<section class="bg-white py-16" id="stats">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto grid max-w-4xl grid-cols-2 gap-8 sm:grid-cols-4">
+            <div class="text-center" x-data="{ count: 0 }" x-init="let target = 150; let step = Math.ceil(target / 40); let interval = setInterval(() => { count += step; if (count >= target) { count = target; clearInterval(interval); } }, 30);">
+                <p class="text-3xl font-bold text-primary-600" x-text="count + '+'">150+</p>
+                <p class="mt-1 text-sm text-gray-500">Verified Vendors</p>
+            </div>
+            <div class="text-center" x-data="{ count: 0 }" x-init="let target = 5000; let step = Math.ceil(target / 40); let interval = setInterval(() => { count += step; if (count >= target) { count = target; clearInterval(interval); } }, 30);">
+                <p class="text-3xl font-bold text-secondary-600" x-text="count.toLocaleString() + '+'">5,000+</p>
+                <p class="mt-1 text-sm text-gray-500">Products Listed</p>
+            </div>
+            <div class="text-center" x-data="{ count: 0 }" x-init="let target = 2500; let step = Math.ceil(target / 40); let interval = setInterval(() => { count += step; if (count >= target) { count = target; clearInterval(interval); } }, 30);">
+                <p class="text-3xl font-bold text-amber-600" x-text="count.toLocaleString() + '+'">2,500+</p>
+                <p class="mt-1 text-sm text-gray-500">Happy Customers</p>
+            </div>
+            <div class="text-center">
+                <p class="text-3xl font-bold text-emerald-600">4.8★</p>
+                <p class="mt-1 text-sm text-gray-500">Average Rating</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== CTA BANNER (logged out only) ========== -->
+{% if not user.is_authenticated %}
+<section class="relative overflow-hidden bg-gradient-to-r from-primary-600 via-primary-700 to-secondary-600" id="cta-banner">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.05%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+    <div class="relative mx-auto max-w-7xl px-6 py-20 sm:py-24 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+            <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Ready to start shopping?
+            </h2>
+            <p class="mt-4 text-lg leading-8 text-teal-100">
+                Join thousands of customers discovering amazing products from independent vendors. 
+                Creating an account is free and takes less than a minute.
+            </p>
+            <div class="mt-10 flex items-center justify-center gap-x-4">
+                <a href="{% url 'account_signup' %}" 
+                   class="rounded-lg bg-white px-6 py-3.5 text-sm font-semibold text-primary-700 shadow-lg hover:bg-teal-50 hover:shadow-xl transition-all duration-300" id="cta-signup">
+                    Create Your Free Account
+                </a>
+                <a href="{% url 'account_login' %}" 
+                   class="rounded-lg border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/20 transition-all duration-300" id="cta-login">
+                    Sign In →
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

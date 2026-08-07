@@ -127,7 +127,7 @@ This is the implementation plan simplified for a college project. All external s
 
 ## Phase 2: Vendor Platform
 
-### [ ] Task 14 — Vendor & Storefront Models
+### [x] Task 14 — Vendor & Storefront Models
 - **Page/Feature Name**: Vendor Database Schema
 - **Objective**: Implement basic `Vendor` and `Storefront` models.
 - **Dependencies**: Task 11
@@ -135,7 +135,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Database schema for vendor accounts.
 - **Completion Criteria**: Models migrate successfully; admin can manually link a User to a Vendor in Django Admin.
 
-### [ ] Task 15 — Vendor Application Form Page
+### [x] Task 15 — Vendor Application Form Page
 - **Page/Feature Name**: Become a Vendor UI
 - **Objective**: Page where customer accounts can apply to become active vendors.
 - **Dependencies**: Task 14
@@ -143,7 +143,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Vendor application form.
 - **Completion Criteria**: Form submission successfully creates a pending application in the database.
 
-### [ ] Task 16 — Admin Vendor Management Views
+### [x] Task 16 — Admin Vendor Management Views
 - **Page/Feature Name**: Admin Application Review
 - **Objective**: Django Admin workflow to approve or reject vendor applications.
 - **Dependencies**: Task 15
@@ -151,7 +151,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Simple approval state mechanism.
 - **Completion Criteria**: Approving a vendor updates their status and creates their storefront details automatically.
 
-### [ ] Task 17 — Vendor Dashboard Base Layout & Home Page
+### [x] Task 17 — Vendor Dashboard Base Layout & Home Page
 - **Page/Feature Name**: Vendor Dashboard UI
 - **Objective**: Create the dashboard sidebar layout and the dashboard home view showing static stats.
 - **Dependencies**: Task 14, Task 3
@@ -159,7 +159,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Dashboard layout containing overview cards.
 - **Completion Criteria**: Vendor can log in and access `/vendor/dashboard/`.
 
-### [ ] Task 18 — Vendor Storefront Settings Page
+### [x] Task 18 — Vendor Storefront Settings Page
 - **Page/Feature Name**: Storefront Configuration UI
 - **Objective**: Page for vendors to update their logo, banner, description, and policies.
 - **Dependencies**: Task 17
@@ -167,7 +167,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Storefront settings configuration form.
 - **Completion Criteria**: Edits save to the database and update the storefront.
 
-### [ ] Task 19 — Public Vendor Directory Page
+### [x] Task 19 — Public Vendor Directory Page
 - **Page/Feature Name**: Vendor List UI
 - **Objective**: Public directory page listing all active vendor storefronts.
 - **Dependencies**: Task 14
@@ -175,7 +175,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Grid of active vendor store cards.
 - **Completion Criteria**: Accessible for all visitors to browse store options.
 
-### [ ] Task 20 — Public Vendor Storefront Page
+### [x] Task 20 — Public Vendor Storefront Page
 - **Page/Feature Name**: Vendor Public Profile UI
 - **Objective**: Public storefront page showing a specific vendor's description and their catalog.
 - **Dependencies**: Task 14

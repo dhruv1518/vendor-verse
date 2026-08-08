@@ -82,9 +82,13 @@ class VendorDashboardView(VendorRequiredMixin, TemplateView):
         context["vendor"] = vendor
         context["storefront"] = storefront
         context["active_page"] = "dashboard"
-        # Static stats for now — will be dynamic in later phases
+
+        # Dynamic product stats
+        from apps.products.models import Product
+        product_qs = Product.objects.filter(vendor=vendor)
         context["stats"] = {
-            "total_products": 0,
+            "total_products": product_qs.count(),
+            "active_products": product_qs.filter(status=Product.Status.ACTIVE).count(),
             "total_orders": 0,
             "revenue": "0.00",
             "pending_orders": 0,

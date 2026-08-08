@@ -11,6 +11,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('profile/', include('apps.accounts.urls')),
     path('vendors/', include('apps.vendors.urls')),
+    path('products/', include('apps.products.urls')),
     path('store/<slug:slug>/', StorefrontDetailView.as_view(), name='storefront_detail'),
     path('', TemplateView.as_view(template_name='pages/home.html'), name='home'),
 ]

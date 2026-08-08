@@ -187,7 +187,7 @@ This is the implementation plan simplified for a college project. All external s
 
 ## Phase 3: Product Catalog
 
-### [ ] Task 21 — Category Model & Mega Menu
+### [x] Task 21 — Category Model & Mega Menu
 - **Page/Feature Name**: Category Schema & Dropdown
 - **Objective**: Implement the category database hierarchy and a simple navbar dropdown categories display.
 - **Dependencies**: Task 2
@@ -195,7 +195,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Multi-level product categories and a navigation list.
 - **Completion Criteria**: Categories are queryable and show in the navbar header.
 
-### [ ] Task 22 — Product & ProductImage Models
+### [x] Task 22 — Product & ProductImage Models
 - **Page/Feature Name**: Product Database Schema
 - **Objective**: Create `Product` and `ProductImage` database tables.
 - **Dependencies**: Task 14, Task 21
@@ -203,7 +203,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Product models.
 - **Completion Criteria**: Product and image attachments can be created locally via admin interface.
 
-### [ ] Task 23 — Product Variant & Tag Models
+### [x] Task 23 — Product Variant & Tag Models
 - **Page/Feature Name**: Product Variations Schema
 - **Objective**: Add variant (e.g. Size, Color) and tag fields to Products.
 - **Dependencies**: Task 22
@@ -211,7 +211,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Support for different product configurations.
 - **Completion Criteria**: Varied pricing or attributes can be stored per variant.
 
-### [ ] Task 24 — Vendor Product List Page
+### [x] Task 24 — Vendor Product List Page
 - **Page/Feature Name**: Vendor Manage Products UI
 - **Objective**: List products belonging only to the logged-in vendor.
 - **Dependencies**: Task 17, Task 22
@@ -219,7 +219,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Tabular product lists with action links.
 - **Completion Criteria**: Vendors can see their own inventory list.
 
-### [ ] Task 25 — Vendor Product Create & Edit Page
+### [x] Task 25 — Vendor Product Create & Edit Page
 - **Page/Feature Name**: Vendor Add/Edit Product Form UI
 - **Objective**: Simple form page to add or edit products, upload images, and configure variants.
 - **Dependencies**: Task 24
@@ -227,7 +227,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Unified creation/editing page.
 - **Completion Criteria**: Vendor can publish new products or update details.
 
-### [ ] Task 26 — Public Product Listing Page
+### [x] Task 26 — Public Product Listing Page
 - **Page/Feature Name**: Catalog UI & Filtering
 - **Objective**: Page listing all public products, with basic search and category filters.
 - **Dependencies**: Task 22, Task 3
@@ -235,7 +235,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Interactive catalog grid.
 - **Completion Criteria**: Filtering by category or typing a search query filters the listed cards.
 
-### [ ] Task 27 — Public Product Detail Page
+### [x] Task 27 — Public Product Detail Page
 - **Page/Feature Name**: Single Product Detail UI
 - **Objective**: Detailed display page of a product containing images, variants, descriptions, and a checkout button.
 - **Dependencies**: Task 23

@@ -1,0 +1,226 @@
+{% extends "vendors/dashboard_base.html" %}
+
+{% block dashboard_title %}{{ page_title }}{% endblock %}
+
+{% block dashboard_content %}
+<div class="space-y-6">
+
+    <!-- Header -->
+    <div class="flex items-center gap-4">
+        <a href="{% url 'products:vendor_product_list' %}"
+           class="rounded-lg p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+           id="btn-back">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+        </a>
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900" id="page-title">{{ page_title }}</h1>
+            <p class="mt-1 text-sm text-gray-500">{% if is_edit %}Update product details, images, and variants{% else %}Fill in the details to list a new product{% endif %}</p>
+        </div>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6" id="product-form">
+        {% csrf_token %}
+
+        <!-- Basic Info Card -->
+        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-5">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <svg class="h-5 w-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                </svg>
+                Basic Information
+            </h2>
+
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                    <label for="product-name" class="block text-sm font-medium text-gray-700 mb-1">Product Name *</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="product-category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    {{ form.category }}
+                </div>
+
+                <div>
+                    <label for="product-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    {{ form.status }}
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label for="product-short-desc" class="block text-sm font-medium text-gray-700 mb-1">Short Description</label>
+                    {{ form.short_description }}
+                    <p class="mt-1 text-xs text-gray-400">Shown on product cards (max 300 chars)</p>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <label for="product-description" class="block text-sm font-medium text-gray-700 mb-1">Full Description</label>
+                    {{ form.description }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing & Inventory Card -->
+        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-5">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <svg class="h-5 w-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                </svg>
+                Pricing & Inventory
+            </h2>
+
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div>
+                    <label for="product-price" class="block text-sm font-medium text-gray-700 mb-1">Base Price (₹) *</label>
+                    {{ form.base_price }}
+                    {% if form.base_price.errors %}
+                    <p class="mt-1 text-sm text-red-600">{{ form.base_price.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="product-compare-price" class="block text-sm font-medium text-gray-700 mb-1">Compare at Price (₹)</label>
+                    {{ form.compare_at_price }}
+                    <p class="mt-1 text-xs text-gray-400">Original price (shows as strikethrough)</p>
+                </div>
+
+                <div>
+                    <label for="product-stock" class="block text-sm font-medium text-gray-700 mb-1">Stock Quantity</label>
+                    {{ form.stock_quantity }}
+                </div>
+
+                <div>
+                    <label for="product-sku" class="block text-sm font-medium text-gray-700 mb-1">SKU</label>
+                    {{ form.sku }}
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 pt-2">
+                {{ form.is_featured }}
+                <label for="product-featured" class="text-sm font-medium text-gray-700">Feature this product</label>
+                <span class="text-xs text-gray-400">(will appear in featured sections)</span>
+            </div>
+        </div>
+
+        <!-- Images Card -->
+        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-5">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <svg class="h-5 w-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5a2.25 2.25 0 0 0 2.25-2.25V5.25a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v13.5a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+                Product Images
+            </h2>
+            <p class="text-sm text-gray-500">Upload up to 10 images. Mark one as the primary display image.</p>
+
+            {{ image_formset.management_form }}
+            <div class="space-y-4" id="image-formset">
+                {% for img_form in image_formset %}
+                <div class="rounded-lg border border-gray-200 p-4 space-y-3 {% if img_form.instance.pk %}bg-gray-50{% endif %}">
+                    {% if img_form.instance.pk and img_form.instance.image %}
+                    <div class="flex items-center gap-3 mb-2">
+                        <img src="{{ img_form.instance.image.url }}" alt="" class="h-16 w-16 rounded-lg object-cover ring-1 ring-gray-200">
+                        <span class="text-sm text-gray-500">Current image</span>
+                    </div>
+                    {% endif %}
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Image File</label>
+                            {{ img_form.image }}
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Alt Text</label>
+                            {{ img_form.alt_text }}
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                {{ img_form.is_primary }}
+                                <label class="text-xs font-medium text-gray-600">Primary</label>
+                            </div>
+                            {% if img_form.instance.pk %}
+                            <div class="flex items-center gap-2">
+                                {{ img_form.DELETE }}
+                                <label class="text-xs font-medium text-red-600">Remove</label>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Hidden fields -->
+                    {% for hidden in img_form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Variants Card -->
+        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200 space-y-5">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <svg class="h-5 w-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                </svg>
+                Product Variants
+            </h2>
+            <p class="text-sm text-gray-500">Add variants like size, color, or quantity options. Each variant can have its own price and stock.</p>
+
+            {{ variant_formset.management_form }}
+            <div class="space-y-4" id="variant-formset">
+                {% for var_form in variant_formset %}
+                <div class="rounded-lg border border-gray-200 p-4 {% if var_form.instance.pk %}bg-gray-50{% endif %}">
+                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-3 items-end">
+                        <div class="sm:col-span-2">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Variant Name</label>
+                            {{ var_form.name }}
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Price Override (₹)</label>
+                            {{ var_form.price_override }}
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Stock</label>
+                            {{ var_form.stock_quantity }}
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                {{ var_form.is_active }}
+                                <label class="text-xs font-medium text-gray-600">Active</label>
+                            </div>
+                            {% if var_form.instance.pk %}
+                            <div class="flex items-center gap-2">
+                                {{ var_form.DELETE }}
+                                <label class="text-xs font-medium text-red-600">Remove</label>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Hidden fields -->
+                    {% for hidden in var_form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="flex items-center justify-end gap-3 pt-2">
+            <a href="{% url 'products:vendor_product_list' %}"
+               class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+               id="btn-cancel">
+                Cancel
+            </a>
+            <button type="submit"
+                    class="rounded-lg bg-primary-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-all"
+                    id="btn-save-product">
+                {% if is_edit %}Update Product{% else %}Create Product{% endif %}
+            </button>
+        </div>
+    </form>
+
+</div>
+{% endblock %}

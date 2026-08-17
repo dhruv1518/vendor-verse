@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout — VendorVerse{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-7xl px-6 py-8 lg:px-8">
+
+    <!-- Breadcrumb -->
+    <nav class="mb-6 flex items-center gap-2 text-sm text-gray-500">
+        <a href="{% url 'cart:detail' %}" class="hover:text-primary-600 transition-colors">Cart</a>
+        <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+        </svg>
+        <span class="text-gray-900 font-medium">Checkout</span>
+    </nav>
+
+    <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl mb-8">Checkout</h1>
+
+    <form method="post" action="{% url 'orders:checkout_process' %}" id="checkout-form">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Left: Shipping Address -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- Address Selection -->
+                <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg class="h-5 w-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                        </svg>
+                        Shipping Address
+                    </h2>
+
+                    {% if addresses %}
+                    <div class="space-y-3" x-data="{ selected: '{{ addresses.0.public_id }}' }">
+                        {% for address in addresses %}
+                        <label class="block cursor-pointer" id="address-option-{{ forloop.counter }}">
+                            <div class="relative rounded-xl border-2 p-4 transition-all duration-200"
+                                 :class="selected === '{{ address.public_id }}' ? 'border-primary-500 bg-primary-50/30 ring-1 ring-primary-200' : 'border-gray-200 hover:border-gray-300'">
+                                <input type="radio" name="address_id" value="{{ address.public_id }}"
+                                       x-model="selected"
+                                       class="absolute top-4 right-4 h-4 w-4 text-primary-600 focus:ring-primary-500">
+                                <div class="pr-8">
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm font-semibold text-gray-900">{{ address.title }}</p>
+                                        {% if address.is_default %}
+                                        <span class="rounded-full bg-primary-100 px-2 py-0.5 text-xs font-medium text-primary-700">Default</span>
+                                        {% endif %}
+                                    </div>
+                                    <p class="mt-1 text-sm text-gray-600">{{ address.street_address }}</p>
+                                    <p class="text-sm text-gray-500">{{ address.city }}, {{ address.state }} {{ address.postal_code }}</p>
+                                    <p class="text-sm text-gray-500">{{ address.country }}</p>
+                                </div>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+
+                    <a href="{% url 'accounts:addresses' %}"
+                       class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-500 transition-colors">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Manage Addresses
+                    </a>
+
+                    {% else %}
+                    <div class="text-center py-8">
+                        <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                        </svg>
+                        <p class="mt-3 text-sm text-gray-500">No shipping addresses found.</p>
+                        <a href="{% url 'accounts:addresses' %}"
+                           class="mt-3 inline-flex items-center gap-1 rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white hover:bg-primary-500 transition-all">
+                            Add an Address
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Order Items Review -->
+                <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <svg class="h-5 w-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                        </svg>
+                        Order Items ({{ cart.total_items }})
+                    </h2>
+
+                    <div class="divide-y divide-gray-100">
+                        {% for item in cart_items %}
+                        <div class="flex items-center gap-4 py-3 {% if forloop.first %}pt-0{% endif %}">
+                            <div class="flex-shrink-0 h-14 w-14 rounded-lg overflow-hidden bg-gray-100 ring-1 ring-gray-200">
+                                {% if item.product.primary_image %}
+                                <img src="{{ item.product.primary_image.image.url }}" alt="{{ item.product.name }}"
+                                     class="h-full w-full object-cover">
+                                {% else %}
+                                <div class="flex h-full items-center justify-center">
+                                    <svg class="h-6 w-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5a2.25 2.25 0 0 0 2.25-2.25V5.25a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v13.5a2.25 2.25 0 0 0 2.25 2.25Z" />
+                                    </svg>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-900 truncate">{{ item.product.name }}</p>
+                                {% if item.variant %}
+                                <p class="text-xs text-gray-500">{{ item.variant.name }}</p>
+                                {% endif %}
+                                <p class="text-xs text-gray-400">Qty: {{ item.quantity }} × ₹{{ item.unit_price }}</p>
+                            </div>
+                            <p class="text-sm font-semibold text-gray-900 whitespace-nowrap">₹{{ item.line_total }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right: Summary -->
+            <div class="lg:col-span-1">
+                <div class="sticky top-24 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200" id="checkout-summary">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Order Summary</h2>
+
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between text-gray-600">
+                            <span>Subtotal</span>
+                            <span class="font-medium text-gray-900">₹{{ cart.subtotal }}</span>
+                        </div>
+                        <div class="flex justify-between text-gray-600">
+                            <span>Shipping</span>
+                            <span class="font-medium text-green-600">Free</span>
+                        </div>
+                        <div class="border-t border-gray-200 pt-3 flex justify-between">
+                            <span class="text-base font-semibold text-gray-900">Total</span>
+                            <span class="text-xl font-bold text-gray-900">₹{{ cart.subtotal }}</span>
+                        </div>
+                    </div>
+
+                    <button type="submit"
+                            class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-6 py-3.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-all duration-200 {% if not addresses %}opacity-50 cursor-not-allowed{% endif %}"
+                            {% if not addresses %}disabled{% endif %}
+                            id="btn-place-order">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                        </svg>
+                        Proceed to Payment
+                    </button>
+
+                    <a href="{% url 'cart:detail' %}"
+                       class="mt-3 flex w-full items-center justify-center text-sm font-medium text-gray-600 hover:text-primary-600 transition-colors">
+                        ← Back to Cart
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

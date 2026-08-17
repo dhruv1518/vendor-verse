@@ -247,7 +247,7 @@ This is the implementation plan simplified for a college project. All external s
 
 ## Phase 4: Shopping & Checkout (Mock Payments)
 
-### [ ] Task 28 — Cart System
+### [x] Task 28 — Cart System
 - **Page/Feature Name**: Shopping Cart Database Schema & Logic
 - **Objective**: Implement a session-based or simple database-based multi-vendor shopping cart.
 - **Dependencies**: Task 27
@@ -255,7 +255,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Backend logic to store and adjust quantities of added products.
 - **Completion Criteria**: Cart details are maintained as the user navigates.
 
-### [ ] Task 29 — Cart Page
+### [x] Task 29 — Cart Page
 - **Page/Feature Name**: Shopping Cart UI
 - **Objective**: Create the page for reviewing items, adjusting counts, and clicking proceed to checkout.
 - **Dependencies**: Task 28
@@ -263,7 +263,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Cart page showing line items and calculations.
 - **Completion Criteria**: User can successfully see totals, adjust items, and proceed.
 
-### [ ] Task 30 — Checkout Page
+### [x] Task 30 — Checkout Page
 - **Page/Feature Name**: Checkout Form UI
 - **Objective**: Simple checkout page displaying selected shipping address and final order items.
 - **Dependencies**: Task 29, Task 13
@@ -271,7 +271,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Combined review and checkout information entry.
 - **Completion Criteria**: Address and order summary display ready for checkout.
 
-### [ ] Task 31 — Mock Payment Page
+### [x] Task 31 — Mock Payment Page
 - **Page/Feature Name**: Simulated Payment Interface
 - **Objective**: Create a simplified payment page that simulates processing a credit card payment locally without Stripe.
 - **Dependencies**: Task 30
@@ -279,7 +279,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: A form showing mock card inputs (card number, expiry, CVV) with a "Pay" button.
 - **Completion Criteria**: Submitting the form simulates a 1-second delay and processes the transaction successfully.
 
-### [ ] Task 32 — Order Models & Master Order Creation
+### [x] Task 32 — Order Models & Master Order Creation
 - **Page/Feature Name**: Order Database Schema
 - **Objective**: Create `Order` and `OrderItem` models to record the transaction.
 - **Dependencies**: Task 28
@@ -287,7 +287,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Database tables for tracking paid orders.
 - **Completion Criteria**: Successfully paying converts active cart into a logged order record.
 
-### [ ] Task 33 — Order Confirmation / Success Page
+### [x] Task 33 — Order Confirmation / Success Page
 - **Page/Feature Name**: Order Success UI
 - **Objective**: Branded landing page post-checkout indicating order completion.
 - **Dependencies**: Task 32, Task 31
@@ -295,7 +295,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Receipt confirmation page.
 - **Completion Criteria**: Displays final order ID and thank you message.
 
-### [ ] Task 34 — Customer Order History & Detail Pages
+### [x] Task 34 — Customer Order History & Detail Pages
 - **Page/Feature Name**: Customer Order Management UI
 - **Objective**: Pages for customers to list their orders and see single order progress.
 - **Dependencies**: Task 33
@@ -303,7 +303,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: History list and specific receipt views.
 - **Completion Criteria**: Customers can verify their order statuses.
 
-### [ ] Task 35 — Vendor Order List & Detail Pages
+### [x] Task 35 — Vendor Order List & Detail Pages
 - **Page/Feature Name**: Vendor Order Management UI
 - **Objective**: Views in the vendor dashboard to track sales items and mark items as completed/shipped.
 - **Dependencies**: Task 33, Task 17

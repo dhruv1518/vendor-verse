@@ -68,8 +68,17 @@
             {% elif user.role == 'CUSTOMER' %}
             <a href="{% url 'vendors:apply' %}" class="text-sm font-medium text-secondary-600 hover:text-secondary-500 transition-colors" id="nav-become-vendor">Become a Vendor</a>
             {% endif %}
+            <a href="{% url 'orders:customer_orders' %}" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors" id="nav-orders">My Orders</a>
             <a href="{% url 'accounts:profile' %}" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors" id="nav-profile">My Profile</a>
-            <span class="hidden sm:inline text-sm text-gray-400">{{ user.email }}</span>
+            <!-- Cart Icon with Badge -->
+            <a href="{% url 'cart:detail' %}" class="relative text-gray-500 hover:text-gray-900 transition-colors" id="nav-cart">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                </svg>
+                {% if cart_count %}
+                <span class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">{{ cart_count }}</span>
+                {% endif %}
+            </a>
             <form method="post" action="{% url 'account_logout' %}" class="inline">
                 {% csrf_token %}
                 <button type="submit" class="text-sm font-medium text-red-500 hover:text-red-700 transition-colors" id="nav-signout">Sign out</button>

@@ -86,12 +86,30 @@ class VendorDashboardView(VendorRequiredMixin, TemplateView):
         # Dynamic product stats
         from apps.products.models import Product
         product_qs = Product.objects.filter(vendor=vendor)
+
+        # Dynamic order stats
+        from apps.orders.models import OrderItem
+        from django.db.models import Sum
+        vendor_items = OrderItem.objects.filter(vendor=vendor)
+        total_orders = vendor_items.values("order").distinct().count()
+        revenue = vendor_items.aggregate(
+            total=Sum("unit_price") 
+        )["total"] or 0
+        # Calculate actual revenue as sum(unit_price * quantity)
+        revenue_total = sum(
+            item.unit_price * item.quantity
+            for item in vendor_items.filter(order__payment_status="PAID")
+        )
+        pending_orders = vendor_items.filter(
+            status=OrderItem.ItemStatus.PENDING
+        ).values("order").distinct().count()
+
         context["stats"] = {
             "total_products": product_qs.count(),
             "active_products": product_qs.filter(status=Product.Status.ACTIVE).count(),
-            "total_orders": 0,
-            "revenue": "0.00",
-            "pending_orders": 0,
+            "total_orders": total_orders,
+            "revenue": f"{revenue_total:.2f}",
+            "pending_orders": pending_orders,
         }
         return context
 

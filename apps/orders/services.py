@@ -20,7 +20,19 @@ def create_order_from_cart(user, cart, address):
     # Calculate subtotal from cart
     subtotal = cart.subtotal
     shipping_cost = Decimal("0.00")  # Free shipping for this demo
-    total = subtotal + shipping_cost
+    
+    # AF-E: Apply coupon discount
+    discount_amount = Decimal("0.00")
+    coupon_code = ""
+    if cart.coupon and cart.coupon.is_valid:
+        discount_amount = Decimal(str(cart.discount_amount))
+        coupon_code = cart.coupon.code
+        
+        # Increment usage
+        cart.coupon.times_used += 1
+        cart.coupon.save(update_fields=["times_used"])
+        
+    total = subtotal - discount_amount + shipping_cost
 
     # Create the order with address snapshot
     order = Order.objects.create(
@@ -33,6 +45,8 @@ def create_order_from_cart(user, cart, address):
         shipping_country=address.country,
         subtotal=subtotal,
         shipping_cost=shipping_cost,
+        discount_amount=discount_amount,
+        coupon_code=coupon_code,
         total=total,
         status=Order.Status.PENDING,
     )
@@ -92,5 +106,25 @@ def process_mock_payment(order, card_last_four="4242", card_brand="Visa"):
     order.paid_at = timezone.now()
     order.status = Order.Status.CONFIRMED
     order.save()
+
+    # ----- Task 38: Send email notifications -----
+    try:
+        from apps.notifications.services import (
+            send_order_confirmation_email,
+            send_vendor_new_order_email,
+        )
+        # Send confirmation to customer
+        send_order_confirmation_email(order)
+
+        # Notify each vendor whose products are in this order
+        vendor_items_map = {}
+        for item in order.items.select_related("vendor"):
+            if item.vendor:
+                vendor_items_map.setdefault(item.vendor, []).append(item)
+
+        for vendor, items in vendor_items_map.items():
+            send_vendor_new_order_email(vendor, order, items)
+    except Exception:
+        pass  # Email failures should not block the payment flow
 
     return True, transaction_id

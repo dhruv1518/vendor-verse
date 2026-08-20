@@ -77,14 +77,21 @@
                 {% endif %}
             </div>
 
-            <!-- Name & Category -->
-            {% if product.category %}
-            <a href="{% url 'products:product_list' %}?category={{ product.category.slug }}"
-               class="text-sm font-medium text-primary-600 hover:text-primary-500 transition-colors">
-                {{ product.category.name }}
-            </a>
-            {% endif %}
-            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900" id="product-title">{{ product.name }}</h1>
+            <!-- Name & Category & Wishlist -->
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    {% if product.category %}
+                    <a href="{% url 'products:product_list' %}?category={{ product.category.slug }}"
+                       class="text-sm font-medium text-primary-600 hover:text-primary-500 transition-colors">
+                        {{ product.category.name }}
+                    </a>
+                    {% endif %}
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900" id="product-title">{{ product.name }}</h1>
+                </div>
+                <div id="wishlist-btn-{{ product.public_id }}">
+                    {% include "products/partials/wishlist_btn.html" with product=product in_wishlist=product.in_wishlist %}
+                </div>
+            </div>
 
             <!-- Price -->
             <div class="flex items-baseline gap-3" id="product-price-display">
@@ -221,6 +228,9 @@
         <div class="prose prose-sm max-w-none text-gray-600 whitespace-pre-line">{{ product.description }}</div>
     </div>
     {% endif %}
+
+    {# ── Reviews Section (Task 37) ── #}
+    {% include "reviews/review_section.html" %}
 
     <!-- Related Products -->
     {% if related_products %}

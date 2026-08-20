@@ -232,20 +232,20 @@
 <section class="bg-white py-16" id="stats">
     <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto grid max-w-4xl grid-cols-2 gap-8 sm:grid-cols-4">
-            <div class="text-center" x-data="{ count: 0 }" x-init="let target = 150; let step = Math.ceil(target / 40); let interval = setInterval(() => { count += step; if (count >= target) { count = target; clearInterval(interval); } }, 30);">
-                <p class="text-3xl font-bold text-primary-600" x-text="count + '+'">150+</p>
+            <div class="text-center" x-data="{ count: 0 }" x-init="let target = {{ vendor_count|default:150 }}; let step = Math.max(1, Math.ceil(target / 40)); let interval = setInterval(() => { count += step; if (count >= target) { count = target; clearInterval(interval); } }, 30);">
+                <p class="text-3xl font-bold text-primary-600" x-text="count + '+'">{{ vendor_count|default:150 }}+</p>
                 <p class="mt-1 text-sm text-gray-500">Verified Vendors</p>
             </div>
-            <div class="text-center" x-data="{ count: 0 }" x-init="let target = 5000; let step = Math.ceil(target / 40); let interval = setInterval(() => { count += step; if (count >= target) { count = target; clearInterval(interval); } }, 30);">
-                <p class="text-3xl font-bold text-secondary-600" x-text="count.toLocaleString() + '+'">5,000+</p>
+            <div class="text-center" x-data="{ count: 0 }" x-init="let target = {{ product_count|default:5000 }}; let step = Math.max(1, Math.ceil(target / 40)); let interval = setInterval(() => { count += step; if (count >= target) { count = target; clearInterval(interval); } }, 30);">
+                <p class="text-3xl font-bold text-secondary-600" x-text="count.toLocaleString() + '+'">{{ product_count|default:5000 }}+</p>
                 <p class="mt-1 text-sm text-gray-500">Products Listed</p>
             </div>
-            <div class="text-center" x-data="{ count: 0 }" x-init="let target = 2500; let step = Math.ceil(target / 40); let interval = setInterval(() => { count += step; if (count >= target) { count = target; clearInterval(interval); } }, 30);">
-                <p class="text-3xl font-bold text-amber-600" x-text="count.toLocaleString() + '+'">2,500+</p>
+            <div class="text-center" x-data="{ count: 0 }" x-init="let target = {{ customer_count|default:2500 }}; let step = Math.max(1, Math.ceil(target / 40)); let interval = setInterval(() => { count += step; if (count >= target) { count = target; clearInterval(interval); } }, 30);">
+                <p class="text-3xl font-bold text-amber-600" x-text="count.toLocaleString() + '+'">{{ customer_count|default:2500 }}+</p>
                 <p class="mt-1 text-sm text-gray-500">Happy Customers</p>
             </div>
             <div class="text-center">
-                <p class="text-3xl font-bold text-emerald-600">4.8★</p>
+                <p class="text-3xl font-bold text-emerald-600">{{ avg_rating|default:"4.8" }}★</p>
                 <p class="mt-1 text-sm text-gray-500">Average Rating</p>
             </div>
         </div>

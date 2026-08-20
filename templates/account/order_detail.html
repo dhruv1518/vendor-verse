@@ -42,6 +42,9 @@
         </div>
     </div>
 
+    <!-- AF-D: Order Tracking Timeline -->
+    {% include "orders/partials/timeline.html" with order=order %}
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
         <!-- Order Items -->
@@ -119,6 +122,12 @@
                         <span>Subtotal</span>
                         <span>₹{{ order.subtotal }}</span>
                     </div>
+                    {% if order.discount_amount > 0 %}
+                    <div class="flex justify-between text-green-600">
+                        <span>Discount {% if order.coupon_code %}({{ order.coupon_code }}){% endif %}</span>
+                        <span>-₹{{ order.discount_amount }}</span>
+                    </div>
+                    {% endif %}
                     <div class="flex justify-between text-gray-600">
                         <span>Shipping</span>
                         <span class="text-green-600">Free</span>

@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "apps.cart",
     "apps.orders",
     "apps.payments",
+    "apps.reviews",
+    "apps.notifications",
 ]
 
 MIDDLEWARE = [
@@ -126,6 +128,7 @@ LOGOUT_REDIRECT_URL = "/"
 # Email — console backend in development (prints to terminal)
 # --------------------------------------------------------------------------
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "VendorVerse <noreply@vendorverse.local>"
 
 # Custom User Model
 AUTH_USER_MODEL = "accounts.User"

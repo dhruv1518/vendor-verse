@@ -47,7 +47,9 @@ class Order(TimeStampedModel, PublicIDModel):
     # Totals
     subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    coupon_code = models.CharField(max_length=50, blank=True, null=True)
 
     status = models.CharField(
         max_length=20,
@@ -144,3 +146,43 @@ class OrderItem(TimeStampedModel, PublicIDModel):
     @property
     def line_total(self):
         return self.unit_price * self.quantity
+
+
+# ---------------------------------------------------------------------------
+# AF-E: Coupon / Discount System
+# ---------------------------------------------------------------------------
+
+class Coupon(TimeStampedModel, PublicIDModel):
+    """Discount codes that can be applied to carts/orders."""
+    
+    code = models.CharField(max_length=50, unique=True, db_index=True)
+    discount_percentage = models.PositiveIntegerField(
+        help_text="Discount percentage (e.g., 10 for 10%)"
+    )
+    max_uses = models.PositiveIntegerField(
+        null=True, blank=True, help_text="Maximum times this coupon can be used across all users"
+    )
+    times_used = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    valid_from = models.DateTimeField(null=True, blank=True)
+    valid_until = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return self.code
+        
+    @property
+    def is_valid(self):
+        from django.utils import timezone
+        if not self.is_active:
+            return False
+        if self.max_uses is not None and self.times_used >= self.max_uses:
+            return False
+        now = timezone.now()
+        if self.valid_from and now < self.valid_from:
+            return False
+        if self.valid_until and now > self.valid_until:
+            return False
+        return True

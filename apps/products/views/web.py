@@ -1,7 +1,11 @@
-from django.db.models import Q
+from django.db.models import Q, Exists, OuterRef
 from django.views.generic import ListView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponse
+from django.views import View
 
-from apps.products.models import Product, Category
+from apps.products.models import Product, Category, Wishlist, WishlistItem
 
 
 # ---------------------------------------------------------------------------
@@ -44,6 +48,16 @@ class ProductListView(ListView):
         elif sort == "newest":
             qs = qs.order_by("-created_at")
 
+        if self.request.user.is_authenticated:
+            qs = qs.annotate(
+                in_wishlist=Exists(
+                    WishlistItem.objects.filter(
+                        wishlist__user=self.request.user,
+                        product_id=OuterRef('pk')
+                    )
+                )
+            )
+
         return qs
 
     def get_context_data(self, **kwargs):
@@ -71,11 +85,21 @@ class ProductDetailView(DetailView):
     slug_url_kwarg = "product_slug"
 
     def get_queryset(self):
-        return (
+        qs = (
             Product.objects.filter(status=Product.Status.ACTIVE)
             .select_related("vendor", "vendor__storefront", "category")
             .prefetch_related("images", "variants", "tags")
         )
+        if self.request.user.is_authenticated:
+            qs = qs.annotate(
+                in_wishlist=Exists(
+                    WishlistItem.objects.filter(
+                        wishlist__user=self.request.user,
+                        product_id=OuterRef('pk')
+                    )
+                )
+            )
+        return qs
 
     def get_object(self, queryset=None):
         """Look up by vendor slug + product slug combo."""
@@ -120,4 +144,92 @@ class ProductDetailView(DetailView):
             related = list(related) + list(more)
 
         context["related_products"] = related
+
+        # ----- Reviews (Task 37) -----
+        from django.db.models import Avg
+        from apps.reviews.models import Review
+        from apps.reviews.forms import ReviewForm
+
+        reviews = Review.objects.filter(product=product).select_related("user")
+        context["reviews"] = reviews
+        context["review_count"] = reviews.count()
+
+        avg = reviews.aggregate(avg=Avg("rating"))["avg"]
+        context["avg_rating"] = avg
+
+        # Check if the current user already has a review
+        if self.request.user.is_authenticated:
+            context["user_review"] = reviews.filter(user=self.request.user).first()
+        else:
+            context["user_review"] = None
+
+        context["review_form"] = ReviewForm()
+
         return context
+
+
+# ---------------------------------------------------------------------------
+# AF-A: Live Search with Autocomplete (HTMX)
+# ---------------------------------------------------------------------------
+
+class ProductAutocompleteView(ListView):
+    """HTMX view to return autocomplete suggestions for the search bar."""
+
+    template_name = "products/partials/autocomplete.html"
+    context_object_name = "products"
+
+    def get_queryset(self):
+        query = self.request.GET.get("q", "").strip()
+        if len(query) < 2:
+            return Product.objects.none()
+
+        return (
+            Product.objects.filter(
+                status=Product.Status.ACTIVE,
+                name__icontains=query,
+            )
+            .select_related("vendor__storefront")
+            .prefetch_related("images")
+            .order_by("-is_featured", "-created_at")[:5]
+        )
+
+
+# ---------------------------------------------------------------------------
+# AF-B: Wishlist Views
+# ---------------------------------------------------------------------------
+
+class WishlistToggleView(LoginRequiredMixin, View):
+    """HTMX view to toggle a product in/out of the user's wishlist."""
+
+    def post(self, request, *args, **kwargs):
+        product = get_object_or_404(Product, public_id=self.kwargs.get("public_id"))
+        wishlist, _ = Wishlist.objects.get_or_create(user=request.user)
+        
+        item = WishlistItem.objects.filter(wishlist=wishlist, product=product).first()
+        
+        if item:
+            item.delete()
+            in_wishlist = False
+        else:
+            WishlistItem.objects.create(wishlist=wishlist, product=product)
+            in_wishlist = True
+            
+        return render(request, "products/partials/wishlist_btn.html", {
+            "product": product,
+            "in_wishlist": in_wishlist
+        })
+
+
+class WishlistListView(LoginRequiredMixin, ListView):
+    """Page displaying all products in the user's wishlist."""
+
+    template_name = "wishlist/detail.html"
+    context_object_name = "items"
+    paginate_by = 12
+
+    def get_queryset(self):
+        wishlist, _ = Wishlist.objects.get_or_create(user=self.request.user)
+        return WishlistItem.objects.filter(wishlist=wishlist).select_related(
+            "product", "product__vendor__storefront"
+        ).prefetch_related("product__images")
+

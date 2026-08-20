@@ -1,34 +1,35 @@
-<nav class="bg-white shadow sticky top-0 z-40">
+<nav class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-40 border-b border-gray-100"
+     x-data="{ mobileOpen: false }">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 justify-between">
       <div class="flex items-center gap-x-6">
         <div class="flex flex-shrink-0 items-center">
-          <a href="/" class="text-2xl font-bold text-primary-600">VendorVerse</a>
+          <a href="/" class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">VendorVerse</a>
         </div>
-        <!-- Main nav links -->
-        <div class="hidden sm:flex sm:items-center sm:gap-x-4">
+        <!-- Desktop nav links -->
+        <div class="hidden md:flex md:items-center md:gap-x-1">
           <!-- Categories Mega Menu -->
           <div class="relative" x-data="{ open: false }">
             <button @click="open = !open" @click.away="open = false"
-                    class="flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+                    class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all"
                     id="nav-categories-btn">
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z" />
               </svg>
               Categories
-              <svg class="h-3 w-3 transition-transform" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <svg class="h-3 w-3 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
               </svg>
             </button>
             <!-- Dropdown -->
-            <div x-show="open"
+            <div x-show="open" x-cloak
                  x-transition:enter="transition ease-out duration-200"
                  x-transition:enter-start="opacity-0 -translate-y-1"
                  x-transition:enter-end="opacity-100 translate-y-0"
                  x-transition:leave="transition ease-in duration-150"
                  x-transition:leave-start="opacity-100 translate-y-0"
                  x-transition:leave-end="opacity-0 -translate-y-1"
-                 class="absolute left-0 mt-3 w-64 origin-top-left rounded-xl bg-white p-3 shadow-xl ring-1 ring-gray-200 z-50"
+                 class="absolute left-0 mt-2 w-64 origin-top-left rounded-xl bg-white p-3 shadow-xl ring-1 ring-gray-200 z-50"
                  id="nav-categories-dropdown">
               {% if nav_categories %}
                 {% for cat in nav_categories %}
@@ -57,37 +58,170 @@
             </div>
           </div>
 
-          <a href="{% url 'products:product_list' %}" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors" id="nav-products">Products</a>
-          <a href="{% url 'vendors:directory' %}" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors" id="nav-vendors">Vendors</a>
+          <a href="{% url 'products:product_list' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all" id="nav-products">Products</a>
+          <a href="{% url 'vendors:directory' %}" class="rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all" id="nav-vendors">Vendors</a>
+          
+          <!-- Live Search -->
+          <div class="relative ml-2 hidden lg:block" x-data="{ searchOpen: false }">
+            <div class="relative">
+              <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+              </div>
+              <input type="search" name="q" 
+                     class="block w-64 rounded-full border-0 py-1.5 pl-9 pr-3 text-sm text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-500 bg-gray-50/50" 
+                     placeholder="Search products..."
+                     autocomplete="off"
+                     hx-get="{% url 'products:autocomplete' %}"
+                     hx-trigger="input changed delay:300ms, search"
+                     hx-target="#search-results"
+                     @focus="searchOpen = true"
+                     @click.away="searchOpen = false">
+            </div>
+            <div id="search-results" x-show="searchOpen" x-cloak
+                 class="absolute left-0 mt-2 w-full origin-top-left rounded-xl bg-white shadow-xl ring-1 ring-gray-200 z-50 overflow-hidden">
+            </div>
+          </div>
         </div>
       </div>
-      <div class="flex items-center space-x-4">
+
+      <!-- Right side: auth links + cart + mobile hamburger -->
+      <div class="flex items-center gap-3">
         {% if user.is_authenticated %}
             {% if user.role == 'VENDOR' %}
-            <a href="{% url 'vendors:dashboard' %}" class="text-sm font-medium text-primary-600 hover:text-primary-500 transition-colors" id="nav-dashboard">Dashboard</a>
+            <a href="{% url 'vendors:dashboard' %}" class="hidden sm:inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-primary-600 hover:bg-primary-50 transition-all" id="nav-dashboard">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z" />
+                </svg>
+                Dashboard
+            </a>
             {% elif user.role == 'CUSTOMER' %}
-            <a href="{% url 'vendors:apply' %}" class="text-sm font-medium text-secondary-600 hover:text-secondary-500 transition-colors" id="nav-become-vendor">Become a Vendor</a>
+            <a href="{% url 'vendors:apply' %}" class="hidden sm:inline-flex text-sm font-medium text-secondary-600 hover:text-secondary-500 transition-colors" id="nav-become-vendor">Become a Vendor</a>
             {% endif %}
-            <a href="{% url 'orders:customer_orders' %}" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors" id="nav-orders">My Orders</a>
-            <a href="{% url 'accounts:profile' %}" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors" id="nav-profile">My Profile</a>
+            <a href="{% url 'orders:customer_orders' %}" class="hidden sm:inline-flex rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all" id="nav-orders">My Orders</a>
+            <a href="{% url 'accounts:profile' %}" class="hidden sm:inline-flex rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all" id="nav-profile">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+            </a>
+            <!-- Wishlist Icon -->
+            <a href="{% url 'products:wishlist_list' %}" class="hidden sm:inline-flex rounded-lg p-2 text-gray-600 hover:text-red-500 hover:bg-red-50 transition-all" id="nav-wishlist">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                </svg>
+            </a>
             <!-- Cart Icon with Badge -->
-            <a href="{% url 'cart:detail' %}" class="relative text-gray-500 hover:text-gray-900 transition-colors" id="nav-cart">
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+            <a href="{% url 'cart:detail' %}" class="relative rounded-lg p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all" id="nav-cart">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                 </svg>
                 {% if cart_count %}
-                <span class="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">{{ cart_count }}</span>
+                <span class="absolute -top-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">{{ cart_count }}</span>
                 {% endif %}
             </a>
-            <form method="post" action="{% url 'account_logout' %}" class="inline">
+            <form method="post" action="{% url 'account_logout' %}" class="hidden sm:inline">
                 {% csrf_token %}
-                <button type="submit" class="text-sm font-medium text-red-500 hover:text-red-700 transition-colors" id="nav-signout">Sign out</button>
+                <button type="submit" class="rounded-lg px-3 py-2 text-sm font-medium text-red-500 hover:text-red-700 hover:bg-red-50 transition-all" id="nav-signout">Sign out</button>
             </form>
         {% else %}
-            <a href="{% url 'account_login' %}" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors" id="nav-signin">Sign in</a>
-            <a href="{% url 'account_signup' %}" class="rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-all" id="nav-signup">Create Account</a>
+            <a href="{% url 'account_login' %}" class="hidden sm:inline-flex rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all" id="nav-signin">Sign in</a>
+            <a href="{% url 'account_signup' %}" class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 transition-all" id="nav-signup">Create Account</a>
         {% endif %}
+
+        <!-- Mobile Hamburger Button -->
+        <button @click="mobileOpen = !mobileOpen"
+                class="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all"
+                id="nav-mobile-toggle">
+            <svg x-show="!mobileOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+            <svg x-show="mobileOpen" x-cloak class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+        </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ============ Mobile Menu Drawer ============ -->
+  <div x-show="mobileOpen" x-cloak
+       x-transition:enter="transition ease-out duration-200"
+       x-transition:enter-start="opacity-0 -translate-y-2"
+       x-transition:enter-end="opacity-100 translate-y-0"
+       x-transition:leave="transition ease-in duration-150"
+       x-transition:leave-start="opacity-100 translate-y-0"
+       x-transition:leave-end="opacity-0 -translate-y-2"
+       class="md:hidden border-t border-gray-100 bg-white shadow-lg"
+       id="nav-mobile-menu">
+    <div class="space-y-1 px-4 py-4">
+      <!-- Nav links -->
+      <a href="{% url 'products:product_list' %}" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+          </svg>
+          Products
+      </a>
+      <a href="{% url 'vendors:directory' %}" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+          </svg>
+          Vendors
+      </a>
+
+      {% if user.is_authenticated %}
+      <div class="my-2 border-t border-gray-100"></div>
+
+      {% if user.role == 'VENDOR' %}
+      <a href="{% url 'vendors:dashboard' %}" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 transition-colors">
+          <svg class="h-5 w-5 text-primary-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25a2.25 2.25 0 0 1-2.25-2.25v-2.25Z" />
+          </svg>
+          Vendor Dashboard
+      </a>
+      {% elif user.role == 'CUSTOMER' %}
+      <a href="{% url 'vendors:apply' %}" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-secondary-700 hover:bg-secondary-50 transition-colors">
+          <svg class="h-5 w-5 text-secondary-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+          </svg>
+          Become a Vendor
+      </a>
+      {% endif %}
+
+      <a href="{% url 'orders:customer_orders' %}" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" />
+          </svg>
+          My Orders
+      </a>
+      <a href="{% url 'accounts:profile' %}" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+          </svg>
+          My Profile
+      </a>
+
+      <div class="my-2 border-t border-gray-100"></div>
+
+      <form method="post" action="{% url 'account_logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors">
+              <svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+              </svg>
+              Sign out
+          </button>
+      </form>
+
+      {% else %}
+      <div class="my-2 border-t border-gray-100"></div>
+      <a href="{% url 'account_login' %}" class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+          </svg>
+          Sign in
+      </a>
+      {% endif %}
     </div>
   </div>
 </nav>

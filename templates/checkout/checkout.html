@@ -132,13 +132,19 @@
                             <span>Subtotal</span>
                             <span class="font-medium text-gray-900">₹{{ cart.subtotal }}</span>
                         </div>
+                        {% if cart.coupon %}
+                        <div class="flex justify-between text-green-600">
+                            <span>Discount ({{ cart.coupon.code }})</span>
+                            <span class="font-medium">-₹{{ cart.discount_amount }}</span>
+                        </div>
+                        {% endif %}
                         <div class="flex justify-between text-gray-600">
                             <span>Shipping</span>
                             <span class="font-medium text-green-600">Free</span>
                         </div>
                         <div class="border-t border-gray-200 pt-3 flex justify-between">
                             <span class="text-base font-semibold text-gray-900">Total</span>
-                            <span class="text-xl font-bold text-gray-900">₹{{ cart.subtotal }}</span>
+                            <span class="text-base font-bold text-gray-900">₹{{ cart.total }}</span>
                         </div>
                     </div>
 

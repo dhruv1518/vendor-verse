@@ -19,6 +19,13 @@ class Cart(TimeStampedModel, PublicIDModel):
         on_delete=models.CASCADE,
         related_name="cart",
     )
+    coupon = models.ForeignKey(
+        "orders.Coupon",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="carts"
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -37,14 +44,29 @@ class Cart(TimeStampedModel, PublicIDModel):
     @property
     def subtotal(self):
         return sum(item.line_total for item in self.cart_items.all())
+        
+    @property
+    def discount_amount(self):
+        if self.coupon and self.coupon.is_valid:
+            # Rounding to 2 decimal places
+            from decimal import Decimal
+            discount = (self.subtotal * Decimal(self.coupon.discount_percentage)) / Decimal(100)
+            return round(discount, 2)
+        return 0
+
+    @property
+    def total(self):
+        return self.subtotal - self.discount_amount
 
     @property
     def is_empty(self):
         return self.cart_items.count() == 0
 
     def clear(self):
-        """Remove all items from the cart."""
+        """Remove all items from the cart and remove coupon."""
         self.cart_items.all().delete()
+        self.coupon = None
+        self.save(update_fields=["coupon"])
 
 
 class CartItem(TimeStampedModel, PublicIDModel):

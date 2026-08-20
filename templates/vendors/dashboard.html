@@ -11,7 +11,7 @@
 </div>
 
 <!-- Stats Grid -->
-<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
     <!-- Total Products -->
     <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-shadow duration-300" id="stat-products">
         <div class="flex items-center gap-4">
@@ -51,7 +51,7 @@
                 </svg>
             </div>
             <div>
-                <p class="text-2xl font-bold text-gray-900">${{ stats.revenue }}</p>
+                <p class="text-2xl font-bold text-gray-900">₹{{ stats.revenue }}</p>
                 <p class="text-sm text-gray-500">Revenue</p>
             </div>
         </div>
@@ -71,6 +71,173 @@
             </div>
         </div>
     </div>
+
+    <!-- Avg Rating -->
+    <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200 hover:shadow-md transition-shadow duration-300" id="stat-rating">
+        <div class="flex items-center gap-4">
+            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-yellow-400 to-amber-500 shadow-md shadow-amber-100">
+                <svg class="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292Z" />
+                </svg>
+            </div>
+            <div>
+                <p class="text-2xl font-bold text-gray-900">{{ stats.avg_rating }}</p>
+                <p class="text-sm text-gray-500">Avg Rating ({{ stats.total_reviews }})</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AF-C: Sales Analytics Chart -->
+<div class="mt-8 mb-8 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+    <div class="mb-4">
+        <h2 class="text-base font-semibold text-gray-900">Revenue over Time (Last 30 Days)</h2>
+    </div>
+    <div class="relative h-72 w-full">
+        <canvas id="revenueChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const dates = {{ chart_dates|safe }};
+        const revenues = {{ chart_revenues|safe }};
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Revenue (₹)',
+                    data: revenues,
+                    borderColor: '#4f46e5', // primary-600
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#4f46e5',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1f2937',
+                        padding: 10,
+                        titleFont: { size: 13 },
+                        bodyFont: { size: 14, weight: 'bold' },
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return '₹' + context.parsed.y.toFixed(2);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { font: { size: 12 }, color: '#6b7280' }
+                    },
+                    y: {
+                        border: { display: false },
+                        grid: { color: '#f3f4f6', drawBorder: false },
+                        ticks: {
+                            font: { size: 12 },
+                            color: '#6b7280',
+                            callback: function(value) {
+                                return '₹' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+<!-- Recent Orders & Top Products Grid -->
+<div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+    <!-- Recent Orders -->
+    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden" id="recent-orders-panel">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <h2 class="text-base font-semibold text-gray-900">Recent Orders</h2>
+            <a href="{% url 'orders:vendor_order_list' %}" class="text-xs font-medium text-primary-600 hover:text-primary-500 transition-colors">View All →</a>
+        </div>
+        {% if recent_orders %}
+        <div class="divide-y divide-gray-50">
+            {% for order in recent_orders %}
+            <a href="{% url 'orders:vendor_order_detail' public_id=order.public_id %}"
+               class="flex items-center justify-between px-6 py-3.5 hover:bg-gray-50 transition-colors">
+                <div>
+                    <p class="text-sm font-medium text-gray-900">{{ order.order_number }}</p>
+                    <p class="text-xs text-gray-400 mt-0.5">{{ order.created_at|date:"d M Y, h:i A" }}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-bold text-gray-900">₹{{ order.total }}</p>
+                    <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
+                        {% if order.status == 'CONFIRMED' %}bg-blue-100 text-blue-700
+                        {% elif order.status == 'PROCESSING' %}bg-yellow-100 text-yellow-700
+                        {% elif order.status == 'SHIPPED' %}bg-purple-100 text-purple-700
+                        {% elif order.status == 'DELIVERED' %}bg-green-100 text-green-700
+                        {% elif order.status == 'CANCELLED' %}bg-red-100 text-red-700
+                        {% else %}bg-gray-100 text-gray-700{% endif %}">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="px-6 py-12 text-center">
+            <svg class="mx-auto h-8 w-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25Z" />
+            </svg>
+            <p class="mt-2 text-sm text-gray-500">No orders yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Top Selling Products -->
+    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden" id="top-products-panel">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <h2 class="text-base font-semibold text-gray-900">Top Selling Products</h2>
+            <a href="{% url 'products:vendor_product_list' %}" class="text-xs font-medium text-primary-600 hover:text-primary-500 transition-colors">View All →</a>
+        </div>
+        {% if top_products %}
+        <div class="divide-y divide-gray-50">
+            {% for item in top_products %}
+            <div class="flex items-center justify-between px-6 py-3.5">
+                <div class="flex items-center gap-3 min-w-0">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-gray-100 text-xs font-bold text-gray-500">{{ forloop.counter }}</span>
+                    <p class="text-sm font-medium text-gray-900 truncate">{{ item.product__name }}</p>
+                </div>
+                <div class="text-right flex-shrink-0 ml-4">
+                    <p class="text-sm font-bold text-gray-900">₹{{ item.total_revenue|floatformat:"2" }}</p>
+                    <p class="text-xs text-gray-400">{{ item.total_sold }} sold</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="px-6 py-12 text-center">
+            <svg class="mx-auto h-8 w-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+            </svg>
+            <p class="mt-2 text-sm text-gray-500">No sales data yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
 </div>
 
 <!-- Quick Actions -->

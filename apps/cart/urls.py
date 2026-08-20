@@ -16,4 +16,6 @@ urlpatterns = [
         views.RemoveCartItemView.as_view(),
         name="remove",
     ),
+    path("coupon/apply/", views.ApplyCouponView.as_view(), name="apply_coupon"),
+    path("coupon/remove/", views.RemoveCouponView.as_view(), name="remove_coupon"),
 ]

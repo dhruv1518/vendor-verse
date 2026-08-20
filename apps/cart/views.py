@@ -6,6 +6,7 @@ from django.views import View
 
 from .models import Cart, CartItem
 from apps.products.models import Product, ProductVariant
+from apps.orders.models import Coupon
 
 
 # ---------------------------------------------------------------------------
@@ -123,3 +124,44 @@ class CartDetailView(LoginRequiredMixin, TemplateView):
             context["cart"] = None
             context["cart_items"] = []
         return context
+
+
+# ---------------------------------------------------------------------------
+# AF-E: Coupon Views
+# ---------------------------------------------------------------------------
+
+class ApplyCouponView(LoginRequiredMixin, View):
+    """Apply a discount coupon to the user's cart."""
+
+    def post(self, request):
+        code = request.POST.get("code", "").strip()
+        cart = Cart.objects.filter(user=request.user).first()
+        
+        if not cart or cart.is_empty:
+            messages.error(request, "Your cart is empty.")
+            return redirect("cart:detail")
+            
+        coupon = Coupon.objects.filter(code__iexact=code).first()
+        
+        if not coupon:
+            messages.error(request, "Invalid coupon code.")
+        elif not coupon.is_valid:
+            messages.error(request, "This coupon has expired or reached its usage limit.")
+        else:
+            cart.coupon = coupon
+            cart.save(update_fields=["coupon"])
+            messages.success(request, f"Coupon '{coupon.code}' applied successfully!")
+            
+        return redirect("cart:detail")
+
+
+class RemoveCouponView(LoginRequiredMixin, View):
+    """Remove a discount coupon from the user's cart."""
+
+    def post(self, request):
+        cart = Cart.objects.filter(user=request.user).first()
+        if cart and cart.coupon:
+            cart.coupon = None
+            cart.save(update_fields=["coupon"])
+            messages.info(request, "Coupon removed.")
+        return redirect("cart:detail")

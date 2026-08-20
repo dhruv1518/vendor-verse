@@ -1,12 +1,14 @@
 from django.urls import path
 
+from django.urls import path
+
 from .views.vendor import (
     VendorProductListView,
     VendorProductCreateView,
     VendorProductEditView,
     VendorProductDeleteView,
 )
-from .views.web import ProductListView, ProductDetailView
+from .views.web import ProductListView, ProductDetailView, ProductAutocompleteView, WishlistToggleView, WishlistListView
 
 app_name = "products"
 
@@ -36,6 +38,12 @@ urlpatterns = [
 
     # ----- Public Catalog (Task 26 & 27) -----
     path("", ProductListView.as_view(), name="product_list"),
+    path("autocomplete/", ProductAutocompleteView.as_view(), name="autocomplete"),
+    
+    # ----- AF-B: Wishlist -----
+    path("wishlist/", WishlistListView.as_view(), name="wishlist_list"),
+    path("wishlist/<uuid:public_id>/toggle/", WishlistToggleView.as_view(), name="wishlist_toggle"),
+    
     path(
         "<slug:vendor_slug>/<slug:product_slug>/",
         ProductDetailView.as_view(),

@@ -88,14 +88,12 @@ class VendorDashboardView(VendorRequiredMixin, TemplateView):
         product_qs = Product.objects.filter(vendor=vendor)
 
         # Dynamic order stats
-        from apps.orders.models import OrderItem
-        from django.db.models import Sum
+        from apps.orders.models import OrderItem, Order
+        from django.db.models import Sum, Avg, Count, F
         vendor_items = OrderItem.objects.filter(vendor=vendor)
         total_orders = vendor_items.values("order").distinct().count()
-        revenue = vendor_items.aggregate(
-            total=Sum("unit_price") 
-        )["total"] or 0
-        # Calculate actual revenue as sum(unit_price * quantity)
+
+        # Calculate actual revenue as sum(unit_price * quantity) for paid orders
         revenue_total = sum(
             item.unit_price * item.quantity
             for item in vendor_items.filter(order__payment_status="PAID")
@@ -104,13 +102,72 @@ class VendorDashboardView(VendorRequiredMixin, TemplateView):
             status=OrderItem.ItemStatus.PENDING
         ).values("order").distinct().count()
 
+        # ----- Task 39: Enhanced dashboard stats -----
+        # Average product rating from reviews
+        from apps.reviews.models import Review
+        avg_rating = Review.objects.filter(
+            product__vendor=vendor
+        ).aggregate(avg=Avg("rating"))["avg"]
+
+        total_reviews = Review.objects.filter(product__vendor=vendor).count()
+
         context["stats"] = {
             "total_products": product_qs.count(),
             "active_products": product_qs.filter(status=Product.Status.ACTIVE).count(),
             "total_orders": total_orders,
             "revenue": f"{revenue_total:.2f}",
             "pending_orders": pending_orders,
+            "avg_rating": f"{avg_rating:.1f}" if avg_rating else "N/A",
+            "total_reviews": total_reviews,
         }
+
+        # Recent orders (last 5 orders containing this vendor's items)
+        recent_order_ids = (
+            vendor_items.filter(order__payment_status="PAID")
+            .values_list("order_id", flat=True)
+            .distinct()
+            .order_by("-order__created_at")[:5]
+        )
+        context["recent_orders"] = (
+            Order.objects.filter(id__in=recent_order_ids)
+            .prefetch_related("items")
+            .order_by("-created_at")
+        )
+
+        # Top selling products (by quantity sold)
+        top_products = (
+            vendor_items.filter(order__payment_status="PAID")
+            .values("product__name", "product__public_id")
+            .annotate(
+                total_sold=Sum("quantity"),
+                total_revenue=Sum(F("unit_price") * F("quantity")),
+            )
+            .order_by("-total_sold")[:5]
+        )
+        context["top_products"] = top_products
+
+        # ----- AF-C: Vendor Sales Analytics Chart Data -----
+        import json
+        from django.utils import timezone
+        from datetime import timedelta
+        from django.db.models.functions import TruncDate
+
+        thirty_days_ago = timezone.now() - timedelta(days=30)
+        daily_revenue = (
+            vendor_items.filter(order__payment_status="PAID", created_at__gte=thirty_days_ago)
+            .annotate(date=TruncDate('created_at'))
+            .values('date')
+            .annotate(revenue=Sum(F('unit_price') * F('quantity')))
+            .order_by('date')
+        )
+        
+        # Format for Chart.js
+        chart_dates = [r['date'].strftime('%b %d') for r in daily_revenue]
+        chart_revenues = [float(r['revenue']) for r in daily_revenue]
+        
+        context["chart_dates"] = json.dumps(chart_dates)
+        context["chart_revenues"] = json.dumps(chart_revenues)
+
         return context
 
 

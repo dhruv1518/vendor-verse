@@ -315,7 +315,7 @@ This is the implementation plan simplified for a college project. All external s
 
 ## Phase 5: Ecosystem & Operations
 
-### [ ] Task 36 — Review Model & Product Ratings
+### [x] Task 36 — Review Model & Product Ratings
 - **Page/Feature Name**: Ratings Database Schema
 - **Objective**: Create a `Review` model to store customer feedback.
 - **Dependencies**: Task 34, Task 22
@@ -323,7 +323,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Database fields for 1-5 star ratings.
 - **Completion Criteria**: Review records associate correctly to products.
 
-### [ ] Task 37 — Customer Write Review Form
+### [x] Task 37 — Customer Write Review Form
 - **Page/Feature Name**: Product Review UI
 - **Objective**: Simple form component on the product page or checkout details for customers to write reviews.
 - **Dependencies**: Task 36
@@ -331,7 +331,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Interactive review submission.
 - **Completion Criteria**: Submissions immediately recalculate product average rating.
 
-### [ ] Task 38 — Simple Email Notifications
+### [x] Task 38 — Simple Email Notifications
 - **Page/Feature Name**: Email Alerts
 - **Objective**: Dispatch emails synchronously (using standard Django email backends) for account welcome and order placement.
 - **Dependencies**: Task 7, Task 32
@@ -339,7 +339,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Simple transactional emails.
 - **Completion Criteria**: Placing an order triggers an email sent via Django's SMTP layer.
 
-### [ ] Task 39 — Vendor/Admin Simple Dashboard Updates
+### [x] Task 39 — Vendor/Admin Simple Dashboard Updates
 - **Page/Feature Name**: Simplified Admin Dashboards UI
 - **Objective**: Replace dashboard mocks with actual standard database aggregates (e.g. sums of vendor order values).
 - **Dependencies**: Task 35, Task 17
@@ -359,7 +359,7 @@ This is the implementation plan simplified for a college project. All external s
 - **Expected Output**: Basic information pages.
 - **Completion Criteria**: Pages load correctly and look fully designed.
 
-### [ ] Task 41 — Custom Error Pages
+### [x] Task 41 — Custom Error Pages
 - **Page/Feature Name**: 404 & 500 Pages
 - **Objective**: Design custom error page layouts.
 - **Dependencies**: Task 3

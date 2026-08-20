@@ -264,3 +264,39 @@ class ProductVariant(TimeStampedModel, PublicIDModel):
         if self.price_override is not None:
             return self.price_override
         return self.product.base_price
+
+
+# ---------------------------------------------------------------------------
+# AF-B: Wishlist Models
+# ---------------------------------------------------------------------------
+
+class Wishlist(TimeStampedModel):
+    """A user's saved items."""
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="wishlist"
+    )
+
+    def __str__(self):
+        return f"{self.user.email}'s Wishlist"
+
+class WishlistItem(TimeStampedModel):
+    """An individual item saved in a wishlist."""
+    wishlist = models.ForeignKey(
+        Wishlist,
+        on_delete=models.CASCADE,
+        related_name="items"
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="wishlisted_by"
+    )
+
+    class Meta:
+        unique_together = ("wishlist", "product")
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.product.name} in {self.wishlist.user.email}'s wishlist"

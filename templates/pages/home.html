@@ -249,8 +249,14 @@
                 <p class="mt-1 text-sm text-gray-500">Average Rating</p>
             </div>
         </div>
+        </div>
     </div>
 </section>
+
+<!-- ========== RECENTLY VIEWED ========== -->
+<div class="mx-auto max-w-7xl px-6 lg:px-8 mb-16">
+    {% include "products/partials/recently_viewed.html" %}
+</div>
 
 <!-- ========== CTA BANNER (logged out only) ========== -->
 {% if not user.is_authenticated %}

@@ -300,3 +300,32 @@ class WishlistItem(TimeStampedModel):
 
     def __str__(self):
         return f"{self.product.name} in {self.wishlist.user.email}'s wishlist"
+
+
+# ---------------------------------------------------------------------------
+# AF-I: Customer Q&A
+# ---------------------------------------------------------------------------
+
+class Question(TimeStampedModel, PublicIDModel):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="questions")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="questions")
+    text = models.TextField()
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Q by {self.user.email} on {self.product.name}"
+
+
+class Answer(TimeStampedModel, PublicIDModel):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="answers")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="answers")
+    text = models.TextField()
+    is_vendor = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"A by {self.user.email} on {self.question.product.name}"

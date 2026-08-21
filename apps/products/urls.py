@@ -8,7 +8,7 @@ from .views.vendor import (
     VendorProductEditView,
     VendorProductDeleteView,
 )
-from .views.web import ProductListView, ProductDetailView, ProductAutocompleteView, WishlistToggleView, WishlistListView
+from .views.web import ProductListView, ProductDetailView, ProductAutocompleteView, WishlistToggleView, WishlistListView, CompareToggleView, CompareListView, QuestionCreateView, AnswerCreateView
 
 app_name = "products"
 
@@ -44,6 +44,14 @@ urlpatterns = [
     path("wishlist/", WishlistListView.as_view(), name="wishlist_list"),
     path("wishlist/<uuid:public_id>/toggle/", WishlistToggleView.as_view(), name="wishlist_toggle"),
     
+    # ----- AF-F: Compare -----
+    path("compare/", CompareListView.as_view(), name="compare_list"),
+    path("compare/<uuid:public_id>/toggle/", CompareToggleView.as_view(), name="compare_toggle"),
+    
+    # ----- AF-I: Customer Q&A -----
+    path("<uuid:public_id>/ask/", QuestionCreateView.as_view(), name="question_create"),
+    path("question/<uuid:public_id>/answer/", AnswerCreateView.as_view(), name="answer_create"),
+
     path(
         "<slug:vendor_slug>/<slug:product_slug>/",
         ProductDetailView.as_view(),

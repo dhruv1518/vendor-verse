@@ -10,24 +10,26 @@
     <div class="absolute -bottom-12 -left-12 h-56 w-56 rounded-full bg-secondary-400/20 blur-3xl"></div>
     <div class="relative mx-auto max-w-7xl px-6 py-12 lg:px-8">
         <h1 class="text-3xl font-bold text-white sm:text-4xl" id="catalog-title">Product Catalog</h1>
-        <p class="mt-2 text-lg text-white/80">Browse {{ total_count }} product{{ total_count|pluralize }} from our amazing vendors</p>
+        <p class="mt-2 text-lg text-white/80">Browse {{ total_count }} product{{ total_count|pluralize }} from our
+            amazing vendors</p>
 
         <!-- Search -->
         <form method="get" class="mt-6 flex max-w-xl gap-3" id="catalog-search-form">
             {% if current_category %}<input type="hidden" name="category" value="{{ current_category }}">{% endif %}
             {% if current_sort %}<input type="hidden" name="sort" value="{{ current_sort }}">{% endif %}
             <div class="flex-1 relative">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" fill="none"
+                    viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                 </svg>
-                <input type="text" name="q" value="{{ search_query }}"
-                       placeholder="Search products..."
-                       class="block w-full rounded-xl border-0 py-3 pl-10 pr-4 text-gray-900 shadow-lg ring-1 ring-inset ring-white/20 placeholder:text-gray-400 focus:ring-2 focus:ring-white sm:text-sm"
-                       id="catalog-search-input">
+                <input type="text" name="q" value="{{ search_query }}" placeholder="Search products..."
+                    class="block w-full rounded-xl border-0 py-3 pl-10 pr-4 text-gray-900 shadow-lg ring-1 ring-inset ring-white/20 placeholder:text-gray-400 focus:ring-2 focus:ring-white sm:text-sm"
+                    id="catalog-search-input">
             </div>
             <button type="submit"
-                    class="rounded-xl bg-white/20 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/30 transition-all ring-1 ring-white/20"
-                    id="catalog-search-btn">
+                class="rounded-xl bg-white/20 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm hover:bg-white/30 transition-all ring-1 ring-white/20"
+                id="catalog-search-btn">
                 Search
             </button>
         </form>
@@ -39,164 +41,52 @@
 
         <!-- Sidebar Filters -->
         <aside class="lg:w-64 flex-shrink-0">
-            <div class="sticky top-20 space-y-6">
+            <form method="get" class="sticky top-20 space-y-6" id="filter-form"
+                hx-get="{% url 'products:product_list' %}" hx-target="#product-grid-container" hx-swap="outerHTML"
+                hx-push-url="true" hx-trigger="change, submit">
+
+                {% if filterset %}
+
+                <!-- Search (mirrored from hero or standalone) -->
+                <div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+                    <h3 class="text-sm font-semibold text-gray-900 mb-3">Search</h3>
+                    {{ filterset.form.q }}
+                </div>
+
                 <!-- Categories -->
                 <div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-                    <h3 class="text-sm font-semibold text-gray-900 mb-3">Categories</h3>
-                    <nav class="space-y-1" id="category-filter">
-                        <a href="{% url 'products:product_list' %}{% if search_query %}?q={{ search_query }}{% endif %}"
-                           class="block rounded-lg px-3 py-2 text-sm {% if not current_category %}bg-primary-50 text-primary-700 font-medium{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} transition-colors">
-                            All Categories
-                        </a>
-                        {% for cat in categories %}
-                        <a href="{% url 'products:product_list' %}?category={{ cat.slug }}{% if search_query %}&q={{ search_query }}{% endif %}"
-                           class="block rounded-lg px-3 py-2 text-sm {% if current_category == cat.slug %}bg-primary-50 text-primary-700 font-medium{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} transition-colors">
-                            {{ cat.name }}
-                        </a>
-                        {% for child in cat.children.all %}
-                        <a href="{% url 'products:product_list' %}?category={{ child.slug }}{% if search_query %}&q={{ search_query }}{% endif %}"
-                           class="block rounded-lg px-3 py-2 pl-6 text-sm {% if current_category == child.slug %}bg-primary-50 text-primary-700 font-medium{% else %}text-gray-500 hover:bg-gray-50 hover:text-gray-700{% endif %} transition-colors">
-                            {{ child.name }}
-                        </a>
-                        {% endfor %}
-                        {% endfor %}
-                    </nav>
+                    <h3 class="text-sm font-semibold text-gray-900 mb-3">Category</h3>
+                    {{ filterset.form.category }}
+                </div>
+
+                <!-- Price Range -->
+                <div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
+                    <h3 class="text-sm font-semibold text-gray-900 mb-3">Price Range</h3>
+                    <div class="flex items-center gap-2">
+                        {{ filterset.form.price_min }}
+                        <span class="text-gray-500">-</span>
+                        {{ filterset.form.price_max }}
+                    </div>
                 </div>
 
                 <!-- Sort By -->
                 <div class="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
                     <h3 class="text-sm font-semibold text-gray-900 mb-3">Sort By</h3>
-                    <nav class="space-y-1" id="sort-filter">
-                        <a href="{% url 'products:product_list' %}?sort=newest{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}"
-                           class="block rounded-lg px-3 py-2 text-sm {% if current_sort == 'newest' %}bg-primary-50 text-primary-700 font-medium{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} transition-colors">
-                            Newest First
-                        </a>
-                        <a href="{% url 'products:product_list' %}?sort=price_low{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}"
-                           class="block rounded-lg px-3 py-2 text-sm {% if current_sort == 'price_low' %}bg-primary-50 text-primary-700 font-medium{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} transition-colors">
-                            Price: Low → High
-                        </a>
-                        <a href="{% url 'products:product_list' %}?sort=price_high{% if current_category %}&category={{ current_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}"
-                           class="block rounded-lg px-3 py-2 text-sm {% if current_sort == 'price_high' %}bg-primary-50 text-primary-700 font-medium{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} transition-colors">
-                            Price: High → Low
-                        </a>
-                    </nav>
+                    {{ filterset.form.sort_by }}
                 </div>
-            </div>
+
+                <div class="pt-4">
+                    <a href="{% url 'products:product_list' %}"
+                        class="block w-full text-center rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-200 transition-colors">Clear
+                        Filters</a>
+                </div>
+
+                {% endif %}
+            </form>
         </aside>
 
         <!-- Product Grid -->
-        <div class="flex-1">
-            {% if products %}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="product-grid">
-                {% for product in products %}
-                <a href="{% url 'products:product_detail' vendor_slug=product.vendor.storefront.slug product_slug=product.slug %}"
-                   class="group rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden hover:shadow-lg hover:ring-gray-300 transition-all duration-300"
-                   id="product-card-{{ product.public_id }}">
-                    <!-- Image -->
-                    <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
-                        {% if product.primary_image %}
-                        <img src="{{ product.primary_image.image.url }}" alt="{{ product.name }}"
-                             class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        {% else %}
-                        <div class="flex h-full items-center justify-center">
-                            <svg class="h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        {% endif %}
-                        
-                        <!-- Wishlist Toggle -->
-                        <div class="absolute top-2 right-2 z-10" id="wishlist-btn-{{ product.public_id }}" @click.prevent>
-                            {% include "products/partials/wishlist_btn.html" with product=product in_wishlist=product.in_wishlist %}
-                        </div>
-
-                        <!-- Badges -->
-                        <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
-                            {% if product.is_on_sale %}
-                            <span class="rounded-full bg-red-500 px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm">
-                                -{{ product.discount_percentage }}%
-                            </span>
-                            {% endif %}
-                            {% if product.is_featured %}
-                            <span class="rounded-full bg-secondary-500 px-2.5 py-0.5 text-xs font-semibold text-white shadow-sm">
-                                Featured
-                            </span>
-                            {% endif %}
-                        </div>
-
-                        {% if not product.in_stock %}
-                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-                            <span class="rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-gray-900 shadow-lg">Out of Stock</span>
-                        </div>
-                        {% endif %}
-                    </div>
-
-                    <!-- Info -->
-                    <div class="p-4 space-y-2">
-                        <div class="flex items-center gap-2">
-                            {% if product.category %}
-                            <span class="text-xs text-primary-600 font-medium">{{ product.category.name }}</span>
-                            {% endif %}
-                        </div>
-                        <h3 class="text-sm font-semibold text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2">
-                            {{ product.name }}
-                        </h3>
-                        {% if product.short_description %}
-                        <p class="text-xs text-gray-500 line-clamp-2">{{ product.short_description }}</p>
-                        {% endif %}
-                        <div class="flex items-center justify-between pt-1">
-                            <div class="flex items-baseline gap-1.5">
-                                <span class="text-lg font-bold text-gray-900">₹{{ product.base_price }}</span>
-                                {% if product.is_on_sale %}
-                                <span class="text-sm text-gray-400 line-through">₹{{ product.compare_at_price }}</span>
-                                {% endif %}
-                            </div>
-                            <span class="text-xs text-gray-400">{{ product.vendor.business_name }}</span>
-                        </div>
-                    </div>
-                </a>
-                {% endfor %}
-            </div>
-
-            <!-- Pagination -->
-            {% if is_paginated %}
-            <div class="mt-8 flex items-center justify-center gap-3">
-                {% if page_obj.has_previous %}
-                <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}"
-                   class="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                    ← Previous
-                </a>
-                {% endif %}
-                <span class="text-sm text-gray-500">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-                {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}"
-                   class="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
-                    Next →
-                </a>
-                {% endif %}
-            </div>
-            {% endif %}
-
-            {% else %}
-            <!-- Empty State -->
-            <div class="text-center py-20">
-                <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 mb-6">
-                    <svg class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-900">No products found</h3>
-                <p class="mt-2 text-sm text-gray-500 max-w-md mx-auto">
-                    {% if search_query %}No products match "{{ search_query }}". Try a different search term.
-                    {% else %}There are no products available in this category yet.{% endif %}
-                </p>
-                <a href="{% url 'products:product_list' %}"
-                   class="mt-6 inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-primary-500 transition-all">
-                    View All Products
-                </a>
-            </div>
-            {% endif %}
-        </div>
+        {% include "products/partials/product_grid.html" %}
 
     </div>
 </div>

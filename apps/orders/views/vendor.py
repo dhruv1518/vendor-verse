@@ -96,6 +96,18 @@ class VendorOrderItemStatusView(VendorRequiredMixin, View):
 
         item.status = new_status
         item.save()
+        
+        # AF-G: Create in-app notification for the customer
+        from apps.notifications.models import Notification
+        from django.urls import reverse
+        
+        Notification.objects.create(
+            user=item.order.user,
+            title=f"Order Update: {item.product_name}",
+            message=f"The status of your item has been updated to {item.get_status_display()}.",
+            link=reverse("orders:customer_order_detail", kwargs={"public_id": item.order.public_id})
+        )
+        
         messages.success(
             request,
             f'Item "{item.product_name}" status updated to {item.get_status_display()}.',

@@ -1,5 +1,5 @@
 from django.db.models import Q, Exists, OuterRef
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
@@ -19,34 +19,21 @@ class ProductListView(ListView):
     context_object_name = "products"
     paginate_by = 12
 
+    def get_template_names(self):
+        if self.request.htmx:
+            return ["products/partials/product_grid.html"]
+        return ["products/list.html"]
+
     def get_queryset(self):
         qs = (
             Product.objects.filter(status=Product.Status.ACTIVE)
             .select_related("vendor", "category")
             .prefetch_related("images")
-            .order_by("-created_at")
         )
-
-        # Search by name
-        search = self.request.GET.get("q", "").strip()
-        if search:
-            qs = qs.filter(name__icontains=search)
-
-        # Category filter — also include products in child categories
-        category_slug = self.request.GET.get("category", "").strip()
-        if category_slug:
-            qs = qs.filter(
-                Q(category__slug=category_slug) | Q(category__parent__slug=category_slug)
-            )
-
-        # Price sort
-        sort = self.request.GET.get("sort", "").strip()
-        if sort == "price_low":
-            qs = qs.order_by("base_price")
-        elif sort == "price_high":
-            qs = qs.order_by("-base_price")
-        elif sort == "newest":
-            qs = qs.order_by("-created_at")
+        
+        from apps.products.filters import ProductFilter
+        self.filterset = ProductFilter(self.request.GET, queryset=qs)
+        qs = self.filterset.qs
 
         if self.request.user.is_authenticated:
             qs = qs.annotate(
@@ -62,12 +49,7 @@ class ProductListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["categories"] = Category.objects.filter(
-            is_active=True, parent__isnull=True
-        ).prefetch_related("children")
-        context["search_query"] = self.request.GET.get("q", "")
-        context["current_category"] = self.request.GET.get("category", "")
-        context["current_sort"] = self.request.GET.get("sort", "")
+        context["filterset"] = getattr(self, "filterset", None)
         context["total_count"] = self.get_queryset().count()
         return context
 
@@ -118,6 +100,16 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         product = self.object
 
+        # AF-H: Track recently viewed products
+        recently_viewed = self.request.session.get("recently_viewed", [])
+        product_id = str(product.public_id)
+        if product_id in recently_viewed:
+            recently_viewed.remove(product_id)
+        recently_viewed.insert(0, product_id)
+        # Keep only the last 10
+        self.request.session["recently_viewed"] = recently_viewed[:10]
+        self.request.session.modified = True
+
         # Get all images
         context["images"] = product.images.all()
         context["primary_image"] = product.primary_image
@@ -164,6 +156,14 @@ class ProductDetailView(DetailView):
             context["user_review"] = None
 
         context["review_form"] = ReviewForm()
+
+        # ----- AF-I: Customer Q&A -----
+        from apps.products.forms import QuestionForm, AnswerForm
+        from apps.products.models import Question
+        
+        context["questions"] = Question.objects.filter(product=product).prefetch_related("answers", "answers__user", "user")
+        context["question_form"] = QuestionForm()
+        context["answer_form"] = AnswerForm()
 
         return context
 
@@ -232,4 +232,92 @@ class WishlistListView(LoginRequiredMixin, ListView):
         return WishlistItem.objects.filter(wishlist=wishlist).select_related(
             "product", "product__vendor__storefront"
         ).prefetch_related("product__images")
+
+
+# ---------------------------------------------------------------------------
+# AF-F: Product Comparison Tool
+# ---------------------------------------------------------------------------
+
+class CompareToggleView(View):
+    """HTMX view to toggle a product in/out of the comparison list (session)."""
+    
+    def post(self, request, *args, **kwargs):
+        product_id = str(self.kwargs.get("public_id"))
+        compare_list = request.session.get("compare_list", [])
+        
+        in_compare = False
+        if product_id in compare_list:
+            compare_list.remove(product_id)
+        else:
+            if len(compare_list) < 4:
+                compare_list.append(product_id)
+                in_compare = True
+            else:
+                # Can't add more than 4, but we need to know the state
+                pass
+                
+        request.session["compare_list"] = compare_list
+        request.session.modified = True
+        
+        product = get_object_or_404(Product, public_id=product_id)
+        return render(request, "products/partials/compare_btn.html", {
+            "product": product,
+            "in_compare": in_compare,
+            "compare_full": len(compare_list) >= 4 and not in_compare
+        })
+
+
+class CompareListView(TemplateView):
+    """View to show products side-by-side."""
+    template_name = "products/compare.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        compare_list = self.request.session.get("compare_list", [])
+        products = Product.objects.filter(public_id__in=compare_list).select_related("vendor__storefront").prefetch_related("images")
+        
+        product_dict = {str(p.public_id): p for p in products}
+        context["products"] = [product_dict[pid] for pid in compare_list if pid in product_dict]
+        return context
+
+
+# ---------------------------------------------------------------------------
+# AF-I: Customer Q&A
+# ---------------------------------------------------------------------------
+
+from django.contrib import messages
+from django.shortcuts import redirect
+from apps.products.forms import QuestionForm, AnswerForm
+from apps.products.models import Question, Answer
+
+class QuestionCreateView(LoginRequiredMixin, View):
+    def post(self, request, public_id):
+        product = get_object_or_404(Product, public_id=public_id)
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            question.product = product
+            question.user = request.user
+            question.save()
+            messages.success(request, "Your question has been posted!")
+        else:
+            messages.error(request, "There was an error posting your question.")
+        return redirect(product.get_absolute_url())
+
+class AnswerCreateView(LoginRequiredMixin, View):
+    def post(self, request, public_id):
+        question = get_object_or_404(Question, public_id=public_id)
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.question = question
+            answer.user = request.user
+            # Check if user is the vendor of this product
+            if hasattr(request.user, 'vendor') and request.user.vendor == question.product.vendor:
+                answer.is_vendor = True
+            answer.save()
+            messages.success(request, "Your answer has been posted!")
+        else:
+            messages.error(request, "There was an error posting your answer.")
+        return redirect(question.product.get_absolute_url())
 

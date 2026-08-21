@@ -88,8 +88,13 @@
                     {% endif %}
                     <h1 class="text-2xl sm:text-3xl font-bold text-gray-900" id="product-title">{{ product.name }}</h1>
                 </div>
-                <div id="wishlist-btn-{{ product.public_id }}">
-                    {% include "products/partials/wishlist_btn.html" with product=product in_wishlist=product.in_wishlist %}
+                <div class="flex items-center gap-2">
+                    <div id="wishlist-btn-{{ product.public_id }}">
+                        {% include "products/partials/wishlist_btn.html" with product=product in_wishlist=product.in_wishlist %}
+                    </div>
+                    <div id="compare-btn-{{ product.public_id }}">
+                        {% include "products/partials/compare_btn.html" with product=product %}
+                    </div>
                 </div>
             </div>
 
@@ -269,6 +274,19 @@
         </div>
     </div>
     {% endif %}
+
+    <!-- Reviews Section -->
+    <div class="mx-auto max-w-7xl px-6 py-8 lg:px-8 border-t border-gray-100">
+        {% include "reviews/review_section.html" %}
+    </div>
+
+    <!-- Customer Q&A -->
+    <div class="mx-auto max-w-7xl px-6 py-8 lg:px-8 border-t border-gray-100">
+        {% include "products/partials/qa_section.html" %}
+    </div>
+
+    <!-- Recently Viewed -->
+    {% include "products/partials/recently_viewed.html" %}
 
 </div>
 

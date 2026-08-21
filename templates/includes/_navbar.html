@@ -105,10 +105,58 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                 </svg>
             </a>
+            <!-- Notifications Dropdown -->
+            <div class="relative hidden sm:block" x-data="{ open: false }" @click.away="open = false">
+                <button @click="open = !open" class="relative rounded-lg p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all focus:outline-none" id="nav-notifications">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                    </svg>
+                    {% if unread_notifications_count %}
+                    <span class="absolute -top-0.5 -right-0.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">{{ unread_notifications_count }}</span>
+                    {% endif %}
+                </button>
+                <div x-show="open" x-transition.opacity.duration.200ms x-cloak
+                     class="absolute right-0 mt-2 w-80 origin-top-right rounded-xl bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                    <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                        <h3 class="text-sm font-semibold text-gray-900">Notifications</h3>
+                        {% if unread_notifications_count > 0 %}
+                        <form method="post" action="{% url 'notifications:mark_all_read' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="text-xs text-primary-600 hover:text-primary-500">Mark all as read</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    <div class="max-h-96 overflow-y-auto">
+                        {% for notif in latest_notifications %}
+                        <div class="p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors {% if not notif.is_read %}bg-blue-50/30{% endif %}">
+                            <a href="{{ notif.link|default:'#' }}" class="block">
+                                <p class="text-sm font-medium text-gray-900">{{ notif.title }}</p>
+                                <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ notif.message }}</p>
+                                <p class="text-[10px] text-gray-400 mt-2">{{ notif.created_at|timesince }} ago</p>
+                            </a>
+                        </div>
+                        {% empty %}
+                        <div class="p-6 text-center text-gray-500 text-sm">
+                            No notifications yet.
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="p-2 border-t border-gray-100 text-center">
+                        <a href="{% url 'notifications:list' %}" class="block px-4 py-2 text-xs font-semibold text-primary-600 hover:text-primary-500">View all notifications</a>
+                    </div>
+                </div>
+            </div>
+
             <!-- Wishlist Icon -->
-            <a href="{% url 'products:wishlist_list' %}" class="hidden sm:inline-flex rounded-lg p-2 text-gray-600 hover:text-red-500 hover:bg-red-50 transition-all" id="nav-wishlist">
+            <a href="{% url 'products:wishlist_list' %}" class="hidden sm:inline-flex rounded-lg p-2 text-gray-600 hover:text-red-500 hover:bg-red-50 transition-all" id="nav-wishlist" title="Wishlist">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                </svg>
+            </a>
+            <!-- Compare Icon -->
+            <a href="{% url 'products:compare_list' %}" class="hidden sm:inline-flex rounded-lg p-2 text-gray-600 hover:text-blue-500 hover:bg-blue-50 transition-all" id="nav-compare" title="Compare">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
                 </svg>
             </a>
             <!-- Cart Icon with Badge -->

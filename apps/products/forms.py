@@ -227,3 +227,40 @@ ProductVariantFormSet = inlineformset_factory(
     max_num=20,
     can_delete=True,
 )
+
+
+# ---------------------------------------------------------------------------
+# AF-I: Q&A Forms
+# ---------------------------------------------------------------------------
+
+from .models import Question, Answer
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ["text"]
+        widgets = {
+            "text": forms.Textarea(attrs={
+                "class": TEXTAREA_CLASS,
+                "rows": 3,
+                "placeholder": "Ask a question about this product..."
+            }),
+        }
+        labels = {
+            "text": ""
+        }
+
+class AnswerForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ["text"]
+        widgets = {
+            "text": forms.Textarea(attrs={
+                "class": TEXTAREA_CLASS,
+                "rows": 2,
+                "placeholder": "Type your answer..."
+            }),
+        }
+        labels = {
+            "text": ""
+        }

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; font-family: 'Inter', Arial, sans-serif; background-color: #f8fafc;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+        <tr>
+            <td>
+                <!-- Header -->
+                <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #0d9488, #14b8a6); border-radius: 16px 16px 0 0; padding: 32px;">
+                    <tr>
+                        <td align="center">
+                            <h1 style="color: #ffffff; font-size: 24px; margin: 0;">Welcome to {{ site_name }}! 🎉</h1>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Body -->
+                <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 0 0 16px 16px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <tr>
+                        <td>
+                            <p style="color: #1e293b; font-size: 16px; line-height: 1.6; margin: 0 0 16px;">
+                                Hi {{ user.first_name|default:user.email }},
+                            </p>
+                            <p style="color: #475569; font-size: 14px; line-height: 1.6; margin: 0 0 24px;">
+                                Thank you for joining <strong>VendorVerse</strong> — your one-stop multi-vendor marketplace! We're excited to have you on board.
+                            </p>
+                            <p style="color: #475569; font-size: 14px; line-height: 1.6; margin: 0 0 16px;">
+                                Here's what you can do:
+                            </p>
+                            <ul style="color: #475569; font-size: 14px; line-height: 2; padding-left: 20px; margin: 0 0 24px;">
+                                <li>🛍️ Browse thousands of products from trusted vendors</li>
+                                <li>⭐ Leave reviews to help other shoppers</li>
+                                <li>🏪 Apply to become a vendor and start selling</li>
+                            </ul>
+                            <p style="color: #475569; font-size: 14px; line-height: 1.6; margin: 0 0 24px;">
+                                Start exploring now and discover amazing products!
+                            </p>
+                            <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+                                <tr>
+                                    <td style="background-color: #0d9488; border-radius: 12px; padding: 14px 28px;">
+                                        <a href="#" style="color: #ffffff; text-decoration: none; font-size: 14px; font-weight: 600;">
+                                            Start Shopping →
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Footer -->
+                <table width="100%" cellpadding="0" cellspacing="0" style="padding: 24px;">
+                    <tr>
+                        <td align="center">
+                            <p style="color: #94a3b8; font-size: 12px; margin: 0;">
+                                © {{ site_name }}. All rights reserved.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

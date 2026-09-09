@@ -1,0 +1,98 @@
+{# ── Customer Q&A Section ── #}
+<div class="mt-12 rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200" id="qa-section">
+    <div class="flex items-center justify-between mb-8">
+        <h2 class="text-xl font-bold text-gray-900">Customer Q&A</h2>
+        <span class="inline-flex items-center rounded-full bg-gray-50 px-3 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">{{ questions|length }} Questions</span>
+    </div>
+
+    {% if user.is_authenticated %}
+        {% if user.vendor != product.vendor %}
+        <!-- Ask a Question Form -->
+        <div class="mb-10 bg-gray-50 p-6 rounded-xl border border-gray-100">
+            <h3 class="text-sm font-semibold text-gray-900 mb-4">Have a question about this product?</h3>
+            <form action="{% url 'products:question_create' public_id=product.public_id %}" method="post">
+                {% csrf_token %}
+                <div class="mb-4">
+                    {{ question_form.text }}
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-500 transition-colors">
+                        Ask Question
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="mb-10 bg-gray-50 p-6 rounded-xl border border-gray-100 text-center">
+            <p class="text-sm text-gray-600">Please <a href="{% url 'account_login' %}" class="font-semibold text-primary-600 hover:text-primary-500">sign in</a> to ask a question.</p>
+        </div>
+    {% endif %}
+
+    <!-- Questions List -->
+    <div class="space-y-8">
+        {% for question in questions %}
+        <div class="border-b border-gray-100 pb-8 last:border-0 last:pb-0">
+            <div class="flex gap-4">
+                <div class="flex-shrink-0 mt-1 text-primary-600 font-bold text-lg">Q:</div>
+                <div class="flex-1">
+                    <p class="text-gray-900 font-medium whitespace-pre-wrap">{{ question.text }}</p>
+                    <p class="text-xs text-gray-500 mt-2">Asked by <span class="font-medium text-gray-700">{{ question.user.email|truncatechars:15 }}</span> on {{ question.created_at|date:"M d, Y" }}</p>
+                    
+                    <!-- Answers -->
+                    <div class="mt-4 space-y-4">
+                        {% for answer in question.answers.all %}
+                        <div class="flex gap-4 {% if answer.is_vendor %}bg-emerald-50/50 p-4 rounded-xl border border-emerald-100{% endif %}">
+                            <div class="flex-shrink-0 mt-1 {% if answer.is_vendor %}text-emerald-600{% else %}text-gray-600{% endif %} font-bold text-lg">A:</div>
+                            <div>
+                                <p class="text-gray-700 text-sm whitespace-pre-wrap">{{ answer.text }}</p>
+                                <p class="text-xs text-gray-500 mt-2">
+                                    Answered by 
+                                    {% if answer.is_vendor %}
+                                    <span class="font-semibold text-emerald-700">{{ product.vendor.business_name }} (Seller)</span>
+                                    {% else %}
+                                    <span class="font-medium text-gray-700">{{ answer.user.email|truncatechars:15 }}</span>
+                                    {% endif %}
+                                    on {{ answer.created_at|date:"M d, Y" }}
+                                </p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Answer Form -->
+                    {% if user.is_authenticated %}
+                    <div class="mt-4 pl-8">
+                        <div x-data="{ showAnswerForm: false }">
+                            <button @click="showAnswerForm = !showAnswerForm" type="button" class="text-xs font-semibold text-primary-600 hover:text-primary-500">
+                                <span x-show="!showAnswerForm">Add an answer</span>
+                                <span x-show="showAnswerForm">Cancel</span>
+                            </button>
+                            <div x-show="showAnswerForm" x-collapse class="mt-4">
+                                <form action="{% url 'products:answer_create' public_id=question.public_id %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        {{ answer_form.text }}
+                                    </div>
+                                    <div class="flex justify-end">
+                                        <button type="submit" class="rounded-md bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-gray-700 transition-colors">
+                                            Submit Answer
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center py-8">
+            <p class="text-gray-500">No questions have been asked about this product yet.</p>
+            <p class="text-sm text-gray-400 mt-1">Be the first to ask!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>

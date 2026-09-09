@@ -2,14 +2,6 @@
 
 {% block title %}{{ product.name }} — VendorVerse{% endblock %}
 
-{% block chatbot_context %}
-<!-- AI Chatbot: Product mode — knows this specific product + vendor context -->
-<input type="hidden" id="chatbot-storefront-slug" value="{{ product.vendor.storefront.slug }}">
-<input type="hidden" id="chatbot-storefront-name" value="{{ product.vendor.business_name }}">
-<input type="hidden" id="chatbot-product-slug" value="{{ product.slug }}">
-<input type="hidden" id="chatbot-product-name" value="{{ product.name }}">
-{% endblock %}
-
 {% block content %}
 
 <div class="mx-auto max-w-7xl px-6 py-8 lg:px-8">

@@ -17,6 +17,11 @@ SECRET_KEY = env("SECRET_KEY", default="django-insecure-vendorverse-local-dev-ke
 DEBUG = env("DEBUG")
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
+# --------------------------------------------------------------------------
+# AI Configuration — Gemini API (key stored in .env, NEVER in source code)
+# --------------------------------------------------------------------------
+GEMINI_API_KEY = env("GEMINI_API_KEY", default="")
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -42,6 +47,7 @@ INSTALLED_APPS = [
     "apps.payments",
     "apps.reviews",
     "apps.notifications",
+    "apps.ai",
 ]
 
 MIDDLEWARE = [

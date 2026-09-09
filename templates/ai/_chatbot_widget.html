@@ -1,0 +1,367 @@
+<!-- 
+  VendorVerse AI Chatbot Widget
+  ============================
+  A floating chatbot widget powered by Alpine.js.
+  
+  Modes (auto-detected):
+  - Global:     No storefront context → "VendorVerse AI"
+  - Storefront: storefront_slug set → "{Vendor Name} AI"
+  - Product:    storefront_slug + product_slug → "{Product Name} Assistant"
+  
+  Security: API key NEVER touches the browser. All AI calls go through Django backend.
+-->
+
+{% load static %}
+
+<div x-data="vendorVerseChat()" x-init="init()" x-cloak
+     class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3"
+     id="ai-chatbot-widget">
+
+    <!-- ============ Chat Window ============ -->
+    <div x-show="isOpen"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-4 scale-95"
+         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+         x-transition:leave-end="opacity-0 translate-y-4 scale-95"
+         class="w-[380px] max-w-[calc(100vw-2rem)] rounded-2xl shadow-2xl ring-1 ring-gray-200 overflow-hidden flex flex-col bg-white"
+         style="height: 520px; max-height: calc(100vh - 8rem);">
+
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-primary-600 to-secondary-600 px-5 py-4 flex items-center justify-between flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <!-- AI Avatar -->
+                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                    <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-white" x-text="chatTitle"></h3>
+                    <p class="text-xs text-white/70" x-text="chatSubtitle"></p>
+                </div>
+            </div>
+            <div class="flex items-center gap-1">
+                <!-- Mode Badge -->
+                <span x-show="mode !== 'global'"
+                      class="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm"
+                      x-text="mode === 'product' ? '🎯 Product' : '🏪 Store'"></span>
+                <!-- Close Button -->
+                <button @click="isOpen = false"
+                        class="rounded-lg p-1.5 text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                        aria-label="Close chat">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Messages Area -->
+        <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-gray-50/50" 
+             x-ref="messagesContainer"
+             id="chat-messages">
+
+            <!-- Welcome Message -->
+            <template x-if="messages.length === 0">
+                <div class="text-center py-6">
+                    <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary-100 to-secondary-100 mb-3">
+                        <svg class="h-7 w-7 text-primary-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+                        </svg>
+                    </div>
+                    <p class="text-sm font-medium text-gray-800" x-text="welcomeTitle"></p>
+                    <p class="text-xs text-gray-500 mt-1" x-text="welcomeSubtitle"></p>
+
+                    <!-- Quick Action Buttons -->
+                    <div class="mt-4 flex flex-wrap justify-center gap-2">
+                        <template x-for="action in quickActions" :key="action.label">
+                            <button @click="sendMessage(action.message)"
+                                    class="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 transition-all duration-200 shadow-sm">
+                                <span x-text="action.label"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Message Bubbles -->
+            <template x-for="(msg, index) in messages" :key="index">
+                <div :class="msg.role === 'user' ? 'flex justify-end' : 'flex justify-start'">
+                    <div :class="msg.role === 'user' 
+                            ? 'bg-primary-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 max-w-[85%] shadow-sm' 
+                            : 'bg-white text-gray-800 rounded-2xl rounded-bl-md px-4 py-2.5 max-w-[85%] shadow-sm ring-1 ring-gray-100'">
+                        <div class="text-sm leading-relaxed whitespace-pre-wrap" x-html="msg.role === 'user' ? escapeHtml(msg.text) : formatResponse(msg.text)"></div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Typing Indicator -->
+            <div x-show="isLoading" class="flex justify-start">
+                <div class="bg-white rounded-2xl rounded-bl-md px-4 py-3 shadow-sm ring-1 ring-gray-100">
+                    <div class="flex items-center gap-1.5">
+                        <div class="h-2 w-2 rounded-full bg-gray-400 animate-bounce" style="animation-delay: 0ms;"></div>
+                        <div class="h-2 w-2 rounded-full bg-gray-400 animate-bounce" style="animation-delay: 150ms;"></div>
+                        <div class="h-2 w-2 rounded-full bg-gray-400 animate-bounce" style="animation-delay: 300ms;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="border-t border-gray-200 bg-white px-4 py-3 flex-shrink-0">
+            <form @submit.prevent="handleSubmit()" class="flex items-center gap-2">
+                <input x-model="inputMessage"
+                       x-ref="chatInput"
+                       type="text"
+                       maxlength="500"
+                       placeholder="Ask me anything..."
+                       :disabled="isLoading"
+                       class="flex-1 rounded-xl border-0 bg-gray-50 px-4 py-2.5 text-sm text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-primary-500 disabled:opacity-50 transition-all"
+                       autocomplete="off"
+                       id="chat-input">
+                <button type="submit"
+                        :disabled="isLoading || !inputMessage.trim()"
+                        class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary-600 text-white shadow-sm hover:bg-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200"
+                        id="chat-send-btn">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                    </svg>
+                </button>
+            </form>
+            <p class="mt-1.5 text-center text-[10px] text-gray-400">
+                Powered by AI · Responses may be inaccurate
+            </p>
+        </div>
+    </div>
+
+    <!-- ============ Floating Action Button (FAB) ============ -->
+    <button @click="toggleChat()"
+            x-show="!isOpen"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-75"
+            x-transition:enter-end="opacity-100 scale-100"
+            class="group flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary-600 to-secondary-600 text-white shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 ring-4 ring-white"
+            id="ai-chatbot-fab"
+            aria-label="Open AI Chat">
+        <!-- Sparkle Icon -->
+        <svg class="h-6 w-6 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+        </svg>
+        <!-- Pulse effect -->
+        <span class="absolute h-full w-full rounded-full bg-primary-400 opacity-0 group-hover:opacity-20 animate-ping"></span>
+    </button>
+</div>
+
+<script>
+function vendorVerseChat() {
+    return {
+        isOpen: false,
+        isLoading: false,
+        inputMessage: '',
+        messages: [],
+
+        // Context (set via hidden inputs or data attributes)
+        storefrontSlug: null,
+        storefrontName: null,
+        productSlug: null,
+        productName: null,
+        mode: 'global',
+
+        // CSRF token
+        csrfToken: '',
+
+        // Computed properties
+        get chatTitle() {
+            if (this.mode === 'product' && this.productName) {
+                return this.productName.length > 25 
+                    ? this.productName.substring(0, 25) + '...' 
+                    : this.productName;
+            }
+            if (this.mode === 'storefront' && this.storefrontName) {
+                return this.storefrontName + ' AI';
+            }
+            return 'VendorVerse AI';
+        },
+
+        get chatSubtitle() {
+            if (this.mode === 'product') return 'Ask about this product';
+            if (this.mode === 'storefront') return 'Store shopping assistant';
+            return 'Your shopping assistant';
+        },
+
+        get welcomeTitle() {
+            if (this.mode === 'product') return `Hi! Ask me anything about this product 🎯`;
+            if (this.mode === 'storefront') return `Welcome to ${this.storefrontName}! 🏪`;
+            return 'Hi! I\'m VendorVerse AI 🛍️';
+        },
+
+        get welcomeSubtitle() {
+            if (this.mode === 'product') return 'I know its features, variants, reviews & more';
+            if (this.mode === 'storefront') return 'I can help you find products in this store';
+            return 'Ask me about products, vendors, or anything else!';
+        },
+
+        get quickActions() {
+            if (this.mode === 'product') {
+                return [
+                    { label: '📏 Available sizes?', message: 'What sizes or variants are available for this product?' },
+                    { label: '⭐ Reviews', message: 'What do customers say about this product?' },
+                    { label: '🚚 Shipping info', message: 'What is the shipping policy?' },
+                    { label: '↩️ Return policy', message: 'What is the return policy?' },
+                ];
+            }
+            if (this.mode === 'storefront') {
+                return [
+                    { label: '🔥 Popular items', message: 'What are your most popular products?' },
+                    { label: '💰 Best deals', message: 'Show me products on sale or best deals' },
+                    { label: '🚚 Shipping info', message: 'What is your shipping policy?' },
+                    { label: '📦 All products', message: 'Show me all available products' },
+                ];
+            }
+            return [
+                { label: '🛍️ Browse products', message: 'What products are available?' },
+                { label: '🏪 View vendors', message: 'Show me the vendors on VendorVerse' },
+                { label: '💰 Best deals', message: 'What are the best deals right now?' },
+                { label: '❓ How it works', message: 'How does VendorVerse work?' },
+            ];
+        },
+
+        init() {
+            // Read context from hidden inputs (set by Django templates)
+            const sfSlug = document.getElementById('chatbot-storefront-slug');
+            const sfName = document.getElementById('chatbot-storefront-name');
+            const pSlug = document.getElementById('chatbot-product-slug');
+            const pName = document.getElementById('chatbot-product-name');
+
+            this.storefrontSlug = sfSlug ? sfSlug.value : null;
+            this.storefrontName = sfName ? sfName.value : null;
+            this.productSlug = pSlug ? pSlug.value : null;
+            this.productName = pName ? pName.value : null;
+
+            // Determine mode
+            if (this.storefrontSlug && this.productSlug) {
+                this.mode = 'product';
+            } else if (this.storefrontSlug) {
+                this.mode = 'storefront';
+            } else {
+                this.mode = 'global';
+            }
+
+            // Get CSRF token
+            this.csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value
+                || document.cookie.split('; ').find(row => row.startsWith('csrftoken='))?.split('=')[1]
+                || '{{ csrf_token }}';
+        },
+
+        toggleChat() {
+            this.isOpen = !this.isOpen;
+            if (this.isOpen) {
+                this.$nextTick(() => {
+                    this.$refs.chatInput?.focus();
+                });
+            }
+        },
+
+        handleSubmit() {
+            const message = this.inputMessage.trim();
+            if (!message || this.isLoading) return;
+            this.sendMessage(message);
+        },
+
+        async sendMessage(message) {
+            if (this.isLoading) return;
+
+            // Add user message to chat
+            this.messages.push({ role: 'user', text: message });
+            this.inputMessage = '';
+            this.isLoading = true;
+
+            // Scroll to bottom
+            this.$nextTick(() => this.scrollToBottom());
+
+            try {
+                const response = await fetch('/ai/chat/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': this.csrfToken,
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        storefront_slug: this.storefrontSlug,
+                        product_slug: this.productSlug,
+                    }),
+                });
+
+                const data = await response.json();
+                this.messages.push({ role: 'assistant', text: data.reply });
+            } catch (error) {
+                console.error('Chat error:', error);
+                this.messages.push({
+                    role: 'assistant',
+                    text: 'Sorry, I couldn\'t connect to the server. Please try again! 🙏',
+                });
+            } finally {
+                this.isLoading = false;
+                this.$nextTick(() => {
+                    this.scrollToBottom();
+                    this.$refs.chatInput?.focus();
+                });
+            }
+        },
+
+        scrollToBottom() {
+            const container = this.$refs.messagesContainer;
+            if (container) {
+                container.scrollTop = container.scrollHeight;
+            }
+        },
+
+        escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        },
+
+        formatResponse(text) {
+            if (!text) return '';
+            // Escape HTML first
+            let safe = this.escapeHtml(text);
+            // Bold: **text**
+            safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            // Italic: *text*
+            safe = safe.replace(/\*(?!\*)(.*?)\*(?!\*)/g, '<em>$1</em>');
+            // Bullet points: - or •
+            safe = safe.replace(/^[-•]\s+(.+)$/gm, '<span class="flex items-start gap-1.5"><span class="text-primary-500 mt-0.5">•</span><span>$1</span></span>');
+            // Line breaks
+            safe = safe.replace(/\n/g, '<br>');
+            return safe;
+        },
+    };
+}
+</script>
+
+<style>
+    /* Custom scrollbar for chat messages */
+    #chat-messages::-webkit-scrollbar {
+        width: 4px;
+    }
+    #chat-messages::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    #chat-messages::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 999px;
+    }
+    #chat-messages::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+    }
+    
+    /* Bounce animation for typing dots */
+    @keyframes bounce {
+        0%, 60%, 100% { transform: translateY(0); }
+        30% { transform: translateY(-6px); }
+    }
+</style>

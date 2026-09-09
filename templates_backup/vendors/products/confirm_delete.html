@@ -1,0 +1,40 @@
+{% extends "vendors/dashboard_base.html" %}
+
+{% block dashboard_title %}Delete Product{% endblock %}
+
+{% block dashboard_content %}
+<div class="mx-auto max-w-lg mt-8">
+    <div class="rounded-xl bg-white p-8 shadow-sm ring-1 ring-gray-200 text-center space-y-6">
+        <!-- Warning Icon -->
+        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+            <svg class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+        </div>
+
+        <div>
+            <h2 class="text-xl font-bold text-gray-900">Delete Product</h2>
+            <p class="mt-2 text-sm text-gray-500">
+                Are you sure you want to delete <strong class="text-gray-900">{{ product.name }}</strong>?
+                This action cannot be undone.
+            </p>
+        </div>
+
+        <div class="flex items-center justify-center gap-3">
+            <a href="{% url 'products:vendor_product_list' %}"
+               class="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+               id="btn-cancel-delete">
+                Cancel
+            </a>
+            <form method="post" class="inline">
+                {% csrf_token %}
+                <button type="submit"
+                        class="rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 transition-all"
+                        id="btn-confirm-delete">
+                    Yes, Delete
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -18,6 +18,7 @@ urlpatterns = [
     path('payment/', include('apps.payments.urls')),
     path('reviews/', include('apps.reviews.urls')),
     path('notifications/', include('apps.notifications.urls')),
+    path('ai/', include('apps.ai.urls')),
     path('store/<slug:slug>/', StorefrontDetailView.as_view(), name='storefront_detail'),
     path('', core_views.HomeView.as_view(), name='home'),
 ]

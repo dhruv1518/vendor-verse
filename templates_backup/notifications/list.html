@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications — VendorVerse{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+    <div class="mb-6 flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-gray-900">Notifications</h1>
+        {% if notifications %}
+        <form method="post" action="{% url 'notifications:mark_all_read' %}">
+            {% csrf_token %}
+            <button type="submit" class="text-sm font-semibold text-primary-600 hover:text-primary-500">
+                Mark all as read
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+    <div class="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-200">
+        <ul role="list" class="divide-y divide-gray-100">
+            {% for notif in notifications %}
+            <li class="relative flex justify-between gap-x-6 px-4 py-5 hover:bg-gray-50 sm:px-6 {% if not notif.is_read %}bg-blue-50/30{% endif %}">
+                <div class="flex min-w-0 gap-x-4">
+                    <div class="min-w-0 flex-auto">
+                        <p class="text-sm font-semibold leading-6 text-gray-900">
+                            <a href="{{ notif.link|default:'#' }}">
+                                <span class="absolute inset-x-0 -top-px bottom-0"></span>
+                                {{ notif.title }}
+                            </a>
+                        </p>
+                        <p class="mt-1 flex text-xs leading-5 text-gray-500">
+                            {{ notif.message }}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex shrink-0 items-center gap-x-4">
+                    <div class="hidden sm:flex sm:flex-col sm:items-end">
+                        <p class="text-sm leading-6 text-gray-900">{{ notif.created_at|date:"M d, Y" }}</p>
+                        <p class="mt-1 text-xs leading-5 text-gray-500">{{ notif.created_at|time:"h:i A" }}</p>
+                    </div>
+                    {% if not notif.is_read %}
+                    <div class="h-2 w-2 rounded-full bg-primary-600"></div>
+                    {% endif %}
+                </div>
+            </li>
+            {% empty %}
+            <li class="px-4 py-12 text-center sm:px-6">
+                <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                </svg>
+                <h3 class="mt-2 text-sm font-semibold text-gray-900">No notifications</h3>
+                <p class="mt-1 text-sm text-gray-500">You're all caught up!</p>
+            </li>
+            {% endfor %}
+        </ul>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="border-t border-gray-200 px-4 py-3 sm:px-6">
+            <div class="flex items-center justify-between">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Previous</a>
+                {% else %}
+                <span class="relative inline-flex items-center rounded-md bg-gray-50 px-3 py-2 text-sm font-semibold text-gray-400 ring-1 ring-inset ring-gray-300 cursor-not-allowed">Previous</span>
+                {% endif %}
+                
+                <span class="text-sm text-gray-700">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Next</a>
+                {% else %}
+                <span class="relative inline-flex items-center rounded-md bg-gray-50 px-3 py-2 text-sm font-semibold text-gray-400 ring-1 ring-inset ring-gray-300 cursor-not-allowed">Next</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

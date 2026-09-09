@@ -2,12 +2,6 @@
 
 {% block title %}{{ storefront.vendor.business_name }} — VendorVerse{% endblock %}
 
-{% block chatbot_context %}
-<!-- AI Chatbot: Storefront mode — scoped to this vendor only -->
-<input type="hidden" id="chatbot-storefront-slug" value="{{ storefront.slug }}">
-<input type="hidden" id="chatbot-storefront-name" value="{{ storefront.vendor.business_name }}">
-{% endblock %}
-
 {% block content %}
 
 <!-- Banner -->

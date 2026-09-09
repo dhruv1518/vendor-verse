@@ -1,0 +1,130 @@
+{% extends "vendors/dashboard_base.html" %}
+
+{% block dashboard_title %}Storefront Settings{% endblock %}
+
+{% block dashboard_content %}
+
+<!-- Header -->
+<div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Storefront Settings</h1>
+    <p class="mt-1 text-sm text-gray-500">
+        Customize how your store appears to customers.
+        {% if storefront.slug %}
+        Your store is live at <a href="{% url 'storefront_detail' slug=storefront.slug %}" target="_blank" class="font-medium text-primary-600 hover:text-primary-500 underline underline-offset-2">/store/{{ storefront.slug }}/</a>
+        {% endif %}
+    </p>
+</div>
+
+<form method="post" enctype="multipart/form-data" class="space-y-8" id="storefront-settings-form">
+    {% csrf_token %}
+
+    <!-- Branding Section -->
+    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+        <div class="border-b border-gray-200 bg-gray-50/50 px-6 py-4">
+            <h2 class="text-lg font-semibold text-gray-900">Branding</h2>
+            <p class="text-sm text-gray-500">Your store's visual identity.</p>
+        </div>
+        <div class="p-6 space-y-6">
+            <!-- Logo -->
+            <div>
+                <label for="id_logo" class="block text-sm font-medium text-gray-700 mb-1.5">Store Logo</label>
+                {% if storefront.logo %}
+                <div class="mb-3 flex items-center gap-4">
+                    <img src="{{ storefront.logo.url }}" alt="Current logo" class="h-16 w-16 rounded-xl object-cover ring-1 ring-gray-200">
+                    <span class="text-xs text-gray-400">Current logo</span>
+                </div>
+                {% endif %}
+                {{ form.logo }}
+                <p class="mt-1.5 text-xs text-gray-400">Recommended: 200×200px, square format.</p>
+                {% if form.logo.errors %}
+                <p class="mt-1.5 text-sm text-red-600">{{ form.logo.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Banner -->
+            <div>
+                <label for="id_banner" class="block text-sm font-medium text-gray-700 mb-1.5">Store Banner</label>
+                {% if storefront.banner %}
+                <div class="mb-3">
+                    <img src="{{ storefront.banner.url }}" alt="Current banner" class="h-24 w-full rounded-xl object-cover ring-1 ring-gray-200">
+                    <span class="text-xs text-gray-400 mt-1 block">Current banner</span>
+                </div>
+                {% endif %}
+                {{ form.banner }}
+                <p class="mt-1.5 text-xs text-gray-400">Recommended: 1200×300px, landscape format.</p>
+                {% if form.banner.errors %}
+                <p class="mt-1.5 text-sm text-red-600">{{ form.banner.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Store Info Section -->
+    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+        <div class="border-b border-gray-200 bg-gray-50/50 px-6 py-4">
+            <h2 class="text-lg font-semibold text-gray-900">Store Information</h2>
+            <p class="text-sm text-gray-500">Tell customers about your store.</p>
+        </div>
+        <div class="p-6 space-y-6">
+            <!-- Tagline -->
+            <div>
+                <label for="id_tagline" class="block text-sm font-medium text-gray-700 mb-1.5">Tagline</label>
+                {{ form.tagline }}
+                <p class="mt-1.5 text-xs text-gray-400">A catchy one-liner that appears under your store name.</p>
+                {% if form.tagline.errors %}
+                <p class="mt-1.5 text-sm text-red-600">{{ form.tagline.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label for="id_description" class="block text-sm font-medium text-gray-700 mb-1.5">Store Description</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                <p class="mt-1.5 text-sm text-red-600">{{ form.description.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Policies Section -->
+    <div class="rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 overflow-hidden">
+        <div class="border-b border-gray-200 bg-gray-50/50 px-6 py-4">
+            <h2 class="text-lg font-semibold text-gray-900">Store Policies</h2>
+            <p class="text-sm text-gray-500">Help customers understand your terms.</p>
+        </div>
+        <div class="p-6 space-y-6">
+            <!-- Shipping Policy -->
+            <div>
+                <label for="id_shipping_policy" class="block text-sm font-medium text-gray-700 mb-1.5">Shipping Policy</label>
+                {{ form.shipping_policy }}
+                {% if form.shipping_policy.errors %}
+                <p class="mt-1.5 text-sm text-red-600">{{ form.shipping_policy.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Return Policy -->
+            <div>
+                <label for="id_return_policy" class="block text-sm font-medium text-gray-700 mb-1.5">Return Policy</label>
+                {{ form.return_policy }}
+                {% if form.return_policy.errors %}
+                <p class="mt-1.5 text-sm text-red-600">{{ form.return_policy.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="flex items-center justify-end gap-x-4">
+        <a href="{% url 'vendors:dashboard' %}" class="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+            Cancel
+        </a>
+        <button type="submit"
+                class="rounded-lg bg-gradient-to-r from-primary-600 to-primary-500 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-primary-200 hover:from-primary-500 hover:to-primary-400 hover:shadow-lg transition-all duration-300"
+                id="storefront-save-btn">
+            Save Changes
+        </button>
+    </div>
+</form>
+
+{% endblock %}

@@ -41,4 +41,8 @@ class HomeView(TemplateView):
         avg_rating = Review.objects.aggregate(avg=Avg("rating"))["avg"]
         context["avg_rating"] = f"{avg_rating:.1f}" if avg_rating else "5.0"
         
+        # Add latest products for the authenticated user dashboard
+        if self.request.user.is_authenticated:
+            context["latest_products"] = Product.objects.filter(status=Product.Status.ACTIVE).select_related('vendor', 'category').prefetch_related('images').order_by('-created_at')[:8]
+        
         return context

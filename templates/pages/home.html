@@ -4,6 +4,7 @@
 
 {% block content %}
 
+{% if not user.is_authenticated %}
 <!-- ========== HERO SECTION ========== -->
 <section class="relative overflow-hidden bg-gradient-to-br from-primary-700 via-primary-600 to-secondary-600">
     <!-- Decorative blobs -->
@@ -252,6 +253,87 @@
         </div>
     </div>
 </section>
+
+{% else %}
+<!-- ========== AUTHENTICATED DASHBOARD (MODERN PREMIUM STYLE) ========== -->
+<div class="bg-gray-50 min-h-screen pb-20 font-sans">
+    <!-- Premium Hero Section -->
+    <div class="relative overflow-hidden bg-white border-b border-gray-200">
+        <!-- Soft background shapes -->
+        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+            <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[140%] bg-gradient-to-br from-primary-100/40 to-transparent rounded-full mix-blend-multiply filter blur-3xl transform -rotate-12"></div>
+            <div class="absolute -bottom-[20%] -right-[10%] w-[50%] h-[140%] bg-gradient-to-tl from-secondary-100/40 to-transparent rounded-full mix-blend-multiply filter blur-3xl transform rotate-12"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-8 py-10 sm:py-16 flex flex-col items-center text-center">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-800 mb-6 border border-gray-200 shadow-sm">
+                <span class="flex h-1.5 w-1.5 rounded-full bg-green-500"></span>
+                Your personalized marketplace
+            </span>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
+                Welcome back, <br class="hidden sm:block">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-500">{{ user.first_name|default:user.email|title }}</span>
+            </h1>
+            <p class="text-base sm:text-lg text-gray-500 max-w-2xl mb-8 leading-relaxed">
+                Explore the latest trends, discover top-rated vendors, and find exactly what you're looking for today.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center gap-3">
+                <a href="#new-arrivals" class="w-full sm:w-auto rounded-full bg-gray-900 text-white px-6 py-3 text-sm font-semibold shadow-lg shadow-gray-900/20 hover:bg-gray-800 hover:shadow-gray-900/40 transition-all transform hover:-translate-y-0.5">Explore New Arrivals</a>
+                <a href="{% url 'products:product_list' %}" class="w-full sm:w-auto rounded-full bg-white text-gray-900 border border-gray-200 px-6 py-3 text-sm font-semibold shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all">Browse All Categories</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 mt-20">
+        <!-- Modern Category Strip -->
+        <div class="mb-20">
+            <div class="flex items-end justify-between mb-8 border-b border-gray-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Shop by Category</h2>
+                </div>
+                <a href="{% url 'products:product_list' %}" class="text-sm font-semibold text-primary-600 hover:text-primary-700">View all <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {% for cat in nav_categories %}
+                <a href="{% url 'products:product_list' %}?category={{ cat.slug }}" class="group block relative rounded-2xl bg-white p-6 ring-1 ring-gray-200 shadow-sm hover:shadow-lg hover:ring-primary-300 transition-all duration-300 text-center">
+                    <div class="mx-auto h-12 w-12 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary-50 transition-colors mb-4">
+                        <svg class="h-6 w-6 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-primary-700">{{ cat.name }}</h3>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Featured Products -->
+        <div id="new-arrivals" class="mb-20">
+            <div class="flex items-end justify-between mb-8 border-b border-gray-200 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 tracking-tight">New Arrivals</h2>
+                    <p class="text-sm text-gray-500 mt-1">The latest and greatest from our top vendors.</p>
+                </div>
+                <a href="{% url 'products:product_list' %}" class="text-sm font-semibold text-primary-600 hover:text-primary-700">Explore more <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {% for product in latest_products %}
+                    {% include "products/partials/product_card.html" with product=product %}
+                {% empty %}
+                    <div class="col-span-full bg-white rounded-3xl p-16 text-center border border-gray-200 border-dashed">
+                        <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                        </svg>
+                        <p class="mt-4 text-gray-500 font-medium">No products have been added yet.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 
 <!-- ========== RECENTLY VIEWED ========== -->
 <div class="mx-auto max-w-7xl px-6 lg:px-8 mb-16">

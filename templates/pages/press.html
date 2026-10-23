@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Press & Media Resources — VendorVerse{% endblock %}
+{% block meta_description %}Official press releases, media kits, brand assets, and contact details for journalists and media covering VendorVerse.{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="bg-gray-900 py-16 text-white border-b border-gray-800">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-primary-500/10 px-3 py-1 text-xs font-semibold text-primary-400 ring-1 ring-primary-500/20 mb-4">
+            Press Room
+        </span>
+        <h1 class="text-3xl font-bold sm:text-5xl">Newsroom & Brand Assets</h1>
+        <p class="mt-4 text-base text-gray-400 max-w-2xl">Official news releases, downloadable brand assets, executive bios, and press contacts for media inquiries.</p>
+    </div>
+</div>
+
+<div class="mx-auto max-w-7xl px-6 py-16 lg:px-8 space-y-16">
+    <!-- Fast Facts -->
+    <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">VendorVerse At A Glance</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Founded</p>
+                <p class="text-2xl font-extrabold text-gray-900 mt-2">2026</p>
+                <p class="text-xs text-gray-500 mt-1">Headquartered in India</p>
+            </div>
+            <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Mission</p>
+                <p class="text-lg font-bold text-gray-900 mt-2">Democratizing Retail</p>
+                <p class="text-xs text-gray-500 mt-1">Empowering local merchants</p>
+            </div>
+            <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Platform Model</p>
+                <p class="text-lg font-bold text-gray-900 mt-2">Curated Multi-Vendor</p>
+                <p class="text-xs text-gray-500 mt-1">Direct-to-consumer marketplace</p>
+            </div>
+            <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Media Contact</p>
+                <a href="mailto:press@vendorverse.in" class="text-sm font-bold text-primary-600 mt-2 block hover:underline">press@vendorverse.in</a>
+                <p class="text-xs text-gray-500 mt-1">Response within 12 hours</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Brand Assets Section -->
+    <div class="rounded-3xl bg-gray-50 p-8 sm:p-12 ring-1 ring-gray-200">
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Brand Identity & Assets</h2>
+        <p class="text-sm text-gray-600 mb-8">Feel free to use our official brand marks when writing about VendorVerse.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200 flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Primary Wordmark</span>
+                    <div class="py-10 text-center">
+                        <span class="text-4xl font-extrabold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent">VendorVerse</span>
+                    </div>
+                </div>
+                <div class="border-t border-gray-100 pt-4 flex justify-between items-center text-xs text-gray-500">
+                    <span>Gradient: Teal #0d9488 to Violet #7c3aed</span>
+                    <span class="font-medium text-primary-600">Vector SVG</span>
+                </div>
+            </div>
+
+            <div class="rounded-2xl bg-gray-900 p-8 text-white shadow-sm flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Dark Background Wordmark</span>
+                    <div class="py-10 text-center">
+                        <span class="text-4xl font-extrabold bg-gradient-to-r from-primary-400 to-secondary-300 bg-clip-text text-transparent">VendorVerse</span>
+                    </div>
+                </div>
+                <div class="border-t border-gray-800 pt-4 flex justify-between items-center text-xs text-gray-400">
+                    <span>High contrast on dark surfaces</span>
+                    <span class="font-medium text-primary-400">Vector SVG</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Press Releases -->
+    <div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Recent Press Releases</h2>
+        <div class="space-y-4">
+            <div class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs text-gray-400 font-medium">October 15, 2026</span>
+                    <h3 class="text-base font-bold text-gray-900 mt-1">VendorVerse Launches Next-Generation Multi-Vendor Marketplace Powered by Modern AI Search</h3>
+                    <p class="text-xs text-gray-600 mt-1">Introducing a modern digital ecosystem that equips independent Indian sellers with enterprise-grade storefront and analytics capabilities.</p>
+                </div>
+                <a href="mailto:press@vendorverse.in?subject=Press%20Inquiry:%20Platform%20Launch" class="text-xs font-semibold text-primary-600 hover:text-primary-500 whitespace-nowrap">Request Kit →</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

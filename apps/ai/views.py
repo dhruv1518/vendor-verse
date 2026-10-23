@@ -108,8 +108,14 @@ def chat_message(request):
     # --- Call Gemini API ---
     reply = get_gemini_response(system_prompt, user_message, history)
 
-    # --- Record the API call (for rate limiting) ---
-    record_request(request.session)
+    # --- Record the API call only on successful generation ---
+    is_error_reply = any(phrase in (reply or "").lower() for phrase in [
+        "temporarily unavailable",
+        "ran into an issue",
+        "reached my daily limit",
+    ])
+    if not is_error_reply:
+        record_request(request.session)
 
     # --- Save Conversation History ---
     history.append({"role": "user", "text": user_message})
@@ -128,8 +134,13 @@ def chat_message(request):
 def chat_status(request):
     """
     Simple GET endpoint to check if the chatbot is available.
-    Used by the frontend to decide whether to show the chatbot widget.
+    Used by the frontend and admins to inspect quota status.
     """
+    from .rate_limiter import get_quota_status
+    quota = get_quota_status()
+    available = is_gemini_configured() and not quota.get("circuit_breaker_tripped") and quota.get("daily_remaining", 1) > 0
     return JsonResponse({
-        "available": is_gemini_configured(),
+        "available": available,
+        "configured": is_gemini_configured(),
+        "quota": quota,
     })

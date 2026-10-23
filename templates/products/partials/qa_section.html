@@ -68,7 +68,7 @@
                                 <span x-show="!showAnswerForm">Add an answer</span>
                                 <span x-show="showAnswerForm">Cancel</span>
                             </button>
-                            <div x-show="showAnswerForm" x-collapse class="mt-4">
+                            <div x-show="showAnswerForm" x-cloak x-collapse class="mt-4">
                                 <form action="{% url 'products:answer_create' public_id=question.public_id %}" method="post">
                                     {% csrf_token %}
                                     <div class="mb-3">

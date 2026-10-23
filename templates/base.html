@@ -54,6 +54,13 @@
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
     
+    <!-- Alpine.js Cloak Style (Prevents dropdowns and modals from flashing on refresh) -->
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+
     <!-- Alpine.js -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
@@ -118,7 +125,9 @@
     </main>
 
     <!-- Footer -->
+    {% block footer %}
     {% include "includes/_footer.html" %}
+    {% endblock %}
 
     <!-- CSRF Token for HTMX (placed after body loads) -->
     <script>

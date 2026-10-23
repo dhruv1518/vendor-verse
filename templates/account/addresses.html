@@ -38,7 +38,7 @@
             </button>
 
             <!-- Form Body -->
-            <div x-show="open" x-collapse>
+            <div x-show="open" x-cloak x-collapse>
                 <form method="POST" 
                       action="{% if editing %}{% url 'accounts:address_edit' editing.public_id %}{% else %}{% url 'accounts:address_add' %}{% endif %}" 
                       class="px-6 py-6 space-y-6" id="address-form">

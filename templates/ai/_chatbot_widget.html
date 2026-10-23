@@ -18,7 +18,7 @@
      id="ai-chatbot-widget">
 
     <!-- ============ Chat Window ============ -->
-    <div x-show="isOpen"
+    <div x-show="isOpen" x-cloak
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0 translate-y-4 scale-95"
          x-transition:enter-end="opacity-100 translate-y-0 scale-100"
@@ -44,7 +44,7 @@
             </div>
             <div class="flex items-center gap-1">
                 <!-- Mode Badge -->
-                <span x-show="mode !== 'global'"
+                <span x-show="mode !== 'global'" x-cloak
                       class="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm"
                       x-text="mode === 'product' ? '🎯 Product' : '🏪 Store'"></span>
                 <!-- Close Button -->
@@ -98,7 +98,7 @@
             </template>
 
             <!-- Typing Indicator -->
-            <div x-show="isLoading" class="flex justify-start">
+            <div x-show="isLoading" x-cloak class="flex justify-start">
                 <div class="bg-white rounded-2xl rounded-bl-md px-4 py-3 shadow-sm ring-1 ring-gray-100">
                     <div class="flex items-center gap-1.5">
                         <div class="h-2 w-2 rounded-full bg-gray-400 animate-bounce" style="animation-delay: 0ms;"></div>
@@ -138,7 +138,7 @@
 
     <!-- ============ Floating Action Button (FAB) ============ -->
     <button @click="toggleChat()"
-            x-show="!isOpen"
+            x-show="!isOpen" x-cloak
             x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0 scale-75"
             x-transition:enter-end="opacity-100 scale-100"
@@ -329,14 +329,25 @@ function vendorVerseChat() {
             if (!text) return '';
             // Escape HTML first
             let safe = this.escapeHtml(text);
+            // Headers: ### Header or ## Header
+            safe = safe.replace(/^###\s+(.+)$/gm, '<div class="font-bold text-gray-900 text-xs mt-2.5 mb-1">$1</div>');
+            safe = safe.replace(/^##\s+(.+)$/gm, '<div class="font-bold text-gray-900 text-sm mt-3 mb-1.5">$1</div>');
+            safe = safe.replace(/^#\s+(.+)$/gm, '<div class="font-bold text-gray-900 text-base mt-3 mb-2">$1</div>');
+            // Horizontal rule: ---
+            safe = safe.replace(/^---$/gm, '<hr class="my-2 border-gray-200">');
             // Bold: **text**
-            safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>');
             // Italic: *text*
             safe = safe.replace(/\*(?!\*)(.*?)\*(?!\*)/g, '<em>$1</em>');
-            // Bullet points: - or •
-            safe = safe.replace(/^[-•]\s+(.+)$/gm, '<span class="flex items-start gap-1.5"><span class="text-primary-500 mt-0.5">•</span><span>$1</span></span>');
+            // Bullet points: * item, - item, • item
+            safe = safe.replace(/^[\*\-•]\s+(.+)$/gm, '<div class="flex items-start gap-1.5 my-0.5"><span class="text-primary-500 mt-0.5 select-none font-bold">•</span><span>$1</span></div>');
+            // Numbered lists: 1. item
+            safe = safe.replace(/^(\d+)\.\s+(.+)$/gm, '<div class="flex items-start gap-1.5 my-0.5"><span class="font-semibold text-primary-600 select-none">$1.</span><span>$2</span></div>');
             // Line breaks
             safe = safe.replace(/\n/g, '<br>');
+            // Clean up consecutive breaks around block elements
+            safe = safe.replace(/<\/div><br>/g, '</div>');
+            safe = safe.replace(/<hr class="my-2 border-gray-200"><br>/g, '<hr class="my-2 border-gray-200">');
             return safe;
         },
     };

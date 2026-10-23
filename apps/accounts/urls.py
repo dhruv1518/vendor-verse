@@ -4,7 +4,8 @@ from . import views
 app_name = "accounts"
 
 urlpatterns = [
-    path("profile/", views.ProfileView.as_view(), name="profile"),
+    path("", views.ProfileView.as_view(), name="profile"),
+    path("profile/", views.ProfileView.as_view()),  # alias for backward compatibility
     path("addresses/", views.AddressListView.as_view(), name="addresses"),
     path("addresses/add/", views.AddressCreateView.as_view(), name="address_add"),
     path("addresses/<uuid:public_id>/edit/", views.AddressEditView.as_view(), name="address_edit"),

@@ -7,6 +7,10 @@ from django.views.generic import TemplateView
 from apps.vendors.views import StorefrontDetailView
 from apps.core import views as core_views
 
+admin.site.site_header = "VendorVerse Administration"
+admin.site.site_title = "VendorVerse Admin Portal"
+admin.site.index_title = "System Management & Operations"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
@@ -21,6 +25,7 @@ urlpatterns = [
     path('ai/', include('apps.ai.urls')),
     path('store/<slug:slug>/', StorefrontDetailView.as_view(), name='storefront_detail'),
     path('', core_views.HomeView.as_view(), name='home'),
+    path('', include('apps.core.urls')),
 ]
 
 # Serve media files during development

@@ -35,6 +35,20 @@ class SubmitReviewView(LoginRequiredMixin, View):
             review.user = request.user
             review.save()
 
+            # Notify vendor
+            try:
+                from apps.notifications.models import Notification
+                if getattr(product.vendor, "user", None) and product.vendor.user != request.user:
+                    reviewer = request.user.first_name or request.user.username or "A customer"
+                    Notification.objects.create(
+                        user=product.vendor.user,
+                        title=f"New Review: {product.name}",
+                        message=f'{reviewer} gave {review.rating}★: "{review.title or review.comment[:60]}"',
+                        link=product.get_absolute_url(),
+                    )
+            except Exception:
+                pass
+
             messages.success(request, "Thank you! Your review has been submitted.")
         else:
             # Collect form errors into message

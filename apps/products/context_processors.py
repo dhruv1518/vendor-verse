@@ -27,3 +27,14 @@ def recently_viewed_processor(request):
     ordered_products = [product_dict[pid] for pid in recently_viewed_ids if pid in product_dict]
     
     return {"recently_viewed_products": ordered_products}
+
+
+def compare_processor(request):
+    """
+    Exposes compare_list and compare_count to templates based on session data.
+    """
+    compare_list = request.session.get("compare_list", [])
+    return {
+        "compare_list": compare_list,
+        "compare_count": len(compare_list),
+    }

@@ -75,6 +75,22 @@ class VendorOrderDetailView(VendorRequiredMixin, TemplateView):
         context["vendor_subtotal"] = sum(
             item.line_total for item in vendor_items
         )
+
+        # Determine fulfillment progression for this vendor's items
+        item_statuses = [item.status for item in vendor_items]
+        if all(s == OrderItem.ItemStatus.CANCELLED for s in item_statuses):
+            context["vendor_status"] = "CANCELLED"
+        elif all(s == OrderItem.ItemStatus.DELIVERED for s in item_statuses):
+            context["vendor_status"] = "DELIVERED"
+        elif any(s in (OrderItem.ItemStatus.SHIPPED, OrderItem.ItemStatus.DELIVERED) for s in item_statuses):
+            context["vendor_status"] = "SHIPPED"
+        elif any(s == OrderItem.ItemStatus.PROCESSING for s in item_statuses):
+            context["vendor_status"] = "PROCESSING"
+        elif any(s == OrderItem.ItemStatus.CONFIRMED for s in item_statuses):
+            context["vendor_status"] = "CONFIRMED"
+        else:
+            context["vendor_status"] = "PENDING"
+
         return context
 
 
@@ -97,6 +113,10 @@ class VendorOrderItemStatusView(VendorRequiredMixin, View):
         item.status = new_status
         item.save()
         
+        # Synchronize overall parent order status
+        from apps.orders.services import sync_order_status
+        sync_order_status(item.order)
+        
         # AF-G: Create in-app notification for the customer
         from apps.notifications.models import Notification
         from django.urls import reverse
@@ -104,7 +124,7 @@ class VendorOrderItemStatusView(VendorRequiredMixin, View):
         Notification.objects.create(
             user=item.order.user,
             title=f"Order Update: {item.product_name}",
-            message=f"The status of your item has been updated to {item.get_status_display()}.",
+            message=f'Your item "{item.product_name}" is now {item.get_status_display()}.',
             link=reverse("orders:customer_order_detail", kwargs={"public_id": item.order.public_id})
         )
         

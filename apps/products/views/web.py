@@ -49,8 +49,19 @@ class ProductListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["filterset"] = getattr(self, "filterset", None)
-        context["total_count"] = self.get_queryset().count()
+        filterset = getattr(self, "filterset", None)
+        context["filterset"] = filterset
+        
+        if context.get("paginator"):
+            context["total_count"] = context["paginator"].count
+        elif filterset:
+            context["total_count"] = filterset.qs.count()
+        else:
+            context["total_count"] = Product.objects.filter(status=Product.Status.ACTIVE).count()
+
+        context["search_query"] = self.request.GET.get("q", "")
+        context["current_category"] = self.request.GET.get("category", "")
+        context["current_sort"] = self.request.GET.get("sort_by", "newest")
         return context
 
 
@@ -239,32 +250,58 @@ class WishlistListView(LoginRequiredMixin, ListView):
 # ---------------------------------------------------------------------------
 
 class CompareToggleView(View):
-    """HTMX view to toggle a product in/out of the comparison list (session)."""
+    """HTMX or standard view to toggle a product in/out of the comparison list (session)."""
     
     def post(self, request, *args, **kwargs):
         product_id = str(self.kwargs.get("public_id"))
         compare_list = request.session.get("compare_list", [])
+        if not isinstance(compare_list, list):
+            compare_list = []
         
         in_compare = False
+        product = get_object_or_404(Product, public_id=product_id)
+        
         if product_id in compare_list:
             compare_list.remove(product_id)
+            messages.info(request, f'"{product.name}" removed from comparison.')
         else:
             if len(compare_list) < 4:
                 compare_list.append(product_id)
                 in_compare = True
+                messages.success(request, f'"{product.name}" added to comparison.')
             else:
-                # Can't add more than 4, but we need to know the state
-                pass
+                messages.warning(request, "Comparison list is full. You can compare up to 4 products.")
                 
         request.session["compare_list"] = compare_list
         request.session.modified = True
         
-        product = get_object_or_404(Product, public_id=product_id)
+        # Check if HTMX request
+        is_htmx = getattr(request, "htmx", False) or request.headers.get("HX-Request") == "true"
+        if not is_htmx:
+            referrer = request.META.get("HTTP_REFERER")
+            if referrer:
+                return redirect(referrer)
+            return redirect("products:compare_list")
+        
         return render(request, "products/partials/compare_btn.html", {
             "product": product,
             "in_compare": in_compare,
-            "compare_full": len(compare_list) >= 4 and not in_compare
+            "compare_list": compare_list,
+            "compare_count": len(compare_list),
+            "compare_full": len(compare_list) >= 4 and not in_compare,
         })
+
+
+class CompareClearView(View):
+    """Clear all items from comparison."""
+    def post(self, request, *args, **kwargs):
+        request.session["compare_list"] = []
+        request.session.modified = True
+        messages.info(request, "Comparison list cleared.")
+        referrer = request.META.get("HTTP_REFERER")
+        if referrer:
+            return redirect(referrer)
+        return redirect("products:compare_list")
 
 
 class CompareListView(TemplateView):
@@ -300,6 +337,20 @@ class QuestionCreateView(LoginRequiredMixin, View):
             question.user = request.user
             question.save()
             messages.success(request, "Your question has been posted!")
+            
+            # Notify vendor
+            try:
+                from apps.notifications.models import Notification
+                if getattr(product.vendor, "user", None) and product.vendor.user != request.user:
+                    user_name = request.user.first_name or request.user.username or "A customer"
+                    Notification.objects.create(
+                        user=product.vendor.user,
+                        title=f"New Question: {product.name}",
+                        message=f'{user_name} asked: "{question.question_text[:80]}"',
+                        link=product.get_absolute_url(),
+                    )
+            except Exception:
+                pass
         else:
             messages.error(request, "There was an error posting your question.")
         return redirect(product.get_absolute_url())
@@ -317,6 +368,20 @@ class AnswerCreateView(LoginRequiredMixin, View):
                 answer.is_vendor = True
             answer.save()
             messages.success(request, "Your answer has been posted!")
+            
+            # Notify customer who asked the question
+            try:
+                from apps.notifications.models import Notification
+                if question.user != request.user:
+                    responder = "Seller" if answer.is_vendor else (request.user.first_name or "Someone")
+                    Notification.objects.create(
+                        user=question.user,
+                        title=f"Question Answered: {question.product.name}",
+                        message=f'{responder} answered: "{answer.answer_text[:80]}"',
+                        link=question.product.get_absolute_url(),
+                    )
+            except Exception:
+                pass
         else:
             messages.error(request, "There was an error posting your answer.")
         return redirect(question.product.get_absolute_url())

@@ -18,8 +18,8 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-# The model to use — Gemini 3.6 Flash is the latest fast, free-tier friendly model
-GEMINI_MODEL = "gemini-3.6-flash"
+# Primary model and fallbacks for high availability
+GEMINI_MODELS = ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.8-flash"]
 
 
 def is_gemini_configured():
@@ -61,28 +61,68 @@ def get_gemini_response(system_prompt, user_message, conversation_history=None):
             "parts": [{"text": user_message}]
         })
 
-        # Send to Gemini
-        response = client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=contents,
-            config=types.GenerateContentConfig(
-                system_instruction=system_prompt,
-                max_output_tokens=500,
-                temperature=0.7,
-            ),
-        )
+        last_error = None
+        for model_name in GEMINI_MODELS:
+            try:
+                config_kwargs = {
+                    "system_instruction": system_prompt,
+                    "max_output_tokens": 2048,
+                    "temperature": 0.7,
+                }
+                # thinking_config is only valid for reasoning models (e.g., gemini-3.6-flash, gemini-3.8-flash)
+                if "flash-lite" not in model_name:
+                    try:
+                        config_kwargs["thinking_config"] = types.ThinkingConfig(thinking_budget=0)
+                    except Exception:
+                        pass
 
-        return response.text
+                config = types.GenerateContentConfig(**config_kwargs)
+
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=contents,
+                    config=config,
+                )
+
+                reply_text = ""
+                if hasattr(response, "text") and response.text:
+                    reply_text = response.text.strip()
+                elif getattr(response, "candidates", None):
+                    cand = response.candidates[0]
+                    parts = getattr(cand.content, "parts", [])
+                    text_parts = [
+                        p.text for p in parts
+                        if getattr(p, "text", None) and not getattr(p, "thought", False)
+                    ]
+                    reply_text = "".join(text_parts).strip()
+
+                if reply_text:
+                    return reply_text
+
+            except Exception as model_err:
+                last_error = model_err
+                logger.warning("Gemini model %s encountered error: %s. Trying fallback model...", model_name, str(model_err))
+                continue
+
+        if last_error:
+            raise last_error
+
+        return "I'm here to help! Could you please ask that in another way?"
 
     except Exception as e:
         logger.error("Gemini API error: %s", str(e))
 
-        # User-friendly error messages
+        # User-friendly error messages and circuit breaker tripping
         error_str = str(e).lower()
-        if "quota" in error_str or "429" in error_str:
+        if "quota" in error_str or "429" in error_str or "resource_exhausted" in error_str:
+            try:
+                from .rate_limiter import trip_circuit_breaker
+                trip_circuit_breaker(reason="Google Free Tier quota limit reached")
+            except Exception:
+                pass
             return (
-                "I've reached my daily limit 😅 Please try again tomorrow! "
-                "The AI assistant has a free-tier usage cap to keep costs at zero."
+                "I've reached my daily limit 😅 The AI assistant is on a free-tier usage cap "
+                "to keep costs at zero. Please check back tomorrow! 🙏"
             )
         if "api_key" in error_str or "invalid" in error_str:
             return "AI assistant is temporarily unavailable. Please try again later."

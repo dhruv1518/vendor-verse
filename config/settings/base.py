@@ -77,6 +77,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "apps.products.context_processors.categories_processor",
                 "apps.products.context_processors.recently_viewed_processor",
+                "apps.products.context_processors.compare_processor",
                 "apps.cart.context_processors.cart_processor",
                 "apps.notifications.context_processors.notifications",
             ],
@@ -94,6 +95,8 @@ DATABASES = {
 # Keep the database connection alive for 60 seconds to prevent 
 # slow TLS handshakes on every single page load.
 DATABASES["default"]["CONN_MAX_AGE"] = 60
+# Disable server-side cursors for Supabase PgBouncer / transaction pooler
+DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},

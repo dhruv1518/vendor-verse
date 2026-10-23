@@ -49,7 +49,11 @@
                 <a href="{% url 'cart:detail' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Your Cart</a>
               </li>
               <li>
+                {% if user.is_authenticated %}
+                <a href="{% url 'accounts:profile' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">My Account</a>
+                {% else %}
                 <a href="{% url 'account_login' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Sign in</a>
+                {% endif %}
               </li>
             </ul>
           </div>
@@ -63,10 +67,10 @@
                 <a href="{% url 'vendors:dashboard' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Vendor Dashboard</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Selling Guides</a>
+                <a href="{% url 'core:selling_guides' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Selling Guides</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Vendor Policies</a>
+                <a href="{% url 'core:vendor_policies' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Vendor Policies</a>
               </li>
             </ul>
           </div>
@@ -76,16 +80,16 @@
             <h3 class="text-sm font-semibold leading-6 text-gray-900">Company</h3>
             <ul role="list" class="mt-6 space-y-4">
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">About Us</a>
+                <a href="{% url 'core:about' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">About Us</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Blog</a>
+                <a href="{% url 'core:blog' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Blog</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Careers</a>
+                <a href="{% url 'core:careers' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Careers</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Press</a>
+                <a href="{% url 'core:press' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Press</a>
               </li>
             </ul>
           </div>
@@ -93,16 +97,16 @@
             <h3 class="text-sm font-semibold leading-6 text-gray-900">Support</h3>
             <ul role="list" class="mt-6 space-y-4">
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Help Center</a>
+                <a href="{% url 'core:help' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Help Center</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Contact Us</a>
+                <a href="{% url 'core:contact' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Contact Us</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Privacy Policy</a>
+                <a href="{% url 'core:privacy' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Privacy Policy</a>
               </li>
               <li>
-                <a href="#" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Terms of Service</a>
+                <a href="{% url 'core:terms' %}" class="text-sm leading-6 text-gray-600 hover:text-gray-900">Terms of Service</a>
               </li>
             </ul>
           </div>

@@ -4,6 +4,7 @@ from django.utils.text import slugify
 from django.core.validators import MinValueValidator
 
 from apps.core.models import TimeStampedModel, PublicIDModel
+from django.urls import reverse
 
 
 # ---------------------------------------------------------------------------
@@ -170,6 +171,24 @@ class Product(TimeStampedModel, PublicIDModel):
                 counter += 1
             self.slug = slug
         super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        """Return the URL to the product detail page."""
+        try:
+            return reverse(
+                "products:product_detail",
+                kwargs={
+                    "vendor_slug": self.vendor.storefront.slug,
+                    "product_slug": self.slug,
+                },
+            )
+        except Exception:
+            return f"/products/{self.slug}/"
+
+    @property
+    def price(self):
+        """Alias for base_price for template compatibility."""
+        return self.base_price
 
     @property
     def primary_image(self):

@@ -24,16 +24,58 @@ from apps.reviews.models import Review
 
 # Common words to ignore when searching for products
 STOP_WORDS = {
-    "i", "me", "my", "want", "need", "looking", "for", "a", "an", "the",
-    "is", "are", "do", "does", "have", "has", "can", "you", "show", "me",
-    "find", "search", "get", "tell", "about", "what", "which", "where",
-    "how", "much", "any", "some", "good", "best", "top", "cheap",
-    "expensive", "please", "thanks", "thank", "hi", "hello", "hey",
-    "recommend", "suggest", "give", "list", "available", "buy", "price",
-    "cost", "under", "below", "above", "over", "between", "than",
-    "product", "products", "item", "items", "thing", "things",
-    "store", "shop", "vendor", "this",
+    "i", "me", "my", "myself", "we", "our", "ours", "you", "your", "yours",
+    "he", "him", "his", "she", "her", "it", "its", "they", "them", "their",
+    "what", "which", "who", "whom", "this", "that", "these", "those",
+    "am", "is", "are", "was", "were", "be", "been", "being",
+    "have", "has", "had", "having", "do", "does", "did", "doing",
+    "a", "an", "the", "and", "but", "if", "or", "because", "as", "until",
+    "while", "of", "at", "by", "for", "with", "about", "against", "between",
+    "into", "through", "during", "before", "after", "above", "below", "to",
+    "from", "up", "down", "in", "out", "on", "off", "over", "under", "again",
+    "further", "then", "once", "here", "there", "when", "where", "why", "how",
+    "all", "any", "both", "each", "few", "more", "most", "other", "some",
+    "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too",
+    "very", "can", "will", "just", "don", "should", "now", "also", "one",
+    # Conversational shopping stopwords:
+    "want", "need", "looking", "look", "show", "find", "search", "get", "tell",
+    "good", "best", "top", "cheap", "expensive", "please", "thanks", "thank",
+    "hi", "hello", "hey", "recommend", "suggest", "give", "list", "available",
+    "buy", "price", "cost", "product", "products", "item", "items", "thing",
+    "things", "store", "shop", "vendor", "answer", "properly", "according",
+    "ask", "asked", "selling", "sell", "catalog", "everything", "entire",
+    "whole", "stock", "collection", "options", "variety", "choice", "detail",
+    "details", "information", "info", "help",
 }
+
+
+def is_asking_all_or_general(message):
+    """Check if the user is asking to view all products, general overview, or recommendations."""
+    msg = (message or "").lower()
+    patterns = [
+        r"\ball\b",
+        r"\bevery\b",
+        r"\beverything\b",
+        r"\bentire\b",
+        r"\bwhole\b",
+        r"\bcatalog\b",
+        r"\bwhat do you (have|sell|offer)\b",
+        r"\bwhat does this (store|vendor|shop) (have|sell|offer)\b",
+        r"\bwhat (is|are) available\b",
+        r"\bshow (me )?(your|the|all)?\s*(products|items|catalog|stock)\b",
+        r"\blist (all|the)?\s*(products|items)\b",
+        r"\bwhich (one )?product (should|can) i buy\b",
+        r"\bwhich one (should|can) i buy\b",
+        r"\bwhat (should|can) i buy\b",
+        r"\brecommend\b",
+        r"\btell me about this (vendor|store|shop)\b",
+        r"\btell me about (all|the) product\b",
+        r"\banswer properly\b",
+    ]
+    for pattern in patterns:
+        if re.search(pattern, msg):
+            return True
+    return False
 
 
 def extract_keywords(message):
@@ -168,6 +210,7 @@ def build_global_context(user_message):
     """
     keywords = extract_keywords(user_message)
     price_filters = extract_price_filters(user_message)
+    asking_for_all = is_asking_all_or_general(user_message)
 
     # Base queryset: all active products
     base_qs = (
@@ -176,15 +219,15 @@ def build_global_context(user_message):
     )
 
     # Try to find relevant products
-    if keywords or price_filters:
-        matched = search_products(base_qs, keywords, price_filters)[:15]
+    if (keywords or price_filters) and not asking_for_all:
+        matched = search_products(base_qs, keywords, price_filters)[:20]
     else:
         matched = base_qs.none()
 
     # If no specific matches, show popular/featured products
-    if not matched.exists():
-        matched = base_qs.order_by("-is_featured", "-created_at")[:10]
-        catalog_note = "Here are some of our popular products:"
+    if not matched.exists() or asking_for_all:
+        matched = base_qs.order_by("-is_featured", "-created_at")[:20]
+        catalog_note = "Here are featured and popular products across our marketplace:"
     else:
         catalog_note = "Here are products matching the customer's query:"
 
@@ -222,14 +265,14 @@ PRODUCT CATEGORIES: {categories_str}
 {catalog}
 
 RULES:
-- Be helpful, concise, and friendly
+- Be helpful, polite, and comprehensive
 - Only recommend products from the catalog listed above — NEVER invent products
-- If a product isn't in the list, say you couldn't find an exact match and suggest browsing /products/
-- When mentioning prices, always use ₹ (Indian Rupees) format
-- If asked about a specific vendor's products, suggest visiting that vendor's storefront
+- When asked about products, list them clearly with their names, key highlights, and prices in ₹ (Indian Rupees)
+- If the customer asks for recommendations (e.g. which one to buy), give specific suggestions based on different use-cases, budgets, or categories
+- If asked about a specific vendor's products, suggest visiting that vendor's storefront (/store/<vendor-name>/)
 - If asked about orders, tell them to check "My Orders" page (they need to be logged in)
-- Keep responses under 150 words unless the user asks for details
-- Use emojis sparingly for a friendly tone
+- Structure your response cleanly using markdown headings, bullet points, and numbered lists
+- Answer ALL parts of the customer's query completely — never cut off or skip questions
 - Always respond in the same language the user writes in"""
 
     return system_prompt
@@ -264,17 +307,18 @@ def build_storefront_context(storefront_slug, user_message):
 
     keywords = extract_keywords(user_message)
     price_filters = extract_price_filters(user_message)
+    asking_for_all = is_asking_all_or_general(user_message)
 
-    # Search within this vendor's products only
-    if keywords or price_filters:
-        matched = search_products(vendor_products, keywords, price_filters)[:20]
+    # Search within this vendor's products only if not asking for entire catalog/general overview
+    if (keywords or price_filters) and not asking_for_all:
+        matched = search_products(vendor_products, keywords, price_filters)[:25]
     else:
         matched = vendor_products.none()
 
-    # If no specific matches, show all of this vendor's products
-    if not matched.exists():
-        matched = vendor_products.order_by("-is_featured", "-created_at")[:15]
-        catalog_note = "Here are all products from this store:"
+    # If asking for all, or no specific matches, show all of this vendor's products
+    if not matched.exists() or asking_for_all:
+        matched = vendor_products.order_by("-is_featured", "-created_at")[:25]
+        catalog_note = "Here is the complete catalog of products available in this store:"
     else:
         catalog_note = "Here are products matching the customer's query from this store:"
 
@@ -312,12 +356,14 @@ CRITICAL RULES:
 - ONLY recommend products listed above — they are from this store only
 - NEVER invent or hallucinate products that aren't in the list above
 - NEVER mention products from other stores or vendors
-- If a product isn't in the list, say: "I couldn't find that in {vendor.business_name}'s store. You can browse all their products on the store page."
+- When asked about the vendor/store, introduce "{vendor.business_name}" warmly using the Store Information and Policies above
+- When asked about all products or what's available, list and describe each available product with its exact price (₹)
+- When asked which product to buy or for recommendations, give thoughtful, tailored suggestions for different needs and budgets
 - When mentioning prices, always use ₹ (Indian Rupees) format
 - If asked about sizes/colors/variants, check the Variants field for each product
 - If asked about shipping or returns, use the store policies above
-- Keep responses under 150 words unless the user asks for details
-- Be helpful, friendly, and knowledgeable about this store's products
+- Structure your response neatly with clear headings (###), bullet points, and numbered lists
+- Answer ALL parts of the customer's query completely — never stop halfway or skip questions
 - Always respond in the same language the user writes in"""
 
     return system_prompt
@@ -436,8 +482,8 @@ RULES:
 - If the product doesn't have what the customer needs, suggest other products from this store
 - NEVER invent specifications, features, or details not in the information above
 - NEVER mention products from other vendors/stores
-- When mentioning prices, always use ₹ format
-- Keep responses concise but thorough (under 200 words)
+- Provide clear, complete, and helpful answers without cutting off or omitting details
+- Format your response cleanly with headings, bullet points, and clear spacing
 - Be like a knowledgeable salesperson — helpful, honest, and not pushy
 - Always respond in the same language the user writes in"""
 

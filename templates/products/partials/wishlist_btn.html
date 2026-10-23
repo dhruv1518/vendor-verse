@@ -1,6 +1,8 @@
 {% if user.is_authenticated %}
-<button hx-post="{% url 'products:wishlist_toggle' public_id=product.public_id %}"
+<button type="button"
+        hx-post="{% url 'products:wishlist_toggle' public_id=product.public_id %}"
         hx-swap="outerHTML"
+        onclick="event.stopPropagation();"
         class="rounded-full p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
         title="{% if in_wishlist %}Remove from Wishlist{% else %}Add to Wishlist{% endif %}">
     {% if in_wishlist %}

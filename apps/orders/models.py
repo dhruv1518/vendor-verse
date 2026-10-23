@@ -95,6 +95,7 @@ class OrderItem(TimeStampedModel, PublicIDModel):
     class ItemStatus(models.TextChoices):
         PENDING = "PENDING", "Pending"
         CONFIRMED = "CONFIRMED", "Confirmed"
+        PROCESSING = "PROCESSING", "Processing"
         SHIPPED = "SHIPPED", "Shipped"
         DELIVERED = "DELIVERED", "Delivered"
         CANCELLED = "CANCELLED", "Cancelled"

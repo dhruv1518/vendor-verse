@@ -1,0 +1,210 @@
+{% load i18n static admin_tags %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en-us' }}" dir="{{ LANGUAGE_BIDI|yesno:'rtl,ltr,auto' }}" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>{% block title %}{% endblock %} | VendorVerse Admin</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Standard Django admin base CSS -->
+    <link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
+    {% block extrastyle %}{% endblock %}
+
+    <!-- VendorVerse Modern Admin Design System -->
+    <link rel="stylesheet" href="{% static 'admin/css/vendorverse_admin.css' %}">
+
+    {% block extrahead %}{% endblock %}
+    <script src="{% static 'admin/js/vendorverse_admin.js' %}" defer></script>
+</head>
+
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" data-theme="light">
+
+<div class="vv-admin-shell" id="vv-shell">
+
+    {% if not is_popup %}
+    <!-- ===== Unified Left Sidebar ===== -->
+    <aside class="vv-sidebar" id="vv-sidebar">
+        <!-- Sidebar Header / Brand -->
+        <div class="vv-sidebar-brand">
+            <a href="{% url 'admin:index' %}" class="vv-brand-link">
+                <div class="vv-brand-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+                    </svg>
+                </div>
+                <div class="vv-brand-titles">
+                    <span class="vv-brand-title-main">VendorVerse</span>
+                    <span class="vv-brand-title-sub">Admin Console</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Navigation Links Scroll Area -->
+        <nav class="vv-sidebar-nav" id="vv-sidebar-nav">
+            <!-- Dashboard Home -->
+            <div class="vv-nav-section-title">Overview</div>
+            <a href="{% url 'admin:index' %}" class="vv-nav-item {% if request.path == '/admin/' %}active{% endif %}">
+                <span class="vv-nav-item-icon vv-icon-indigo">
+                    <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                    </svg>
+                </span>
+                <span class="vv-nav-item-text">Dashboard</span>
+            </a>
+
+            <!-- App Modules -->
+            {% if available_apps %}
+                <div class="vv-nav-section-title">Platform Apps</div>
+                {% for app in available_apps %}
+                {% get_app_meta app.app_label as meta %}
+                <div class="vv-app-menu-block" id="sidebar-app-{{ app.app_label }}">
+                    <div class="vv-app-menu-header">
+                        <span class="vv-app-menu-icon" style="color: {{ meta.color }};">
+                            {{ meta.icon_safe }}
+                        </span>
+                        <span class="vv-app-menu-title">{{ app.name }}</span>
+                    </div>
+                    <div class="vv-app-menu-sublinks">
+                        {% for model in app.models %}
+                        <div class="vv-sublink-row {% if model.admin_url and request.path and model.admin_url in request.path %}active{% endif %}">
+                            {% if model.admin_url %}
+                            <a href="{{ model.admin_url }}" class="vv-sublink-anchor" title="{{ model.name }}">
+                                <span class="vv-sublink-bullet"></span>
+                                <span class="vv-sublink-name">{{ model.name }}</span>
+                            </a>
+                            {% else %}
+                            <span class="vv-sublink-anchor disabled">
+                                <span class="vv-sublink-bullet"></span>
+                                <span class="vv-sublink-name">{{ model.name }}</span>
+                            </span>
+                            {% endif %}
+
+                            {% if model.add_url %}
+                            <a href="{{ model.add_url }}" class="vv-sublink-btn-add add-related" title="Add new {{ model.name }}">+</a>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </nav>
+
+        <!-- Sidebar Footer: Logged in Admin Profile -->
+        <div class="vv-sidebar-footer">
+            <div class="vv-footer-user-box">
+                <div class="vv-footer-avatar">
+                    {{ user.get_short_name|default:user.email|slice:":1"|upper }}
+                </div>
+                <div class="vv-footer-user-details">
+                    <span class="vv-footer-email">{{ user.get_short_name|default:user.email }}</span>
+                    <span class="vv-footer-role">{% if user.is_superuser %}Super Administrator{% else %}Staff{% endif %}</span>
+                </div>
+            </div>
+            <div class="vv-footer-actions">
+                <a href="/" target="_blank" class="vv-footer-action-link" title="Open Marketplace Live Site">
+                    <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                    </svg>
+                    <span>Marketplace</span>
+                </a>
+                <form method="post" action="{% url 'admin:logout' %}" style="display: inline; margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="vv-footer-action-link danger" title="Sign out of Admin session">
+                        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </aside>
+    {% endif %}
+
+    <!-- ===== Main Content Area ===== -->
+    <div class="vv-main-area">
+
+        {% if not is_popup %}
+        <!-- Top Header Bar -->
+        <header class="vv-topbar" id="vv-topbar">
+            <div class="vv-topbar-left">
+                <button type="button" class="vv-mobile-menu-btn" id="vv-menu-toggle" title="Toggle Sidebar Menu">
+                    <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+
+                <!-- Breadcrumbs Bar -->
+                <div class="vv-breadcrumbs-wrapper">
+                    {% block breadcrumbs %}
+                    <a href="{% url 'admin:index' %}" class="vv-crumb-link">Dashboard</a>
+                    {% if title %}
+                    <span class="vv-crumb-arrow">&rsaquo;</span>
+                    <span class="vv-crumb-active">{{ title }}</span>
+                    {% endif %}
+                    {% endblock %}
+                </div>
+            </div>
+
+            <div class="vv-topbar-right">
+                <!-- User Chip -->
+                <div class="vv-topbar-user-badge">
+                    <span class="vv-topbar-avatar">{{ user.get_short_name|default:user.email|slice:":1"|upper }}</span>
+                    <span class="vv-topbar-user-name">{{ user.get_short_name|default:user.email }}</span>
+                </div>
+
+                <!-- Live Site Badge -->
+                <a href="/" target="_blank" class="vv-live-site-pill" title="View Public Marketplace">
+                    <span class="vv-pulse-dot"></span>
+                    <span>Marketplace</span>
+                    <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                    </svg>
+                </a>
+            </div>
+        </header>
+        {% endif %}
+
+        <!-- Page Body -->
+        <main class="vv-page-container">
+            <!-- System Messages / Alerts -->
+            {% block messages %}
+            {% if messages %}
+            <ul class="messagelist">
+                {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message|capfirst }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endblock %}
+
+            <div id="content" class="{% block coltype %}colM{% endblock %}">
+                {% block pretitle %}{% endblock %}
+
+                {% block content_title %}
+                    {% if title and request.path != '/admin/' %}
+                    <div class="vv-page-title-banner">
+                        <h1 class="vv-main-title">{{ title }}</h1>
+                        {% block object-tools %}{% endblock %}
+                    </div>
+                    {% endif %}
+                {% endblock %}
+
+                {% block content_subtitle %}{% endblock %}
+
+                {% block content %}
+                {% endblock %}
+
+                {% block sidebar %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+</div>
+
+</body>
+</html>

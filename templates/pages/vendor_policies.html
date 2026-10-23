@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Vendor Policies & Standards — VendorVerse{% endblock %}
+{% block meta_description %}Official standards, fulfillment policies, and code of conduct for vendors on VendorVerse.{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="bg-gray-900 py-16 text-white border-b border-gray-800">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-primary-500/10 px-3 py-1 text-xs font-semibold text-primary-400 ring-1 ring-primary-500/20 mb-4">
+            Compliance & Guidelines
+        </span>
+        <h1 class="text-3xl font-bold sm:text-4xl">Vendor Policies & Marketplace Standards</h1>
+        <p class="mt-3 text-base text-gray-400 max-w-2xl">To preserve consumer trust and maintain a fair playing field for all sellers, every vendor on VendorVerse agrees to adhere to the standards outlined below.</p>
+    </div>
+</div>
+
+<div class="mx-auto max-w-7xl px-6 py-16 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
+        <!-- Sidebar Navigation -->
+        <div class="hidden lg:block lg:col-span-1">
+            <nav class="sticky top-24 space-y-2 border-l border-gray-200 pl-4 text-sm font-medium">
+                <a href="#conduct" class="block text-primary-600 hover:text-primary-700 py-1">1. Seller Code of Conduct</a>
+                <a href="#listings" class="block text-gray-600 hover:text-gray-900 py-1">2. Listing Standards</a>
+                <a href="#fulfillment" class="block text-gray-600 hover:text-gray-900 py-1">3. Fulfillment & Dispatch</a>
+                <a href="#returns" class="block text-gray-600 hover:text-gray-900 py-1">4. Returns & Cancellations</a>
+                <a href="#fees" class="block text-gray-600 hover:text-gray-900 py-1">5. Payments & Commission</a>
+                <a href="#prohibited" class="block text-gray-600 hover:text-gray-900 py-1">6. Prohibited Items</a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="lg:col-span-3 space-y-12">
+            <!-- Section 1 -->
+            <section id="conduct" class="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2 mb-4">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-100 text-primary-700 text-xs font-bold">1</span>
+                    Seller Code of Conduct
+                </h2>
+                <div class="prose prose-sm text-gray-600 space-y-3">
+                    <p>All registered vendors must maintain the highest standards of integrity, professional conduct, and transparency. Vendors must never:</p>
+                    <ul class="list-disc pl-5 space-y-1.5">
+                        <li>Misrepresent item condition, manufacturing origins, or authentic brand licensing.</li>
+                        <li>Attempt to divert buyers away from the VendorVerse checkout platform to external channels.</li>
+                        <li>Post fake customer reviews, incentivize artificial ratings, or harass reviewers.</li>
+                        <li>Share or exploit customer personal contact data outside of order fulfillment necessities.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 2 -->
+            <section id="listings" class="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2 mb-4">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-100 text-primary-700 text-xs font-bold">2</span>
+                    Product Listing Standards
+                </h2>
+                <div class="prose prose-sm text-gray-600 space-y-3">
+                    <p>Accurate catalog data ensures higher conversion and minimal return rates:</p>
+                    <ul class="list-disc pl-5 space-y-1.5">
+                        <li><strong>Photography:</strong> Must feature original or studio imagery showing the exact physical product. Misleading generic mockups are prohibited.</li>
+                        <li><strong>Pricing:</strong> Prices must clearly state standard retail price and any discounted sale price in Indian Rupees (₹).</li>
+                        <li><strong>Inventory:</strong> Real stock must be maintained in the portal. Listing products with zero available units as active is a violation of listing policies.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 3 -->
+            <section id="fulfillment" class="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2 mb-4">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-100 text-primary-700 text-xs font-bold">3</span>
+                    Fulfillment & Dispatch Timelines
+                </h2>
+                <div class="prose prose-sm text-gray-600 space-y-3">
+                    <p>Buyers count on timely shipping updates:</p>
+                    <ul class="list-disc pl-5 space-y-1.5">
+                        <li><strong>48-Hour Dispatch Standard:</strong> Confirmed orders must be processed and handed over to courier logistics within 48 business hours.</li>
+                        <li><strong>Status Updates:</strong> Vendors must promptly update item statuses to <em>Processing</em> and <em>Shipped</em> in the vendor portal so customers receive automated tracking notifications.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 4 -->
+            <section id="returns" class="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2 mb-4">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-100 text-primary-700 text-xs font-bold">4</span>
+                    Returns, Replacements & Cancellations
+                </h2>
+                <div class="prose prose-sm text-gray-600 space-y-3">
+                    <p>Every store must define its Return and Shipping policies in the Storefront Settings panel:</p>
+                    <ul class="list-disc pl-5 space-y-1.5">
+                        <li>Defective or damaged items must be replaced or refunded within 7 days of delivery report.</li>
+                        <li>Custom or personalized products may be listed as non-returnable provided it is prominently declared on the product page.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 5 -->
+            <section id="fees" class="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2 mb-4">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-100 text-primary-700 text-xs font-bold">5</span>
+                    Platform Fees & Settlements
+                </h2>
+                <div class="prose prose-sm text-gray-600 space-y-3">
+                    <p>VendorVerse operates with transparent platform fees:</p>
+                    <ul class="list-disc pl-5 space-y-1.5">
+                        <li>Platform commission is fixed at 5% of product order value.</li>
+                        <li>Payout settlements for delivered orders are credited directly to the vendor's designated bank account within 3 business days following the return window closure.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 6 -->
+            <section id="prohibited" class="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200">
+                <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2 mb-4">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-red-100 text-red-700 text-xs font-bold">6</span>
+                    Prohibited Items
+                </h2>
+                <p class="text-sm text-gray-600 leading-relaxed mb-3">The following categories are strictly forbidden from being listed on the platform:</p>
+                <div class="grid grid-cols-2 gap-2 text-xs text-red-600 font-medium">
+                    <div class="bg-red-50 p-2.5 rounded-lg">✕ Counterfeit or replica goods</div>
+                    <div class="bg-red-50 p-2.5 rounded-lg">✕ Weapons & ammunition</div>
+                    <div class="bg-red-50 p-2.5 rounded-lg">✕ Hazardous chemicals</div>
+                    <div class="bg-red-50 p-2.5 rounded-lg">✕ Prescription pharmaceuticals</div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

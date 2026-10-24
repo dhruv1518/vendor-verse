@@ -346,7 +346,7 @@ class QuestionCreateView(LoginRequiredMixin, View):
                     Notification.objects.create(
                         user=product.vendor.user,
                         title=f"New Question: {product.name}",
-                        message=f'{user_name} asked: "{question.question_text[:80]}"',
+                        message=f'{user_name} asked: "{question.text[:80]}"',
                         link=product.get_absolute_url(),
                     )
             except Exception:
@@ -377,7 +377,7 @@ class AnswerCreateView(LoginRequiredMixin, View):
                     Notification.objects.create(
                         user=question.user,
                         title=f"Question Answered: {question.product.name}",
-                        message=f'{responder} answered: "{answer.answer_text[:80]}"',
+                        message=f'{responder} answered: "{answer.text[:80]}"',
                         link=question.product.get_absolute_url(),
                     )
             except Exception:

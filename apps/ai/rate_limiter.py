@@ -82,13 +82,22 @@ def _load_state_file():
 
 
 def _save_state_file(state):
-    """Save persistent quota state to disk atomically."""
+    """Save persistent quota state to disk."""
     try:
         tmp_path = STATE_FILE_PATH + ".tmp"
         with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(state, f, indent=2)
-        if os.path.exists(tmp_path):
+        try:
             os.replace(tmp_path, STATE_FILE_PATH)
+        except OSError:
+            # Fallback for Windows file locking
+            with open(STATE_FILE_PATH, "w", encoding="utf-8") as f:
+                json.dump(state, f, indent=2)
+            if os.path.exists(tmp_path):
+                try:
+                    os.remove(tmp_path)
+                except OSError:
+                    pass
     except Exception as e:
         logger.warning("Could not save AI quota state file: %s", str(e))
 

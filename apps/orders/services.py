@@ -1,10 +1,12 @@
 import uuid
 from decimal import Decimal
+from django.db import transaction
 from django.utils import timezone
 
 from .models import Order, OrderItem
 
 
+@transaction.atomic
 def create_order_from_cart(user, cart, address):
     """
     Convert a cart into an Order with OrderItems.

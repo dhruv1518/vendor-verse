@@ -155,4 +155,6 @@ def get_app_meta(app_label):
     label = (app_label or '').lower()
     meta = APP_META.get(label, DEFAULT_META).copy()
     meta['icon_safe'] = mark_safe(meta['icon'])
+    meta['style_attr'] = mark_safe(f'style="color: {meta["color"]};"')
+    meta['bg_style_attr'] = mark_safe(f'style="background: {meta["color"]};"')
     return meta

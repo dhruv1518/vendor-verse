@@ -63,7 +63,7 @@
                 {% get_app_meta app.app_label as meta %}
                 <div class="vv-app-menu-block" id="sidebar-app-{{ app.app_label }}">
                     <div class="vv-app-menu-header">
-                        <span class="vv-app-menu-icon" style="color: {{ meta.color }};">
+                        <span class="vv-app-menu-icon" {{ meta.style_attr }}>
                             {{ meta.icon_safe }}
                         </span>
                         <span class="vv-app-menu-title">{{ app.name }}</span>

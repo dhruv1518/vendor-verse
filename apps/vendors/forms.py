@@ -38,7 +38,7 @@ class VendorApplicationForm(forms.ModelForm):
                 attrs={
                     "class": TEXTAREA_CLASS,
                     "rows": 5,
-                    "placeholder": "Tell us about your business, what products you sell, and why you'd like to join VendorVerse...",
+                    "placeholder": "Tell us about your business, what products you sell, and why you'd like to join Vendora...",
                 }
             ),
             "business_email": forms.EmailInput(

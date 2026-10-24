@@ -1,7 +1,7 @@
 from allauth.account.adapter import DefaultAccountAdapter
 
 
-class VendorVerseAccountAdapter(DefaultAccountAdapter):
+class VendoraAccountAdapter(DefaultAccountAdapter):
     """
     Custom allauth adapter that redirects admin/staff users
     to the Django admin panel after login, and regular users to the homepage.

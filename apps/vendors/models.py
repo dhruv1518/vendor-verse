@@ -23,7 +23,7 @@ class VendorApplication(TimeStampedModel, PublicIDModel):
     )
     business_name = models.CharField(max_length=200)
     business_description = models.TextField(
-        help_text="Describe your business, products, and why you want to sell on VendorVerse."
+        help_text="Describe your business, products, and why you want to sell on Vendora."
     )
     business_email = models.EmailField()
     phone_number = models.CharField(max_length=20, blank=True)

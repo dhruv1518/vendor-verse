@@ -13,7 +13,7 @@
 ---
 
 ### Project Report on
-# **VendorVerse — Enterprise Multi-Vendor Marketplace**
+# **Vendora — Enterprise Multi-Vendor Marketplace**
 ### Course Code: 221601707 — Web Programming using Python (Practicals)
 *(Also compliant with 222301707 Web Development using Python)*
 
@@ -45,7 +45,7 @@
 - [1. INTRODUCTION & PROJECT OVERVIEW](#1-introduction--project-overview)
   - [1.1 Project Objective and Purpose](#11-project-objective-and-purpose)
   - [1.2 Business Problem Statement](#12-business-problem-statement)
-  - [1.3 The VendorVerse Solution](#13-the-vendorverse-solution)
+  - [1.3 The Vendora Solution](#13-the-vendora-solution)
   - [1.4 Target Personas & Scope](#14-target-personas--scope)
   - [1.5 Real-World Value & Competitive Advantages](#15-real-world-value--competitive-advantages)
 - [2. ACADEMIC SYLLABUS & DELIVERABLES COMPLIANCE](#2-academic-syllabus--deliverables-compliance)
@@ -100,7 +100,7 @@
 # 1. INTRODUCTION & PROJECT OVERVIEW
 
 ### 1.1 Project Objective and Purpose
-**VendorVerse** is an enterprise-grade, multi-vendor marketplace web application engineered using **Python 3.12** and the **Django 5.x** web framework. The fundamental purpose of VendorVerse is to provide an open, distributed commerce ecosystem where multiple independent merchants can launch personalized digital storefronts, manage their product catalogs, and fulfill orders, while customers enjoy a consolidated, Amazon-like shopping experience with multi-vendor cart handling, unified checkout, real-time product search, side-by-side product comparisons, customer reviews, and interactive artificial intelligence assistance.
+**Vendora** is an enterprise-grade, multi-vendor marketplace web application engineered using **Python 3.12** and the **Django 5.x** web framework. The fundamental purpose of Vendora is to provide an open, distributed commerce ecosystem where multiple independent merchants can launch personalized digital storefronts, manage their product catalogs, and fulfill orders, while customers enjoy a consolidated, Amazon-like shopping experience with multi-vendor cart handling, unified checkout, real-time product search, side-by-side product comparisons, customer reviews, and interactive artificial intelligence assistance.
 
 ### 1.2 Business Problem Statement
 Traditional retail and single-vendor e-commerce software suffer from notable limitations:
@@ -109,10 +109,10 @@ Traditional retail and single-vendor e-commerce software suffer from notable lim
 3. **Cart & Inventory Complexity**: Typical open-source shopping systems only support a single global inventory. They lack the architectural capability to split an order across independent vendor fulfillment pipelines while maintaining a unified payment transaction.
 4. **Lack of Intelligent Pre-Purchase Guidance**: Static product pages often leave customer inquiries unanswered, leading to high cart abandonment rates due to uncertainty regarding product specifications, sizes, or warranties.
 
-### 1.3 The VendorVerse Solution
-VendorVerse resolves these systemic challenges by implementing a **modular monolithic marketplace architecture**:
+### 1.3 The Vendora Solution
+Vendora resolves these systemic challenges by implementing a **modular monolithic marketplace architecture**:
 - **Consolidated Multi-Tenant Storefronts**: Each registered and approved vendor receives an autonomous, search-engine-optimized storefront (`/store/<vendor-slug>/`) featuring custom branding, policies, and product listings.
-- **Unified Multi-Vendor Cart & Checkout Split**: A customer can add products from three different vendors into a single shopping cart. During checkout, VendorVerse calculates consolidated totals, executes a single payment transaction, and programmatically partitions the items into vendor-specific order fulfillments with automated inventory deductions.
+- **Unified Multi-Vendor Cart & Checkout Split**: A customer can add products from three different vendors into a single shopping cart. During checkout, Vendora calculates consolidated totals, executes a single payment transaction, and programmatically partitions the items into vendor-specific order fulfillments with automated inventory deductions.
 - **Embedded AI Shopper Assistant**: Integrated directly into the marketplace via the Google Gemini API, an on-page AI assistant provides real-time, context-aware answers spanning the entire marketplace, a specific vendor's store, or a single product's specifications.
 
 ### 1.4 Target Personas & Scope
@@ -137,7 +137,7 @@ This project has been developed in strict alignment with the curriculum and prac
 
 ### 2.1 Compliance Matrix (GLS University Guidelines)
 
-| Prescribed Academic Requirement | VendorVerse Implementation Details | Status |
+| Prescribed Academic Requirement | Vendora Implementation Details | Status |
 | :--- | :--- | :---: |
 | **1. Install Django** | Django 5.x installed and configured under a virtual environment (`venv`) with production-ready settings modularization (`config/settings/`). | 🟢 **Compliant** |
 | **2. Mandatory Customized Templates for Design Consistency** | Fully custom-crafted templates using Tailwind CSS 3.4 design tokens. Comprehensive layout inheritance via `templates/base.html`, shared navigation `_navbar.html`, contextual `_footer.html`, and modular components. Zero reliance on pre-baked default UI libraries. | 🟢 **Compliant** |
@@ -150,8 +150,8 @@ This project has been developed in strict alignment with the curriculum and prac
 ### 2.2 Core Deliverable Highlights
 1. **Source Code Distribution**: Cleanly packaged directory structure (`apps/`, `config/`, `templates/`, `static/`, `docs/`) with zero hardcoded secrets.
 2. **Verification Suite**: Includes two automated verification scripts:
-   - [`test_views_matrix.py`](file:///c:/Users/SHABBIR%20G/Desktop/VendorVerse/test_views_matrix.py): Validates HTTP response codes across all four user roles for 21 core system routes.
-   - [`deep_system_cycle_test.py`](file:///c:/Users/SHABBIR%20G/Desktop/VendorVerse/deep_system_cycle_test.py): Programmatically executes **40 end-to-end integration cycles** directly verifying database mutations.
+   - [`test_views_matrix.py`](file:///c:/Users/SHABBIR%20G/Desktop/Vendora/test_views_matrix.py): Validates HTTP response codes across all four user roles for 21 core system routes.
+   - [`deep_system_cycle_test.py`](file:///c:/Users/SHABBIR%20G/Desktop/Vendora/deep_system_cycle_test.py): Programmatically executes **40 end-to-end integration cycles** directly verifying database mutations.
 
 <div style="page-break-after: always;"></div>
 
@@ -318,10 +318,10 @@ Django organizes web applications around the **Model-View-Template (MVT)** archi
 ---
 
 ### 5.2 Modular Application Decomposition
-VendorVerse is partitioned into focused, reusable Django applications located inside the `apps/` directory:
+Vendora is partitioned into focused, reusable Django applications located inside the `apps/` directory:
 
 ```
-VendorVerse/
+Vendora/
 ├── apps/
 │   ├── accounts/       # Custom user model, profiles, shipping addresses
 │   ├── ai/             # Gemini API client, rate limiting, context builders
@@ -342,7 +342,7 @@ VendorVerse/
 ---
 
 ### 5.3 URL Dispatching & Namespaced Reverse Routing
-VendorVerse uses decoupled, namespaced URL configurations (`app_name = "products"`, `app_name = "cart"`, etc.). Rather than hardcoding fragile URL paths in templates, code strictly utilizes Django's `{% url %}` tag and Python's `reverse()` helper.
+Vendora uses decoupled, namespaced URL configurations (`app_name = "products"`, `app_name = "cart"`, etc.). Rather than hardcoding fragile URL paths in templates, code strictly utilizes Django's `{% url %}` tag and Python's `reverse()` helper.
 
 ```python
 # config/urls.py (Root Routing)
@@ -418,7 +418,7 @@ Data input is handled through Django's Form processing pipeline:
 ---
 
 ### 5.7 Cookies and Session Settings Implementation
-VendorVerse implements advanced session and cookie features to satisfy the academic evaluation criteria:
+Vendora implements advanced session and cookie features to satisfy the academic evaluation criteria:
 
 1. **Session-Driven Cart State**: Shopping cart instances are linked directly to user session keys.
 2. **Recently Viewed Products Engine**: As customers navigate product detail pages, the system captures product identifiers into a session list, maintaining an ordered list of recent items without unnecessary database writes:
@@ -479,7 +479,7 @@ class OrderAdmin(admin.ModelAdmin):
 ---
 
 ### 5.10 REST API Endpoints & HTMX Interaction Layer
-VendorVerse provides REST API endpoints returning pure JSON responses alongside hypermedia HTML endpoints:
+Vendora provides REST API endpoints returning pure JSON responses alongside hypermedia HTML endpoints:
 - **`GET /products/autocomplete/?q=<term>`**: Returns JSON / HTMX fragments for instant search suggestions.
 - **`POST /ai/chat/`**: Accepts JSON payload (`message`, `storefront_slug`, `product_slug`) and returns JSON reply:
   ```json
@@ -643,7 +643,7 @@ graph TD
 # 7. DATABASE DESIGN & DATA MODELING
 
 ### 7.1 Dual Key Architecture (Integer PK vs UUID public_id)
-VendorVerse implements an enterprise architectural pattern separating **internal storage keys** from **external public references**:
+Vendora implements an enterprise architectural pattern separating **internal storage keys** from **external public references**:
 - **Integer Primary Keys (`id = BigAutoField`)**: Used internally for database indexing, B-Tree lookups, foreign key constraints, and fast JOIN performance.
 - **UUID (`public_id = UUIDField(default=uuid.uuid4, unique=True)`)**: Used externally in all URLs, API parameters, and form inputs. This completely prevents enumeration attacks where malicious actors guess sequential database IDs (e.g., `/orders/1`, `/orders/2`).
 
@@ -757,7 +757,7 @@ erDiagram
 
 # 8. APPLICATION SCREENSHOTS & USER INTERFACE VIEWS
 
-*(Note: The following sections provide labeled frames corresponding to every user journey and administrative portal across VendorVerse. Paste your high-resolution application screenshots into each allocated block.)*
+*(Note: The following sections provide labeled frames corresponding to every user journey and administrative portal across Vendora. Paste your high-resolution application screenshots into each allocated block.)*
 
 ### 8.1 Customer-Facing Views
 
@@ -1051,7 +1051,7 @@ erDiagram
 # 9. SYSTEM TESTING, VERIFICATION & QUALITY ASSURANCE
 
 ### 9.1 Route Access & RBAC Verification Matrix
-The test suite [`test_views_matrix.py`](file:///c:/Users/SHABBIR%20G/Desktop/VendorVerse/test_views_matrix.py) was executed to verify that permissions, authentication gates, and route resolutions operate correctly across all four user personas:
+The test suite [`test_views_matrix.py`](file:///c:/Users/SHABBIR%20G/Desktop/Vendora/test_views_matrix.py) was executed to verify that permissions, authentication gates, and route resolutions operate correctly across all four user personas:
 
 | Client Persona | Target URL Path | Expected Status | Actual Status | Result |
 | :--- | :--- | :---: | :---: | :---: |
@@ -1078,11 +1078,11 @@ The test suite [`test_views_matrix.py`](file:///c:/Users/SHABBIR%20G/Desktop/Ven
 ---
 
 ### 9.2 Deep End-to-End System Cycle Tests
-The test script [`deep_system_cycle_test.py`](file:///c:/Users/SHABBIR%20G/Desktop/VendorVerse/deep_system_cycle_test.py) was executed to simulate complete user journeys directly against the live Supabase database:
+The test script [`deep_system_cycle_test.py`](file:///c:/Users/SHABBIR%20G/Desktop/Vendora/deep_system_cycle_test.py) was executed to simulate complete user journeys directly against the live Supabase database:
 
 ```
 ================================================================================
-VENDORVERSE COMPREHENSIVE END-TO-END DEEP SYSTEM & LIFECYCLE TEST
+VENDORA COMPREHENSIVE END-TO-END DEEP SYSTEM & LIFECYCLE TEST
 ================================================================================
 
 [CYCLE 1] Customer Profile & Address Management
@@ -1164,9 +1164,9 @@ TEST RESULTS: 40 EXECUTED | 40 PASSED | 0 FAILED (100% SUCCESS)
 
 ### 9.3 Real-World Bug Fixes & Windows Environment Resiliency
 During testing, three real-world issues were identified and resolved:
-1. **Attribute Naming in Notifications**: Fixed an attribute mismatch in [`apps/products/views/web.py`](file:///c:/Users/SHABBIR%20G/Desktop/VendorVerse/apps/products/views/web.py#L346-L380) where Q&A notifications referenced `question.question_text` instead of `question.text`.
+1. **Attribute Naming in Notifications**: Fixed an attribute mismatch in [`apps/products/views/web.py`](file:///c:/Users/SHABBIR%20G/Desktop/Vendora/apps/products/views/web.py#L346-L380) where Q&A notifications referenced `question.question_text` instead of `question.text`.
 2. **Windows Terminal Character Encoding**: Resolved `UnicodeEncodeError: 'charmap'` when outputting console transactional emails by sanitizing plaintext representations and using standard HTML character entities (`&#x2705;`, `&#x1F4E6;`, `&#8377;`) in email templates.
-3. **Windows Atomic File-Locking in AI Rate Limiter**: Added an automated fallback mechanism in [`apps/ai/rate_limiter.py`](file:///c:/Users/SHABBIR%20G/Desktop/VendorVerse/apps/ai/rate_limiter.py#L84-L102) to guarantee quota state persistence even when Windows OS file locks occur during concurrent read/write operations.
+3. **Windows Atomic File-Locking in AI Rate Limiter**: Added an automated fallback mechanism in [`apps/ai/rate_limiter.py`](file:///c:/Users/SHABBIR%20G/Desktop/Vendora/apps/ai/rate_limiter.py#L84-L102) to guarantee quota state persistence even when Windows OS file locks occur during concurrent read/write operations.
 
 <div style="page-break-after: always;"></div>
 
@@ -1175,7 +1175,7 @@ During testing, three real-world issues were identified and resolved:
 # 10. CONCLUSION & FUTURE ENHANCEMENTS
 
 ### 10.1 Summary of Deliverables
-VendorVerse successfully demonstrates the practical application of Python, the Django 5 web framework, relational database engineering, hypermedia interfaces, and artificial intelligence integration. 
+Vendora successfully demonstrates the practical application of Python, the Django 5 web framework, relational database engineering, hypermedia interfaces, and artificial intelligence integration. 
 
 By satisfying and exceeding all prescribed guidelines for **GLS University's Semester VII Practical Examination**, the application serves as a prime example of an enterprise-ready modular monolith. It bridges the gap between basic academic toy projects and commercial-grade web architectures by delivering realistic multi-vendor order splitting, self-service storefront customization, interactive analytics dashboards, and robust role-based security.
 

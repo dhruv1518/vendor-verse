@@ -23,10 +23,10 @@ def send_welcome_email(user):
     Send a welcome email when a new user registers.
     Uses Django's console email backend in development.
     """
-    subject = _safe_text("Welcome to VendorVerse! 🎉")
+    subject = _safe_text("Welcome to Vendora! 🎉")
     html_message = render_to_string("emails/welcome.html", {
         "user": user,
-        "site_name": "VendorVerse",
+        "site_name": "Vendora",
     })
     plain_message = _safe_text(strip_tags(html_message))
 
@@ -49,11 +49,11 @@ def send_order_confirmation_email(order):
     Send an order confirmation email after a successful payment.
     Includes order number, items summary, and total.
     """
-    subject = _safe_text(f"Order Confirmed — {order.order_number} | VendorVerse")
+    subject = _safe_text(f"Order Confirmed — {order.order_number} | Vendora")
     html_message = render_to_string("emails/order_confirmation.html", {
         "order": order,
         "order_items": order.items.select_related("vendor", "product"),
-        "site_name": "VendorVerse",
+        "site_name": "Vendora",
     })
     plain_message = _safe_text(strip_tags(html_message))
 
@@ -75,12 +75,12 @@ def send_vendor_new_order_email(vendor, order, vendor_items):
     """
     Notify a vendor that they have a new order with their items.
     """
-    subject = _safe_text(f"New Order Received — {order.order_number} | VendorVerse")
+    subject = _safe_text(f"New Order Received — {order.order_number} | Vendora")
     html_message = render_to_string("emails/vendor_new_order.html", {
         "vendor": vendor,
         "order": order,
         "items": vendor_items,
-        "site_name": "VendorVerse",
+        "site_name": "Vendora",
     })
     plain_message = _safe_text(strip_tags(html_message))
 

@@ -1,4 +1,4 @@
-# VendorVerse — Deployment Guide
+# Vendora — Deployment Guide
 
 > **Document Version:** 1.0  
 > **Last Updated:** 2026-07-22  
@@ -118,13 +118,13 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: vendorverse
-      POSTGRES_USER: vendorverse
-      POSTGRES_PASSWORD: vendorverse_dev
+      POSTGRES_DB: vendora
+      POSTGRES_USER: vendora
+      POSTGRES_PASSWORD: vendora_dev
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U vendorverse"]
+      test: ["CMD-SHELL", "pg_isready -U vendora"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -220,7 +220,7 @@ DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
 # Database
-DATABASE_URL=postgres://vendorverse:vendorverse_dev@db:5432/vendorverse
+DATABASE_URL=postgres://vendora:vendora_dev@db:5432/vendora
 
 # Redis
 REDIS_URL=redis://redis:6379/0
@@ -230,7 +230,7 @@ EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
 EMAIL_HOST=mailpit
 EMAIL_PORT=1025
 EMAIL_USE_TLS=False
-DEFAULT_FROM_EMAIL=noreply@vendorverse.local
+DEFAULT_FROM_EMAIL=noreply@vendora.local
 
 # Stripe (Test keys)
 STRIPE_PUBLIC_KEY=pk_test_your_key_here
@@ -285,8 +285,8 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: vendorverse_test
-          POSTGRES_USER: vendorverse
+          POSTGRES_DB: vendora_test
+          POSTGRES_USER: vendora
           POSTGRES_PASSWORD: test_password
         options: >-
           --health-cmd pg_isready
@@ -309,11 +309,11 @@ jobs:
       - run: python manage.py makemigrations --check --dry-run
         env:
           DJANGO_SETTINGS_MODULE: config.settings.test
-          DATABASE_URL: postgres://vendorverse:test_password@localhost:5432/vendorverse_test
+          DATABASE_URL: postgres://vendora:test_password@localhost:5432/vendora_test
       - run: pytest --cov=apps --cov-report=xml --cov-fail-under=80
         env:
           DJANGO_SETTINGS_MODULE: config.settings.test
-          DATABASE_URL: postgres://vendorverse:test_password@localhost:5432/vendorverse_test
+          DATABASE_URL: postgres://vendora:test_password@localhost:5432/vendora_test
           REDIS_URL: redis://localhost:6379/1
       - uses: codecov/codecov-action@v4
         with:
@@ -348,11 +348,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build Docker image
-        run: docker build -t vendorverse:${{ github.sha }} .
+        run: docker build -t vendora:${{ github.sha }} .
       - name: Push to registry
         run: |
-          docker tag vendorverse:${{ github.sha }} registry/vendorverse:latest
-          docker push registry/vendorverse:latest
+          docker tag vendora:${{ github.sha }} registry/vendora:latest
+          docker push registry/vendora:latest
       - name: Deploy to production
         run: |
           # SSH to production server and pull new image
@@ -369,8 +369,8 @@ jobs:
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/your-org/vendorverse.git
-cd vendorverse
+git clone https://github.com/your-org/vendora.git
+cd vendora
 
 # 2. Copy environment file
 cp .env.example .env
@@ -419,7 +419,7 @@ docker compose exec web python manage.py collectstatic --noinput
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --no-deps web
 
 # 6. Verify health
-curl -f https://vendorverse.com/health/
+curl -f https://vendora.com/health/
 
 # 7. Monitor logs
 docker compose logs -f web --tail=100
@@ -429,7 +429,7 @@ docker compose logs -f web --tail=100
 
 ```bash
 # 1. Identify the previous working image tag
-docker images vendorverse --format "{{.Tag}}"
+docker images vendora --format "{{.Tag}}"
 
 # 2. Roll back to previous image
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --no-deps web
@@ -438,7 +438,7 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --no-deps 
 docker compose exec web python manage.py migrate <app_name> <previous_migration_number>
 
 # 4. Verify
-curl -f https://vendorverse.com/health/
+curl -f https://vendora.com/health/
 ```
 
 ---
@@ -542,7 +542,7 @@ shell:           ## Django shell
 	docker compose exec web python manage.py shell_plus
 
 dbshell:         ## Database shell
-	docker compose exec db psql -U vendorverse vendorverse
+	docker compose exec db psql -U vendora vendora
 
 logs:            ## View logs
 	docker compose logs -f --tail=100

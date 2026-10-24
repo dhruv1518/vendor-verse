@@ -13,7 +13,7 @@ env = environ.Env(
 # Read .env file if it exists
 environ.Env.read_env(BASE_DIR / ".env")
 
-SECRET_KEY = env("SECRET_KEY", default="django-insecure-vendorverse-local-dev-key-change-in-production")
+SECRET_KEY = env("SECRET_KEY", default="django-insecure-vendora-local-dev-key-change-in-production")
 DEBUG = env("DEBUG")
 ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 
@@ -135,14 +135,14 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 LOGIN_REDIRECT_URL = "/"
-ACCOUNT_ADAPTER = "apps.accounts.adapter.VendorVerseAccountAdapter"
+ACCOUNT_ADAPTER = "apps.accounts.adapter.VendoraAccountAdapter"
 LOGOUT_REDIRECT_URL = "/"
 
 # --------------------------------------------------------------------------
 # Email — console backend in development (prints to terminal)
 # --------------------------------------------------------------------------
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-DEFAULT_FROM_EMAIL = "VendorVerse <noreply@vendorverse.local>"
+DEFAULT_FROM_EMAIL = "Vendora <noreply@vendora.local>"
 
 # Custom User Model
 AUTH_USER_MODEL = "accounts.User"

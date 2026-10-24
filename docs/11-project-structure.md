@@ -1,4 +1,4 @@
-# VendorVerse — Project Structure
+# Vendora — Project Structure
 
 > **Document Version:** 1.0  
 > **Last Updated:** 2026-07-22  
@@ -10,7 +10,7 @@
 ## 1. Repository Root Structure
 
 ```
-vendorverse/                             # Repository root
+vendora/                             # Repository root
 ├── .github/
 │   ├── workflows/
 │   │   ├── ci.yml                       # CI pipeline (lint, test, build)
@@ -40,7 +40,7 @@ vendorverse/                             # Repository root
 │   │   ├── __init__.py
 │   │   ├── apps.py
 │   │   ├── models.py                    # TimeStampedModel, PublicIDModel
-│   │   ├── exceptions.py               # VendorVerseException hierarchy
+│   │   ├── exceptions.py               # VendoraException hierarchy
 │   │   ├── mixins.py                    # View mixins (VendorRequiredMixin, etc.)
 │   │   ├── utils.py                     # General utilities
 │   │   ├── validators.py               # Shared validators

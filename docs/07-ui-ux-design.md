@@ -1,4 +1,4 @@
-# VendorVerse — UI/UX Design
+# Vendora — UI/UX Design
 
 > **Document Version:** 1.0  
 > **Last Updated:** 2026-07-22  
@@ -21,7 +21,7 @@
 
 ### 1.2 Design System: "Verse"
 
-The design system is named "Verse" — providing a cohesive visual language across all VendorVerse interfaces.
+The design system is named "Verse" — providing a cohesive visual language across all Vendora interfaces.
 
 ---
 

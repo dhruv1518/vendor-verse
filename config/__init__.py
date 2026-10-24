@@ -1,1 +1,1 @@
-# VendorVerse config package
+# Vendora config package

@@ -1,8 +1,8 @@
 """
-Context builders for VendorVerse AI chatbot.
+Context builders for Vendora AI chatbot.
 
 This is the HEART of the dual-mode chatbot:
-- build_global_context()     → Site-wide VendorVerse assistant
+- build_global_context()     → Site-wide Vendora assistant
 - build_storefront_context() → Vendor-specific storefront assistant
 - build_product_context()    → Product-focused assistant (when on a product page)
 
@@ -200,12 +200,12 @@ def search_products(queryset, keywords, price_filters):
 
 
 # =====================================================================
-# MODE 1: GLOBAL VENDORVERSE AI
+# MODE 1: GLOBAL VENDORA AI
 # =====================================================================
 
 def build_global_context(user_message):
     """
-    Build the system prompt for the Global VendorVerse AI assistant.
+    Build the system prompt for the Global Vendora AI assistant.
     Searches across ALL active products from ALL vendors.
     """
     keywords = extract_keywords(user_message)
@@ -242,10 +242,10 @@ def build_global_context(user_message):
     )
     categories_str = ", ".join(categories) if categories else "No categories yet"
 
-    system_prompt = f"""You are VendorVerse AI — the friendly, helpful shopping assistant for the VendorVerse multi-vendor marketplace.
+    system_prompt = f"""You are Vendora AI — the friendly, helpful shopping assistant for the Vendora multi-vendor marketplace.
 
-ABOUT VENDORVERSE:
-- VendorVerse is an online multi-vendor marketplace where independent vendors sell their products
+ABOUT VENDORA:
+- Vendora is an online multi-vendor marketplace where independent vendors sell their products
 - Each vendor has their own storefront with unique products
 - Customers can browse products from all vendors, add to cart, and checkout
 - The platform supports product reviews, wishlists, and order tracking
@@ -334,7 +334,7 @@ def build_storefront_context(storefront_slug, user_message):
     )
     categories_str = ", ".join(vendor_categories) if vendor_categories else "No categories"
 
-    system_prompt = f"""You are the AI shopping assistant for "{vendor.business_name}" on VendorVerse marketplace.
+    system_prompt = f"""You are the AI shopping assistant for "{vendor.business_name}" on Vendora marketplace.
 
 STORE INFORMATION:
 - Store name: {vendor.business_name}
@@ -451,7 +451,7 @@ def build_product_context(storefront_slug, product_slug, user_message):
     if not other_products_text:
         other_products_text = "No other products in this store"
 
-    system_prompt = f"""You are the AI product assistant for "{product.name}" by "{vendor.business_name}" on VendorVerse.
+    system_prompt = f"""You are the AI product assistant for "{product.name}" by "{vendor.business_name}" on Vendora.
 
 The customer is currently viewing this specific product and may have questions about it.
 

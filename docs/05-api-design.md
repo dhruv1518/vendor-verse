@@ -1,4 +1,4 @@
-# VendorVerse — API Design
+# Vendora — API Design
 
 > **Document Version:** 1.0  
 > **Last Updated:** 2026-07-22  
@@ -11,7 +11,7 @@
 
 ### 1.1 Dual-Interface Architecture
 
-VendorVerse serves content through two interfaces:
+Vendora serves content through two interfaces:
 
 | Interface | Technology | Purpose | Consumers |
 |---|---|---|---|
@@ -41,7 +41,7 @@ HTMX requests may hit either Django views (returning HTML fragments) or DRF endp
 ### 2.1 Base URL
 
 ```
-Production:  https://vendorverse.com/api/v1/
+Production:  https://vendora.com/api/v1/
 Development: http://localhost:8000/api/v1/
 ```
 

@@ -1,4 +1,4 @@
-# VendorVerse — Project Overview
+# Vendora — Project Overview
 
 > **Document Version:** 1.0  
 > **Last Updated:** 2026-07-22  
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-**VendorVerse** is an enterprise-grade, multi-vendor marketplace web application built on Django. It enables independent vendors to establish digital storefronts, list products, and manage order fulfillment within a unified platform. Customers enjoy a seamless shopping experience across multiple vendors with a single cart and checkout flow. The platform operator earns revenue through vendor commissions, featured listings, and tiered subscription plans.
+**Vendora** is an enterprise-grade, multi-vendor marketplace web application built on Django. It enables independent vendors to establish digital storefronts, list products, and manage order fulfillment within a unified platform. Customers enjoy a seamless shopping experience across multiple vendors with a single cart and checkout flow. The platform operator earns revenue through vendor commissions, featured listings, and tiered subscription plans.
 
 The project is designed as a production-ready Django capstone that demonstrates mastery of full-stack web development, system architecture, security, and scalable application design.
 
@@ -58,11 +58,11 @@ The global online marketplace industry is projected to exceed $8.8 trillion by 2
 
 ### 4.1 User Roles
 
-VendorVerse serves three distinct user roles, each with fundamentally different workflows:
+Vendora serves three distinct user roles, each with fundamentally different workflows:
 
 ```mermaid
 graph TB
-    subgraph Platform["VendorVerse Platform"]
+    subgraph Platform["Vendora Platform"]
         A[Platform Admin]
         V[Vendor]
         C[Customer]
@@ -226,7 +226,7 @@ graph TB
 | **GMV** | Gross Merchandise Value — total value of goods sold through the platform |
 | **SKU** | Stock Keeping Unit — unique identifier for each product variant |
 | **Commission** | Percentage of sale price retained by the platform from each vendor transaction |
-| **Storefront** | A vendor's branded page within VendorVerse displaying their products and information |
+| **Storefront** | A vendor's branded page within Vendora displaying their products and information |
 | **Escrow** | Temporary holding of payment funds until order fulfillment conditions are met |
 | **DRF** | Django REST Framework — toolkit for building REST APIs in Django |
 | **HTMX** | JavaScript library for accessing modern browser features directly from HTML |

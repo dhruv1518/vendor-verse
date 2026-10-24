@@ -1,4 +1,4 @@
-# VendorVerse — Software Requirements Specification
+# Vendora — Software Requirements Specification
 
 > **Document Version:** 1.0  
 > **Last Updated:** 2026-07-22  
@@ -11,7 +11,7 @@
 
 ### 1.1 Purpose
 
-This Software Requirements Specification (SRS) defines the functional and non-functional requirements for VendorVerse, an enterprise multi-vendor marketplace web application. It serves as the binding contract between design and implementation — every feature built must trace back to a requirement documented here.
+This Software Requirements Specification (SRS) defines the functional and non-functional requirements for Vendora, an enterprise multi-vendor marketplace web application. It serves as the binding contract between design and implementation — every feature built must trace back to a requirement documented here.
 
 ### 1.2 Requirement ID Convention
 

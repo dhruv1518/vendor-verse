@@ -1,4 +1,4 @@
-# VendorVerse — User Flows & Use Cases
+# Vendora — User Flows & Use Cases
 
 > **Document Version:** 1.0  
 > **Last Updated:** 2026-07-22  
@@ -55,7 +55,7 @@ graph TB
 
 ```mermaid
 flowchart TD
-    A[Visit VendorVerse] --> B{Has account?}
+    A[Visit Vendora] --> B{Has account?}
     B -->|No| C[Click 'Register']
     B -->|Yes| D[Click 'Login']
 

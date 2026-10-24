@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>{% block title %}{% endblock %} | VendorVerse Admin</title>
+    <title>{% block title %}{% endblock %} | Vendora Admin</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,11 +14,11 @@
     <link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
     {% block extrastyle %}{% endblock %}
 
-    <!-- VendorVerse Modern Admin Design System -->
-    <link rel="stylesheet" href="{% static 'admin/css/vendorverse_admin.css' %}">
+    <!-- Vendora Modern Admin Design System -->
+    <link rel="stylesheet" href="{% static 'admin/css/vendora_admin.css' %}">
 
     {% block extrahead %}{% endblock %}
-    <script src="{% static 'admin/js/vendorverse_admin.js' %}" defer></script>
+    <script src="{% static 'admin/js/vendora_admin.js' %}" defer></script>
 </head>
 
 <body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" data-theme="light">
@@ -37,7 +37,7 @@
                     </svg>
                 </div>
                 <div class="vv-brand-titles">
-                    <span class="vv-brand-title-main">VendorVerse</span>
+                    <span class="vv-brand-title-main">Vendora</span>
                     <span class="vv-brand-title-sub">Admin Console</span>
                 </div>
             </a>

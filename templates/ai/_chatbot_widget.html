@@ -1,10 +1,10 @@
 <!-- 
-  VendorVerse AI Chatbot Widget
+  Vendora AI Chatbot Widget
   ============================
   A floating chatbot widget powered by Alpine.js.
   
   Modes (auto-detected):
-  - Global:     No storefront context → "VendorVerse AI"
+  - Global:     No storefront context → "Vendora AI"
   - Storefront: storefront_slug set → "{Vendor Name} AI"
   - Product:    storefront_slug + product_slug → "{Product Name} Assistant"
   
@@ -182,7 +182,7 @@ function vendorVerseChat() {
             if (this.mode === 'storefront' && this.storefrontName) {
                 return this.storefrontName + ' AI';
             }
-            return 'VendorVerse AI';
+            return 'Vendora AI';
         },
 
         get chatSubtitle() {
@@ -194,7 +194,7 @@ function vendorVerseChat() {
         get welcomeTitle() {
             if (this.mode === 'product') return `Hi! Ask me anything about this product 🎯`;
             if (this.mode === 'storefront') return `Welcome to ${this.storefrontName}! 🏪`;
-            return 'Hi! I\'m VendorVerse AI 🛍️';
+            return 'Hi! I\'m Vendora AI 🛍️';
         },
 
         get welcomeSubtitle() {
@@ -222,9 +222,9 @@ function vendorVerseChat() {
             }
             return [
                 { label: '🛍️ Browse products', message: 'What products are available?' },
-                { label: '🏪 View vendors', message: 'Show me the vendors on VendorVerse' },
+                { label: '🏪 View vendors', message: 'Show me the vendors on Vendora' },
                 { label: '💰 Best deals', message: 'What are the best deals right now?' },
-                { label: '❓ How it works', message: 'How does VendorVerse work?' },
+                { label: '❓ How it works', message: 'How does Vendora work?' },
             ];
         },
 

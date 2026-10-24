@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('public_id', models.UUIDField(db_index=True, default=uuid.uuid4, editable=False, unique=True)),
                 ('business_name', models.CharField(max_length=200)),
-                ('business_description', models.TextField(help_text='Describe your business, products, and why you want to sell on VendorVerse.')),
+                ('business_description', models.TextField(help_text='Describe your business, products, and why you want to sell on Vendora.')),
                 ('business_email', models.EmailField(max_length=254)),
                 ('phone_number', models.CharField(blank=True, max_length=20)),
                 ('status', models.CharField(choices=[('PENDING', 'Pending Review'), ('APPROVED', 'Approved'), ('REJECTED', 'Rejected')], db_index=True, default='PENDING', max_length=20)),

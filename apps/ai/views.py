@@ -1,5 +1,5 @@
 """
-AI Chatbot views for VendorVerse.
+AI Chatbot views for Vendora.
 
 Single endpoint that dynamically switches between:
 - Global mode (no storefront_slug)

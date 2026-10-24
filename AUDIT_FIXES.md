@@ -1,4 +1,4 @@
-# VendorVerse — Audit Fixes & Advanced Features
+# Vendora — Audit Fixes & Advanced Features
 
 > Generated on 2026-08-20. Covers bug fixes, improvements, and advanced features.
 

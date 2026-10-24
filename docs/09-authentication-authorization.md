@@ -1,4 +1,4 @@
-# VendorVerse — Authentication & Authorization
+# Vendora — Authentication & Authorization
 
 > **Document Version:** 1.0  
 > **Last Updated:** 2026-07-22  
@@ -11,7 +11,7 @@
 
 ### 1.1 Dual Authentication Model
 
-VendorVerse employs two authentication mechanisms for two different interfaces:
+Vendora employs two authentication mechanisms for two different interfaces:
 
 | Interface | Mechanism | Library | Token Storage | Lifetime |
 |---|---|---|---|---|
@@ -131,7 +131,7 @@ sequenceDiagram
 
 ### 2.1 Role-Based Access Control (RBAC)
 
-VendorVerse uses a simple but effective role model. Users have a single `role` field rather than a many-to-many group system, because the three roles are mutually exclusive in their workflows.
+Vendora uses a simple but effective role model. Users have a single `role` field rather than a many-to-many group system, because the three roles are mutually exclusive in their workflows.
 
 | Role | Value | Description | Granted On |
 |---|---|---|---|
@@ -237,7 +237,7 @@ flowchart TD
 | `SESSION_COOKIE_HTTPONLY` | `True` | Prevent JavaScript access (XSS protection) |
 | `SESSION_COOKIE_SECURE` | `True` (production) | Require HTTPS |
 | `SESSION_COOKIE_SAMESITE` | `Lax` | CSRF protection; allow navigation from external links |
-| `SESSION_COOKIE_NAME` | `vendorverse_session` | Avoid collision with other apps |
+| `SESSION_COOKIE_NAME` | `vendora_session` | Avoid collision with other apps |
 
 ### 3.2 Session Data Structure
 
@@ -377,7 +377,7 @@ sequenceDiagram
 | Setting | Development | Production |
 |---|---|---|
 | `CORS_ALLOW_ALL_ORIGINS` | `True` | `False` |
-| `CORS_ALLOWED_ORIGINS` | — | `["https://vendorverse.com"]` |
+| `CORS_ALLOWED_ORIGINS` | — | `["https://vendora.com"]` |
 | `CORS_ALLOW_CREDENTIALS` | `True` | `True` |
 | `CORS_ALLOW_HEADERS` | Default + `X-Request-ID` | Default + `X-Request-ID` |
 

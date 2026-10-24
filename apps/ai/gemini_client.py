@@ -1,5 +1,5 @@
 """
-Gemini API client wrapper for VendorVerse.
+Gemini API client wrapper for Vendora.
 
 Uses the newer `google-genai` package (lighter, faster install).
 Install: pip install google-genai

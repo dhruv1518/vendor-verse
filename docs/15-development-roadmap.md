@@ -1,4 +1,4 @@
-# VendorVerse — Development Roadmap
+# Vendora — Development Roadmap
 
 > **Document Version:** 1.0  
 > **Last Updated:** 2026-07-22  
@@ -11,7 +11,7 @@
 
 ```mermaid
 gantt
-    title VendorVerse Development Roadmap
+    title Vendora Development Roadmap
     dateFormat  YYYY-MM-DD
     axisFormat  %b %d
 

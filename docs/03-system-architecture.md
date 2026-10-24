@@ -1,4 +1,4 @@
-# VendorVerse — System Architecture
+# Vendora — System Architecture
 
 > **Document Version:** 1.0  
 > **Last Updated:** 2026-07-22  
@@ -9,7 +9,7 @@
 
 ## 1. Architecture Overview
 
-VendorVerse follows a **modular monolith** architecture — a single Django application composed of well-bounded, loosely-coupled Django apps, backed by PostgreSQL, Redis, and Celery for async processing. The frontend is server-rendered using Django Templates enhanced with HTMX for dynamic interactions and Alpine.js for client-side state.
+Vendora follows a **modular monolith** architecture — a single Django application composed of well-bounded, loosely-coupled Django apps, backed by PostgreSQL, Redis, and Celery for async processing. The frontend is server-rendered using Django Templates enhanced with HTMX for dynamic interactions and Alpine.js for client-side state.
 
 ### 1.1 Architectural Decision: Modular Monolith vs. Microservices
 
@@ -28,31 +28,31 @@ VendorVerse follows a **modular monolith** architecture — a single Django appl
 
 ## 2. System Context Diagram
 
-This diagram shows VendorVerse's interactions with external systems and actors.
+This diagram shows Vendora's interactions with external systems and actors.
 
 ```mermaid
 C4Context
-    title VendorVerse — System Context
+    title Vendora — System Context
 
     Person(customer, "Customer", "Browses products, places orders, writes reviews")
     Person(vendor, "Vendor", "Manages storefront, products, orders, earnings")
     Person(admin, "Platform Admin", "Manages platform, moderates content, configures settings")
 
-    System(vendorverse, "VendorVerse", "Multi-vendor marketplace web application")
+    System(vendora, "Vendora", "Multi-vendor marketplace web application")
 
     System_Ext(stripe, "Stripe Connect", "Payment processing, vendor payouts, commission splitting")
     System_Ext(email, "Email Service", "Transactional email delivery (SMTP / SendGrid)")
     System_Ext(s3, "S3-Compatible Storage", "Product images, vendor assets, static files")
     System_Ext(oauth, "OAuth Providers", "Google, GitHub social authentication")
 
-    Rel(customer, vendorverse, "Browses, searches, purchases", "HTTPS")
-    Rel(vendor, vendorverse, "Manages store, fulfills orders", "HTTPS")
-    Rel(admin, vendorverse, "Administers platform", "HTTPS")
+    Rel(customer, vendora, "Browses, searches, purchases", "HTTPS")
+    Rel(vendor, vendora, "Manages store, fulfills orders", "HTTPS")
+    Rel(admin, vendora, "Administers platform", "HTTPS")
 
-    Rel(vendorverse, stripe, "Processes payments", "HTTPS/API")
-    Rel(vendorverse, email, "Sends notifications", "SMTP/API")
-    Rel(vendorverse, s3, "Stores/retrieves media", "HTTPS/API")
-    Rel(vendorverse, oauth, "Authenticates users", "OAuth 2.0")
+    Rel(vendora, stripe, "Processes payments", "HTTPS/API")
+    Rel(vendora, email, "Sends notifications", "SMTP/API")
+    Rel(vendora, s3, "Stores/retrieves media", "HTTPS/API")
+    Rel(vendora, oauth, "Authenticates users", "OAuth 2.0")
 ```
 
 ---
@@ -61,7 +61,7 @@ C4Context
 
 ### 3.1 Layered Architecture
 
-VendorVerse employs a **four-layer architecture** that enforces separation of concerns and unidirectional dependency flow.
+Vendora employs a **four-layer architecture** that enforces separation of concerns and unidirectional dependency flow.
 
 ```mermaid
 graph TB
@@ -461,7 +461,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[User visits VendorVerse] --> B{Authenticated?}
+    A[User visits Vendora] --> B{Authenticated?}
 
     B -->|No| C{Login method?}
     C -->|Email/Password| D[Django Allauth: Email login]
@@ -543,7 +543,7 @@ graph TB
 | Category updated | `categories:tree`, `products:category:{cat_id}:*` |
 | Vendor updated | `vendor:{vendor_id}:*`, `storefront:{slug}` |
 
-**Invalidation mechanism:** Django signals trigger cache invalidation in the service layer. Key naming convention: `vendorverse:{app}:{entity}:{id}:{view}`.
+**Invalidation mechanism:** Django signals trigger cache invalidation in the service layer. Key naming convention: `vendora:{app}:{entity}:{id}:{view}`.
 
 ---
 
@@ -704,7 +704,7 @@ graph TB
 ### 12.2 Custom Exception Hierarchy
 
 ```
-VendorVerseException (base)
+VendoraException (base)
 ├── ValidationError
 │   ├── InsufficientStockError
 │   ├── InvalidCouponError
@@ -746,7 +746,7 @@ VendorVerseException (base)
 {
   "timestamp": "2026-07-22T12:00:00Z",
   "level": "INFO",
-  "logger": "vendorverse.orders.services",
+  "logger": "vendora.orders.services",
   "message": "Order placed successfully",
   "context": {
     "order_id": "ORD-20260722-0001",

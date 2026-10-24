@@ -1,5 +1,5 @@
 """
-Rate limiter and free-tier safety net for VendorVerse AI chatbot.
+Rate limiter and free-tier safety net for Vendora AI chatbot.
 
 MULTI-TIER PROTECTION FOR GOOGLE GEMINI FREE TIER:
 1. Per-Minute Throttle (RPM Protection):

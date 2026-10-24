@@ -1,5 +1,5 @@
 /**
- * VendorVerse Admin Console — In-App Modal & Interactive UX System
+ * Vendora Admin Console — In-App Modal & Interactive UX System
  * Replaces browser Chrome popups (window.open) with seamless in-app modals.
  */
 
@@ -94,7 +94,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
                         </div>
-                        <h3 class="vv-modal-title" id="vv-modal-title-text">VendorVerse Object Manager</h3>
+                        <h3 class="vv-modal-title" id="vv-modal-title-text">Vendora Object Manager</h3>
                     </div>
                     <div class="vv-modal-actions">
                         <button type="button" class="vv-modal-btn" id="vv-modal-expand-btn" title="Toggle Fullscreen">

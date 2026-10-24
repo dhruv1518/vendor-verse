@@ -1,4 +1,4 @@
-# VendorVerse — Coding Standards
+# Vendora — Coding Standards
 
 > **Document Version:** 1.0  
 > **Last Updated:** 2026-07-22  
@@ -11,7 +11,7 @@
 
 ### 1.1 Style Guide
 
-VendorVerse follows **PEP 8** with enhancements enforced by **Ruff** (linter + formatter).
+Vendora follows **PEP 8** with enhancements enforced by **Ruff** (linter + formatter).
 
 | Rule | Standard |
 |---|---|

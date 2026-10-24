@@ -189,7 +189,7 @@ def build_report():
     p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_title.paragraph_format.space_before = Pt(14)
     p_title.paragraph_format.space_after = Pt(40)
-    r = p_title.add_run('“VendorVerse — Enterprise Multi-Vendor Marketplace”')
+    r = p_title.add_run('“Vendora — Enterprise Multi-Vendor Marketplace”')
     r.font.name = "Georgia"
     r.font.size = Pt(17)
     r.font.bold = True
@@ -309,13 +309,13 @@ def build_report():
     add_section_header("TABLE OF CONTENTS", "Academic Syllabus & Practical Report Index")
     
     toc_data = [
-        ("1. Introduction to VendorVerse", "Page 3"),
+        ("1. Introduction to Vendora", "Page 3"),
         ("    1.1 System Genesis & Executive Summary", "Page 3"),
         ("    1.2 The Multi-Tenant Digital Marketplace Vision", "Page 3"),
         ("    1.3 High-Level Feature Architecture", "Page 3"),
         ("2. Project Purpose & Objectives", "Page 4"),
         ("    2.1 Detailed Business Problem Statement", "Page 4"),
-        ("    2.2 The VendorVerse Engineering Solution", "Page 4"),
+        ("    2.2 The Vendora Engineering Solution", "Page 4"),
         ("    2.3 Role-Based Stakeholder Personas & Scope", "Page 4"),
         ("    2.4 Real-World Commercial Value & Competitive Edge", "Page 4"),
         ("3. Technology Stack & Selection Rationale", "Page 5"),
@@ -397,8 +397,8 @@ def build_report():
 
     add_subheading("1.1 System Genesis & Executive Summary")
     add_body(
-        "VendorVerse is an enterprise-grade, multi-vendor electronic commerce marketplace engineered using Python 3.12 "
-        "and the Django 5.x web development framework. The fundamental objective of VendorVerse is to provide a unified, "
+        "Vendora is an enterprise-grade, multi-vendor electronic commerce marketplace engineered using Python 3.12 "
+        "and the Django 5.x web development framework. The fundamental objective of Vendora is to provide a unified, "
         "high-performance commerce ecosystem where independent retail merchants can effortlessly launch branded digital storefronts, "
         "manage product inventories, configure multi-tiered SKU variants, and execute independent order fulfillments. Concurrently, "
         "consumers enjoy an Amazon-scale shopping experience featuring multi-vendor cart consolidation, seamless one-click checkout, "
@@ -407,7 +407,7 @@ def build_report():
 
     add_subheading("1.2 The Multi-Tenant Digital Marketplace Paradigm")
     add_body(
-        "Unlike conventional single-vendor e-commerce web applications, VendorVerse operates on a multi-tenant business architecture. "
+        "Unlike conventional single-vendor e-commerce web applications, Vendora operates on a multi-tenant business architecture. "
         "Individual merchants register on the platform through a structured self-service onboarding workflow. Following administrative "
         "verification and compliance vetting, the platform dynamically provisions an isolated, search-engine-optimized storefront "
         "(accessible via '/store/<vendor-slug>/'). Merchants retain autonomous governance over their corporate identity—including custom "
@@ -465,11 +465,11 @@ def build_report():
         "Static product descriptions fail to address nuanced customer queries regarding sizing, compatibility, and policies, directly elevating cart abandonment rates beyond 70%."
     )
 
-    add_subheading("2.2 The VendorVerse Engineering Solution")
+    add_subheading("2.2 The Vendora Engineering Solution")
     add_body(
-        "VendorVerse eliminates these systemic inefficiencies through a modular monolithic marketplace architecture. By consolidating "
+        "Vendora eliminates these systemic inefficiencies through a modular monolithic marketplace architecture. By consolidating "
         "multi-vendor catalog discovery, secure payment aggregation, distributed order item fulfillment, and embedded generative AI assistance "
-        "into a single codebase, VendorVerse provides enterprise-grade commerce capabilities at near-zero hosting overhead."
+        "into a single codebase, Vendora provides enterprise-grade commerce capabilities at near-zero hosting overhead."
     )
 
     add_subheading("2.3 Role-Based Stakeholder Personas & Scope")
@@ -570,7 +570,7 @@ def build_report():
     add_subheading("3.2 Deep Dive into Technology Advantages")
     add_bullet(
         "Elimination of Frontend Tooling Overhead: ",
-        "By utilizing HTMX alongside Django templates, VendorVerse completely eliminates Node.js dependencies, Webpack/Vite bundlers, and npm vulnerabilities, resulting in a lightweight, lightning-fast application."
+        "By utilizing HTMX alongside Django templates, Vendora completely eliminates Node.js dependencies, Webpack/Vite bundlers, and npm vulnerabilities, resulting in a lightweight, lightning-fast application."
     )
     add_bullet(
         "Production-Grade Database Pooling: ",
@@ -590,7 +590,7 @@ def build_report():
 
     add_subheading("4.1 Dual-Key Architectural Pattern")
     add_body(
-        "VendorVerse implements an enterprise dual-key architecture that cleanly segregates internal database performance "
+        "Vendora implements an enterprise dual-key architecture that cleanly segregates internal database performance "
         "from external client-facing security:"
     )
     add_bullet(
@@ -649,7 +649,7 @@ def build_report():
 
     add_subheading("4.3 Transactional ACID Integrity & Inventory Protection")
     add_body(
-        "VendorVerse executes multi-vendor checkout through Django's `transaction.atomic()` database context. During order creation, "
+        "Vendora executes multi-vendor checkout through Django's `transaction.atomic()` database context. During order creation, "
         "inventory quantities are decremented simultaneously across multiple vendor items using database-level F() expressions. "
         "If payment authorization fails or inventory is insufficient, the entire transaction automatically rolls back, completely "
         "preventing data corruption or phantom stock deductions."
@@ -664,14 +664,14 @@ def build_report():
 
     add_subheading("5.1 Model-View-Template (MVT) Pattern Implementation")
     add_body(
-        "VendorVerse strictly adheres to Django's architectural Model-View-Template pattern: (1) Models encapsulate data access, "
+        "Vendora strictly adheres to Django's architectural Model-View-Template pattern: (1) Models encapsulate data access, "
         "schema constraints, and querysets; (2) Views (Generic Class-Based Views) process HTTP requests, enforce Role-Based Access Control, "
         "and handle business transactions; (3) Templates render HTML presentations using the Django Template Language (DTL)."
     )
 
     add_subheading("5.2 Customized Templates for Design Consistency (GLS Syllabus Deliverable #1 & #2)")
     add_body(
-        "To satisfy the mandatory requirement for customized templates and design consistency, VendorVerse features a "
+        "To satisfy the mandatory requirement for customized templates and design consistency, Vendora features a "
         "hierarchical template tree structured around `templates/base.html`. All child templates inherit global layout styling, "
         "standardized navbar dropdowns, unified notification toasts, and footer components:"
     )
@@ -690,7 +690,7 @@ def build_report():
 
     add_subheading("5.3 Cookies and Session Settings (GLS Syllabus Deliverable #5)")
     add_body(
-        "VendorVerse implements comprehensive session-driven state tracking configured with hardened security settings:"
+        "Vendora implements comprehensive session-driven state tracking configured with hardened security settings:"
     )
     add_bullet(
         "Recently Viewed Products: ",
@@ -720,12 +720,12 @@ def build_report():
 
     add_subheading("5.5 REST API Interface of User Defined Models (GLS Syllabus Deliverable #6)")
     add_body(
-        "VendorVerse exposes RESTful JSON endpoints alongside hypermedia routes: (1) `/products/autocomplete/` returning real-time "
+        "Vendora exposes RESTful JSON endpoints alongside hypermedia routes: (1) `/products/autocomplete/` returning real-time "
         "JSON search suggestions; (2) `/ai/chat/` accepting customer messages and returning context-aware generative replies; and "
         "(3) `/ai/status/` providing system health and quota telemetry."
     )
 
-    output_path = os.path.join(os.getcwd(), "VendorVerse_GLS_Project_Report.docx")
+    output_path = os.path.join(os.getcwd(), "Vendora_GLS_Project_Report.docx")
     doc.save(output_path)
     print(f"Successfully generated report at: {output_path}")
 

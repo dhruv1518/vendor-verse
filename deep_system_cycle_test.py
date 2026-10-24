@@ -20,7 +20,7 @@ from apps.reviews.models import Review
 from apps.notifications.models import Notification
 
 print("=" * 80)
-print("VENDORVERSE COMPREHENSIVE END-TO-END DEEP SYSTEM & LIFECYCLE TEST")
+print("VENDORA COMPREHENSIVE END-TO-END DEEP SYSTEM & LIFECYCLE TEST")
 print("=" * 80)
 
 passed_tests = 0
@@ -520,7 +520,7 @@ try:
     # Ensure at least one unread notification exists
     Notification.objects.create(
         user=customer_user,
-        title="Welcome to VendorVerse Tests",
+        title="Welcome to Vendora Tests",
         message="Your test notification is waiting for you.",
         link="/products/",
     )
@@ -628,7 +628,7 @@ try:
     
     res = client_v1.post(reverse("vendors:storefront_settings"), {
         "tagline": new_tagline,
-        "description": "Welcome to our premier official storefront on VendorVerse.",
+        "description": "Welcome to our premier official storefront on Vendora.",
         "return_policy": "30-day hassle-free returns.",
         "shipping_policy": "Free shipping across India on orders over ₹499.",
     })
@@ -665,7 +665,7 @@ try:
     res = client_applicant.post(reverse("vendors:apply"), {
         "business_name": app_biz,
         "business_email": temp_email,
-        "business_description": "We are seeking to expand our footprint on VendorVerse by selling curated electronics.",
+        "business_description": "We are seeking to expand our footprint on Vendora by selling curated electronics.",
         "phone_number": "+91 9988776655",
     })
     
@@ -693,7 +693,7 @@ try:
         "name": "Jane Doe",
         "email": "jane@example.com",
         "subject": "Platform Partnership",
-        "message": "We would like to partner with VendorVerse for national distribution.",
+        "message": "We would like to partner with Vendora for national distribution.",
     })
     if res.status_code == 302:
         record_pass("Contact Form Submission", "Form accepted and redirected with success message")

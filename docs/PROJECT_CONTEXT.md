@@ -1,4 +1,4 @@
-# VendorVerse — Project Context
+# Vendora — Project Context
 
 > **Master Reference Document for AI Development Sessions**  
 > **Last Updated:** 2026-07-22  
@@ -8,13 +8,13 @@
 
 ## Purpose
 
-This document is the **single entry point** for any developer or AI beginning work on VendorVerse. Read this document first before writing any code. It provides a complete project overview with references to detailed documentation.
+This document is the **single entry point** for any developer or AI beginning work on Vendora. Read this document first before writing any code. It provides a complete project overview with references to detailed documentation.
 
 ---
 
 ## 1. Project Summary
 
-**VendorVerse** is an enterprise-grade multi-vendor marketplace web application built with Django. It enables vendors to create storefronts, list products, and manage orders, while customers enjoy a unified shopping experience with cross-vendor cart, secure checkout, and order tracking. The platform generates revenue through vendor commissions and subscription tiers.
+**Vendora** is an enterprise-grade multi-vendor marketplace web application built with Django. It enables vendors to create storefronts, list products, and manage orders, while customers enjoy a unified shopping experience with cross-vendor cart, secure checkout, and order tracking. The platform generates revenue through vendor commissions and subscription tiers.
 
 | Attribute | Value |
 |---|---|
@@ -191,7 +191,7 @@ administration → (configures vendors, products, platform)
 ## 9. Folder Structure (Top-Level)
 
 ```
-vendorverse/
+vendora/
 ├── config/                  # Django settings, URLs, WSGI/ASGI, Celery
 │   └── settings/            # base.py, development.py, production.py, test.py
 ├── apps/                    # All Django apps
@@ -302,7 +302,7 @@ Full details: [Coding Standards](./12-coding-standards.md)
 
 ## 14. Quick Start for AI Sessions
 
-When starting a new development session on VendorVerse:
+When starting a new development session on Vendora:
 
 1. **Read this file** for project context
 2. **Check the [Development Roadmap](./15-development-roadmap.md)** to identify the current phase
@@ -318,4 +318,4 @@ When starting a new development session on VendorVerse:
 
 ---
 
-*This document is the permanent blueprint for VendorVerse. All development decisions should align with the architecture documented here.*
+*This document is the permanent blueprint for Vendora. All development decisions should align with the architecture documented here.*

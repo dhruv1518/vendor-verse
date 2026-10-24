@@ -7,8 +7,8 @@ from django.views.generic import TemplateView
 from apps.vendors.views import StorefrontDetailView
 from apps.core import views as core_views
 
-admin.site.site_header = "VendorVerse Administration"
-admin.site.site_title = "VendorVerse Admin Portal"
+admin.site.site_header = "Vendora Administration"
+admin.site.site_title = "Vendora Admin Portal"
 admin.site.index_title = "System Management & Operations"
 
 urlpatterns = [

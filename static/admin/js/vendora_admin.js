@@ -289,11 +289,139 @@
         }
     }
 
+    // --- Modernize & Polish Admin Interface Elements ---
+    function enhanceAdminUI() {
+        // 1. Clean up duplicate object tools in content-main
+        try {
+            const bannerTools = document.querySelector('.vv-page-title-banner .object-tools');
+            const mainTools = document.querySelectorAll('#content-main > .object-tools, #content-main > ul.object-tools');
+            if (bannerTools && mainTools.length > 0) {
+                mainTools.forEach(el => el.remove());
+            }
+        } catch (e) {}
+
+        // 2. Set modern placeholder on changelist search bar
+        const searchbar = document.getElementById('searchbar');
+        if (searchbar && (!searchbar.placeholder || searchbar.placeholder === '')) {
+            searchbar.placeholder = 'Search records (name, sku, vendor, keywords)...';
+        }
+
+        // 3. Beautify changelist main heading
+        const mainTitle = document.querySelector('.vv-main-title');
+        if (mainTitle && mainTitle.textContent) {
+            const text = mainTitle.textContent.trim();
+            // E.g., "Select product to change" -> "Products Directory"
+            const selectMatch = text.match(/^Select\s+(.+?)\s+to\s+change$/i);
+            if (selectMatch && selectMatch[1]) {
+                const modelName = selectMatch[1].charAt(0).toUpperCase() + selectMatch[1].slice(1);
+                mainTitle.textContent = `${modelName} Directory`;
+            }
+        }
+
+        // 4. Transform plain-text status table cells into modern status pills
+        const statusMap = {
+            success: ['active', 'published', 'completed', 'delivered', 'paid', 'approved', 'verified', 'yes'],
+            warning: ['draft', 'pending', 'processing', 'unpaid', 'in review', 'in_review', 'low stock'],
+            danger: ['archived', 'cancelled', 'refunded', 'failed', 'rejected', 'inactive', 'no', 'out of stock']
+        };
+
+        const resultRows = document.querySelectorAll('#result_list tbody tr');
+        resultRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            cells.forEach(cell => {
+                // Skip if cell contains form elements or links
+                if (cell.querySelector('input, select, textarea, a, button, img, svg')) return;
+                const rawText = cell.textContent.trim().toLowerCase();
+                if (!rawText || rawText.length > 25) return;
+
+                let category = null;
+                if (statusMap.success.includes(rawText)) {
+                    category = 'success';
+                } else if (statusMap.warning.includes(rawText)) {
+                    category = 'warning';
+                } else if (statusMap.danger.includes(rawText)) {
+                    category = 'danger';
+                }
+
+                if (category) {
+                    const displayLabel = cell.textContent.trim();
+                    cell.innerHTML = `<span class="vv-badge-status ${category}"><span class="vv-badge-dot"></span>${displayLabel}</span>`;
+                }
+            });
+        });
+
+        // 5. Enhance Filter sidebar with badge counts if available
+        const filterItems = document.querySelectorAll('#changelist-filter li.selected a');
+        filterItems.forEach(item => {
+            if (!item.querySelector('.vv-filter-active-tag')) {
+                const checkTag = document.createElement('span');
+                checkTag.className = 'vv-filter-active-tag';
+                checkTag.style.cssText = 'font-size: 11px; font-weight: 800; color: #4f46e5; margin-left: auto;';
+                item.appendChild(checkTag);
+            }
+        });
+    }
+
+    // --- Dashboard Live Search & Category Tabs ---
+    function initDashboardToolbar() {
+        const searchInput = document.getElementById('vv-dash-quick-filter');
+        const tabBtns = document.querySelectorAll('.vv-cat-tab');
+        const appCards = document.querySelectorAll('.vv-app-card');
+
+        if (!searchInput && tabBtns.length === 0) return;
+
+        let activeCategory = 'all';
+
+        function filterDashboard() {
+            const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+            appCards.forEach(card => {
+                const cardCat = card.getAttribute('data-category') || 'other';
+                const cardName = card.getAttribute('data-app-name') || '';
+                const models = card.querySelectorAll('.vv-model-item');
+
+                let catMatch = (activeCategory === 'all' || cardCat === activeCategory);
+                let modelMatchCount = 0;
+
+                models.forEach(model => {
+                    const modelName = model.getAttribute('data-model-name') || '';
+                    if (!query || modelName.includes(query) || cardName.includes(query)) {
+                        model.style.display = '';
+                        modelMatchCount++;
+                    } else {
+                        model.style.display = 'none';
+                    }
+                });
+
+                if (catMatch && (!query || modelMatchCount > 0 || cardName.includes(query))) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', filterDashboard);
+        }
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeCategory = btn.getAttribute('data-cat') || 'all';
+                filterDashboard();
+            });
+        });
+    }
+
     // --- Initialize on DOMContentLoaded ---
     function init() {
         initTheme();
         interceptPopupTriggers();
         initMobileMenu();
+        enhanceAdminUI();
+        initDashboardToolbar();
     }
 
     if (document.readyState === 'loading') {
@@ -302,3 +430,4 @@
         init();
     }
 })();
+

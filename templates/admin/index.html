@@ -76,10 +76,61 @@
     <!-- Left Column: App Cards Grid -->
     <div id="content-main">
         {% if app_list %}
-        <div class="vv-app-cards-grid">
-            {% for app in app_list %}
+        <!-- Action Launchpad (Feature Buttons) -->
+        <div class="vv-action-launchpad">
+            <div class="vv-launchpad-header">
+                <span class="vv-launchpad-title">⚡ Quick Platform Actions</span>
+                <span class="vv-launchpad-subtitle">Instant feature shortcuts for common marketplace tasks</span>
+            </div>
+            <div class="vv-launchpad-buttons">
+                <a href="{% url 'admin:products_product_add' %}" class="vv-launch-btn primary add-related">
+                    <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                    <span>Add New Product</span>
+                </a>
+                <a href="{% url 'admin:orders_order_changelist' %}" class="vv-launch-btn amber">
+                    <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    </svg>
+                    <span>Customer Orders</span>
+                    <span class="vv-launch-count">{{ kpis.total_orders }}</span>
+                </a>
+                <a href="{% url 'admin:vendors_vendorapplication_changelist' %}" class="vv-launch-btn cyan">
+                    <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
+                    </svg>
+                    <span>Seller Applications</span>
+                </a>
+                <a href="{% url 'admin:orders_coupon_add' %}" class="vv-launch-btn purple add-related">
+                    <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
+                    </svg>
+                    <span>Create Promo Coupon</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Command & Quick Filter Bar -->
+        <div class="vv-dash-filter-bar">
+            <div class="vv-dash-search-box">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="#94a3b8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+                <input type="text" id="vv-dash-quick-filter" placeholder="Quick search modules (e.g. Products, Orders, Sellers, Users, Coupons)...">
+            </div>
+            <div class="vv-dash-category-tabs" id="vv-category-tabs">
+                <button type="button" class="vv-cat-tab active" data-cat="all">All Modules</button>
+                <button type="button" class="vv-cat-tab" data-cat="commerce">🛍️ Commerce</button>
+                <button type="button" class="vv-cat-tab" data-cat="users">👥 Users & Relations</button>
+                <button type="button" class="vv-cat-tab" data-cat="security">🔐 Security & Auth</button>
+            </div>
+        </div>
+
+        <div class="vv-app-cards-grid" id="vv-app-cards-grid">
+            {% for app in app_list|sort_apps_by_priority %}
             {% get_app_meta app.app_label as meta %}
-            <div class="vv-app-card" id="app-card-{{ app.app_label }}">
+            <div class="vv-app-card" id="app-card-{{ app.app_label }}" data-category="{{ meta.category|default:'other' }}" data-app-name="{{ app.name|lower }} {{ meta.title|lower }}">
                 <div class="vv-app-card-header">
                     <div class="vv-app-header-left">
                         <div class="vv-app-badge-icon" {{ meta.bg_style_attr }}>
@@ -87,8 +138,8 @@
                         </div>
                         <div class="vv-app-title-wrap">
                             <h2>
-                                <a href="{{ app.app_url }}" title="{% blocktranslate with name=app.name %}Manage {{ name }}{% endblocktranslate %}">
-                                    {{ app.name }}
+                                <a href="{{ app.app_url }}" title="{% blocktranslate with name=meta.title|default:app.name %}Manage {{ name }}{% endblocktranslate %}">
+                                    {{ meta.title|default:app.name }}
                                 </a>
                             </h2>
                         </div>
@@ -98,34 +149,28 @@
 
                 <ul class="vv-model-list">
                     {% for model in app.models %}
-                    <li class="vv-model-item" id="model-{{ model.object_name|lower }}">
+                    <li class="vv-model-item" id="model-{{ model.object_name|lower }}" data-model-name="{{ model.name|lower }}">
                         {% if model.admin_url %}
-                        <a href="{{ model.admin_url }}" class="vv-model-name-link" title="{{ model.name }}">
-                            <span>{{ model.name }}</span>
+                        <a href="{{ model.admin_url }}" class="vv-model-tile-link" title="Open {{ model.name }} directory">
+                            <span class="vv-model-bullet" style="background: {{ meta.color }};"></span>
+                            <span class="vv-model-title">{{ model.name }}</span>
+                            <span class="vv-model-hover-tag">Browse &rarr;</span>
                         </a>
                         {% else %}
-                        <span class="vv-model-name-link" style="color: var(--body-quiet-color);">{{ model.name }}</span>
+                        <div class="vv-model-tile-link disabled">
+                            <span class="vv-model-bullet" style="background: #cbd5e1;"></span>
+                            <span class="vv-model-title" style="color: #94a3b8;">{{ model.name }}</span>
+                        </div>
                         {% endif %}
 
-                        <div class="vv-model-actions">
-                            {% if model.add_url %}
-                            <a href="{{ model.add_url }}" class="vv-btn-add add-related" title="{% blocktranslate with name=model.name %}Add new {{ name }}{% endblocktranslate %}">
-                                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                </svg>
-                                <span>Add</span>
-                            </a>
-                            {% endif %}
-
-                            {% if model.admin_url %}
-                            <a href="{{ model.admin_url }}" class="vv-btn-change" title="{% blocktranslate with name=model.name %}View {{ name }} table{% endblocktranslate %}">
-                                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                                </svg>
-                                <span>Change</span>
-                            </a>
-                            {% endif %}
-                        </div>
+                        {% if model.add_url %}
+                        <a href="{{ model.add_url }}" class="vv-btn-tile-add add-related" title="Add new {{ model.name }}">
+                            <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            <span>New</span>
+                        </a>
+                        {% endif %}
                     </li>
                     {% endfor %}
                 </ul>

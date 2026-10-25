@@ -15,10 +15,10 @@
     {% block extrastyle %}{% endblock %}
 
     <!-- Vendora Modern Admin Design System -->
-    <link rel="stylesheet" href="{% static 'admin/css/vendora_admin.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/vendora_admin.css' %}?v=2.2">
 
     {% block extrahead %}{% endblock %}
-    <script src="{% static 'admin/js/vendora_admin.js' %}" defer></script>
+    <script src="{% static 'admin/js/vendora_admin.js' %}?v=2.2" defer></script>
 </head>
 
 <body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" data-theme="light">
@@ -59,14 +59,14 @@
             <!-- App Modules -->
             {% if available_apps %}
                 <div class="vv-nav-section-title">Platform Apps</div>
-                {% for app in available_apps %}
+                {% for app in available_apps|sort_apps_by_priority %}
                 {% get_app_meta app.app_label as meta %}
                 <div class="vv-app-menu-block" id="sidebar-app-{{ app.app_label }}">
                     <div class="vv-app-menu-header">
                         <span class="vv-app-menu-icon" {{ meta.style_attr }}>
                             {{ meta.icon_safe }}
                         </span>
-                        <span class="vv-app-menu-title">{{ app.name }}</span>
+                        <span class="vv-app-menu-title">{{ meta.title|default:app.name }}</span>
                     </div>
                     <div class="vv-app-menu-sublinks">
                         {% for model in app.models %}

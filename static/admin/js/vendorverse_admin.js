@@ -242,7 +242,8 @@
     // --- Intercept Related Object Popup Links ---
     function interceptPopupTriggers() {
         document.addEventListener('click', function (e) {
-            const link = e.target.closest('a.related-widget-wrapper-link, a.add-related, a.change-related, a.delete-related, a.view-related');
+            // Only intercept actual Django ForeignKey popup buttons (inside .related-widget-wrapper or with data-modal)
+            const link = e.target.closest('.related-widget-wrapper a.related-widget-wrapper-link, .related-widget-wrapper a.add-related, .related-widget-wrapper a.change-related, .related-widget-wrapper a.delete-related, .related-widget-wrapper a.view-related, a[data-modal="true"]');
             if (link && link.href) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -267,7 +268,7 @@
     // --- Intercept window.open for any _popup=1 calls ---
     const originalWindowOpen = window.open;
     window.open = function (url, name, specs) {
-        if (url && typeof url === 'string' && (url.includes('_popup=1') || url.includes('/add/') || url.includes('/change/'))) {
+        if (url && typeof url === 'string' && url.includes('_popup=1')) {
             openInAppModal(url, 'Manage Object');
             // Return dummy object with focus/close methods so Django popup scripts don't throw error
             return {
@@ -289,11 +290,264 @@
         }
     }
 
+    // --- Modernize & Polish Admin Interface Elements ---
+    function enhanceAdminUI() {
+        // 1. Clean up duplicate object tools in content-main
+        try {
+            const bannerTools = document.querySelector('.vv-page-title-banner .object-tools');
+            const mainTools = document.querySelectorAll('#content-main > .object-tools, #content-main > ul.object-tools');
+            if (bannerTools && mainTools.length > 0) {
+                mainTools.forEach(el => el.remove());
+            }
+        } catch (e) {}
+
+        // 2. Set modern placeholder on changelist search bar
+        const searchbar = document.getElementById('searchbar');
+        if (searchbar && (!searchbar.placeholder || searchbar.placeholder === '')) {
+            searchbar.placeholder = 'Search records (name, sku, vendor, keywords)...';
+        }
+
+        // 3. Beautify changelist main heading
+        const mainTitle = document.querySelector('.vv-main-title');
+        if (mainTitle && mainTitle.textContent) {
+            const text = mainTitle.textContent.trim();
+            // E.g., "Select product to change" -> "Products Directory"
+            const selectMatch = text.match(/^Select\s+(.+?)\s+to\s+change$/i);
+            if (selectMatch && selectMatch[1]) {
+                const modelName = selectMatch[1].charAt(0).toUpperCase() + selectMatch[1].slice(1);
+                mainTitle.textContent = `${modelName} Directory`;
+            }
+        }
+
+        // 4. Transform plain-text status table cells into modern status pills
+        const statusMap = {
+            success: ['active', 'published', 'completed', 'delivered', 'paid', 'approved', 'verified', 'yes'],
+            warning: ['draft', 'pending', 'processing', 'unpaid', 'in review', 'in_review', 'low stock'],
+            danger: ['archived', 'cancelled', 'refunded', 'failed', 'rejected', 'inactive', 'no', 'out of stock']
+        };
+
+        const resultRows = document.querySelectorAll('#result_list tbody tr');
+        resultRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            cells.forEach(cell => {
+                // Skip if cell contains form elements or links
+                if (cell.querySelector('input, select, textarea, a, button, img, svg')) return;
+                const rawText = cell.textContent.trim().toLowerCase();
+                if (!rawText || rawText.length > 25) return;
+
+                let category = null;
+                if (statusMap.success.includes(rawText)) {
+                    category = 'success';
+                } else if (statusMap.warning.includes(rawText)) {
+                    category = 'warning';
+                } else if (statusMap.danger.includes(rawText)) {
+                    category = 'danger';
+                }
+
+                if (category) {
+                    const displayLabel = cell.textContent.trim();
+                    cell.innerHTML = `<span class="vv-badge-status ${category}"><span class="vv-badge-dot"></span>${displayLabel}</span>`;
+                }
+            });
+        });
+
+        // 5. Enhance Filter sidebar with badge counts if available
+        const filterItems = document.querySelectorAll('#changelist-filter li.selected a');
+        filterItems.forEach(item => {
+            if (!item.querySelector('.vv-filter-active-tag')) {
+                const checkTag = document.createElement('span');
+                checkTag.className = 'vv-filter-active-tag';
+                checkTag.style.cssText = 'font-size: 11px; font-weight: 800; color: #4f46e5; margin-left: auto;';
+                item.appendChild(checkTag);
+            }
+        });
+    }
+
+    // --- Dashboard Live Search & Command Palette ---
+    function initDashboardToolbar() {
+        const searchInput = document.getElementById('vv-dash-quick-filter');
+        const clearBtn = document.getElementById('vv-dash-search-clear');
+        const dropdown = document.getElementById('vv-dash-search-dropdown');
+        const noModulesBox = document.getElementById('vv-dash-no-modules');
+        const emptyQueryEl = document.getElementById('vv-empty-query');
+        const emptyEqTexts = document.querySelectorAll('.vv-eq-text');
+        const emptyProdLink = document.getElementById('vv-empty-prod-link');
+        const emptyOrderLink = document.getElementById('vv-empty-order-link');
+        const emptyUserLink = document.getElementById('vv-empty-user-link');
+        const tabBtns = document.querySelectorAll('.vv-cat-tab');
+        const appCards = document.querySelectorAll('.vv-app-card');
+
+        if (!searchInput && tabBtns.length === 0) return;
+
+        let activeCategory = 'all';
+
+        function renderDropdown(query) {
+            if (!dropdown) return;
+            if (!query) {
+                dropdown.style.display = 'none';
+                dropdown.innerHTML = '';
+                return;
+            }
+
+            const enc = encodeURIComponent(query);
+            const safeQuery = query.replace(/[<>&"]/g, '');
+
+            // 1. Gather any matching dashboard module links
+            const matchingModels = [];
+            const allModelLinks = document.querySelectorAll('.vv-model-item');
+            allModelLinks.forEach(item => {
+                const name = (item.getAttribute('data-model-name') || '').toLowerCase();
+                if (name && name.includes(query.toLowerCase())) {
+                    const link = item.querySelector('a.vv-model-tile-link');
+                    if (link) {
+                        matchingModels.push({
+                            title: item.querySelector('.vv-model-title')?.textContent?.trim() || name,
+                            url: link.href
+                        });
+                    }
+                }
+            });
+
+            let html = `
+                <div class="vv-dropdown-section-title">Search Marketplace Records</div>
+                <a href="/admin/products/product/?q=${enc}" class="vv-dropdown-item primary">
+                    <span class="vv-dd-icon">🛍️</span>
+                    <span class="vv-dd-text">Search <strong>Products</strong> for &ldquo;${safeQuery}&rdquo;</span>
+                    <span class="vv-dd-arrow">&rarr;</span>
+                </a>
+                <a href="/admin/orders/order/?q=${enc}" class="vv-dropdown-item">
+                    <span class="vv-dd-icon">📦</span>
+                    <span class="vv-dd-text">Search <strong>Orders</strong> for &ldquo;${safeQuery}&rdquo;</span>
+                    <span class="vv-dd-arrow">&rarr;</span>
+                </a>
+                <a href="/admin/accounts/user/?q=${enc}" class="vv-dropdown-item">
+                    <span class="vv-dd-icon">👥</span>
+                    <span class="vv-dd-text">Search <strong>Customers &amp; Users</strong> for &ldquo;${safeQuery}&rdquo;</span>
+                    <span class="vv-dd-arrow">&rarr;</span>
+                </a>
+                <a href="/admin/vendors/vendor/?q=${enc}" class="vv-dropdown-item">
+                    <span class="vv-dd-icon">🏪</span>
+                    <span class="vv-dd-text">Search <strong>Vendors</strong> for &ldquo;${safeQuery}&rdquo;</span>
+                    <span class="vv-dd-arrow">&rarr;</span>
+                </a>
+            `;
+
+            if (matchingModels.length > 0) {
+                html += `<div class="vv-dropdown-section-title" style="margin-top: 6px;">Matching Admin Modules (${matchingModels.length})</div>`;
+                matchingModels.slice(0, 5).forEach(m => {
+                    html += `
+                        <a href="${m.url}" class="vv-dropdown-item">
+                            <span class="vv-dd-icon">📂</span>
+                            <span class="vv-dd-text">${m.title}</span>
+                            <span class="vv-dd-arrow">&rarr;</span>
+                        </a>
+                    `;
+                });
+            }
+
+            dropdown.innerHTML = html;
+            dropdown.style.display = 'block';
+        }
+
+        function filterDashboard() {
+            const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
+            // Toggle clear button
+            if (clearBtn) {
+                clearBtn.style.display = query ? 'flex' : 'none';
+            }
+
+            // Update empty state text & links
+            if (query) {
+                if (emptyQueryEl) emptyQueryEl.textContent = query;
+                emptyEqTexts.forEach(el => el.textContent = query);
+                if (emptyProdLink) emptyProdLink.href = `/admin/products/product/?q=${encodeURIComponent(query)}`;
+                if (emptyOrderLink) emptyOrderLink.href = `/admin/orders/order/?q=${encodeURIComponent(query)}`;
+                if (emptyUserLink) emptyUserLink.href = `/admin/accounts/user/?q=${encodeURIComponent(query)}`;
+            }
+
+            renderDropdown(query);
+
+            let visibleCards = 0;
+            appCards.forEach(card => {
+                const cardCat = card.getAttribute('data-category') || 'other';
+                const cardName = card.getAttribute('data-app-name') || '';
+                const models = card.querySelectorAll('.vv-model-item');
+
+                let catMatch = (activeCategory === 'all' || cardCat === activeCategory);
+                let modelMatchCount = 0;
+
+                models.forEach(model => {
+                    const modelName = model.getAttribute('data-model-name') || '';
+                    if (!query || modelName.includes(query) || cardName.includes(query)) {
+                        model.style.display = '';
+                        modelMatchCount++;
+                    } else {
+                        model.style.display = 'none';
+                    }
+                });
+
+                if (catMatch && (!query || modelMatchCount > 0 || cardName.includes(query))) {
+                    card.style.display = '';
+                    visibleCards++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            if (noModulesBox) {
+                if (query && visibleCards === 0) {
+                    noModulesBox.style.display = 'block';
+                } else {
+                    noModulesBox.style.display = 'none';
+                }
+            }
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', filterDashboard);
+            searchInput.addEventListener('focus', () => {
+                if (searchInput.value.trim()) {
+                    renderDropdown(searchInput.value.trim().toLowerCase());
+                }
+            });
+        }
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (searchInput) {
+                    searchInput.value = '';
+                    filterDashboard();
+                    searchInput.focus();
+                }
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (dropdown && !e.target.closest('#vv-dash-search-form')) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeCategory = btn.getAttribute('data-cat') || 'all';
+                filterDashboard();
+            });
+        });
+    }
+
     // --- Initialize on DOMContentLoaded ---
     function init() {
         initTheme();
         interceptPopupTriggers();
         initMobileMenu();
+        enhanceAdminUI();
+        initDashboardToolbar();
     }
 
     if (document.readyState === 'loading') {
@@ -302,3 +556,4 @@
         init();
     }
 })();
+

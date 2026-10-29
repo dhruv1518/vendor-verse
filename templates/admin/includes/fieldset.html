@@ -1,0 +1,66 @@
+{% load i18n %}
+<fieldset class="vv-fieldset-card{% for c in fieldset.classes.split %}{% if c != 'aligned' %} {{ c }}{% endif %}{% endfor %}"{% if fieldset.name %} aria-labelledby="{{ prefix }}-{{ id_prefix }}-{{ id_suffix }}-heading"{% endif %}>
+    {% if fieldset.name %}
+        <div class="vv-fieldset-header">
+            <div class="vv-fieldset-title-wrap">
+                <span class="vv-fieldset-bullet"></span>
+                <h2 id="{{ prefix }}-{{ id_prefix }}-{{ id_suffix }}-heading" class="vv-fieldset-title">{{ fieldset.name }}</h2>
+            </div>
+            {% if fieldset.description %}
+                <p class="vv-fieldset-desc">{{ fieldset.description|safe }}</p>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="vv-fieldset-body">
+    {% for line in fieldset %}
+        <div class="vv-form-row{% if line.fields|length > 1 %} vv-grid-{{ line.fields|length }}{% endif %}{% if line.errors %} has-errors{% endif %}{% if not line.has_visible_field %} hidden{% endif %}">
+            {% if line.fields|length == 1 and line.errors %}
+                <div class="vv-row-errors">{{ line.errors }}</div>
+            {% endif %}
+
+            {% for field in line %}
+                <div class="vv-field-wrapper{% if field.is_checkbox %} is-checkbox-wrap{% endif %}{% if field.errors %} field-error{% endif %}">
+                    {% if field.is_checkbox %}
+                        <label class="vv-checkbox-label" for="{{ field.field.id_for_label }}">
+                            {{ field.field }}
+                            <span class="vv-checkbox-text">
+                                {{ field.field.label }}
+                                {% if field.field.field.required %}<span class="vv-required-star">*</span>{% endif %}
+                            </span>
+                        </label>
+                        {% if field.field.help_text %}
+                            <div class="vv-help-text">{{ field.field.help_text|safe }}</div>
+                        {% endif %}
+                    {% else %}
+                        <div class="vv-label-wrap">
+                            {{ field.label_tag }}
+                        </div>
+                        
+                        <div class="vv-widget-wrap">
+                            {% if field.is_readonly %}
+                                <div class="vv-readonly-field">{{ field.contents }}</div>
+                            {% else %}
+                                {{ field.field }}
+                            {% endif %}
+                        </div>
+
+                        {% if field.field.help_text %}
+                            <div class="vv-help-text">
+                                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                                </svg>
+                                <span>{{ field.field.help_text|safe }}</span>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if not line.fields|length == 1 and field.errors %}
+                        <div class="vv-field-errors">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    </div>
+</fieldset>

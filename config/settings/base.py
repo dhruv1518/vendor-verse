@@ -146,3 +146,6 @@ DEFAULT_FROM_EMAIL = "Vendora <noreply@vendora.local>"
 
 # Custom User Model
 AUTH_USER_MODEL = "accounts.User"
+
+# Frame options - allow same-origin iframes for admin modals and popups
+X_FRAME_OPTIONS = "SAMEORIGIN"

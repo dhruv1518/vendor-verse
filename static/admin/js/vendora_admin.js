@@ -242,7 +242,8 @@
     // --- Intercept Related Object Popup Links ---
     function interceptPopupTriggers() {
         document.addEventListener('click', function (e) {
-            const link = e.target.closest('a.related-widget-wrapper-link, a.add-related, a.change-related, a.delete-related, a.view-related');
+            // Only intercept actual Django ForeignKey popup buttons (inside .related-widget-wrapper or with data-modal)
+            const link = e.target.closest('.related-widget-wrapper a.related-widget-wrapper-link, .related-widget-wrapper a.add-related, .related-widget-wrapper a.change-related, .related-widget-wrapper a.delete-related, .related-widget-wrapper a.view-related, a[data-modal="true"]');
             if (link && link.href) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -267,7 +268,7 @@
     // --- Intercept window.open for any _popup=1 calls ---
     const originalWindowOpen = window.open;
     window.open = function (url, name, specs) {
-        if (url && typeof url === 'string' && (url.includes('_popup=1') || url.includes('/add/') || url.includes('/change/'))) {
+        if (url && typeof url === 'string' && url.includes('_popup=1')) {
             openInAppModal(url, 'Manage Object');
             // Return dummy object with focus/close methods so Django popup scripts don't throw error
             return {
@@ -362,9 +363,17 @@
         });
     }
 
-    // --- Dashboard Live Search & Category Tabs ---
+    // --- Dashboard Live Search & Command Palette ---
     function initDashboardToolbar() {
         const searchInput = document.getElementById('vv-dash-quick-filter');
+        const clearBtn = document.getElementById('vv-dash-search-clear');
+        const dropdown = document.getElementById('vv-dash-search-dropdown');
+        const noModulesBox = document.getElementById('vv-dash-no-modules');
+        const emptyQueryEl = document.getElementById('vv-empty-query');
+        const emptyEqTexts = document.querySelectorAll('.vv-eq-text');
+        const emptyProdLink = document.getElementById('vv-empty-prod-link');
+        const emptyOrderLink = document.getElementById('vv-empty-order-link');
+        const emptyUserLink = document.getElementById('vv-empty-user-link');
         const tabBtns = document.querySelectorAll('.vv-cat-tab');
         const appCards = document.querySelectorAll('.vv-app-card');
 
@@ -372,9 +381,94 @@
 
         let activeCategory = 'all';
 
+        function renderDropdown(query) {
+            if (!dropdown) return;
+            if (!query) {
+                dropdown.style.display = 'none';
+                dropdown.innerHTML = '';
+                return;
+            }
+
+            const enc = encodeURIComponent(query);
+            const safeQuery = query.replace(/[<>&"]/g, '');
+
+            // 1. Gather any matching dashboard module links
+            const matchingModels = [];
+            const allModelLinks = document.querySelectorAll('.vv-model-item');
+            allModelLinks.forEach(item => {
+                const name = (item.getAttribute('data-model-name') || '').toLowerCase();
+                if (name && name.includes(query.toLowerCase())) {
+                    const link = item.querySelector('a.vv-model-tile-link');
+                    if (link) {
+                        matchingModels.push({
+                            title: item.querySelector('.vv-model-title')?.textContent?.trim() || name,
+                            url: link.href
+                        });
+                    }
+                }
+            });
+
+            let html = `
+                <div class="vv-dropdown-section-title">Search Marketplace Records</div>
+                <a href="/admin/products/product/?q=${enc}" class="vv-dropdown-item primary">
+                    <span class="vv-dd-icon">🛍️</span>
+                    <span class="vv-dd-text">Search <strong>Products</strong> for &ldquo;${safeQuery}&rdquo;</span>
+                    <span class="vv-dd-arrow">&rarr;</span>
+                </a>
+                <a href="/admin/orders/order/?q=${enc}" class="vv-dropdown-item">
+                    <span class="vv-dd-icon">📦</span>
+                    <span class="vv-dd-text">Search <strong>Orders</strong> for &ldquo;${safeQuery}&rdquo;</span>
+                    <span class="vv-dd-arrow">&rarr;</span>
+                </a>
+                <a href="/admin/accounts/user/?q=${enc}" class="vv-dropdown-item">
+                    <span class="vv-dd-icon">👥</span>
+                    <span class="vv-dd-text">Search <strong>Customers &amp; Users</strong> for &ldquo;${safeQuery}&rdquo;</span>
+                    <span class="vv-dd-arrow">&rarr;</span>
+                </a>
+                <a href="/admin/vendors/vendor/?q=${enc}" class="vv-dropdown-item">
+                    <span class="vv-dd-icon">🏪</span>
+                    <span class="vv-dd-text">Search <strong>Vendors</strong> for &ldquo;${safeQuery}&rdquo;</span>
+                    <span class="vv-dd-arrow">&rarr;</span>
+                </a>
+            `;
+
+            if (matchingModels.length > 0) {
+                html += `<div class="vv-dropdown-section-title" style="margin-top: 6px;">Matching Admin Modules (${matchingModels.length})</div>`;
+                matchingModels.slice(0, 5).forEach(m => {
+                    html += `
+                        <a href="${m.url}" class="vv-dropdown-item">
+                            <span class="vv-dd-icon">📂</span>
+                            <span class="vv-dd-text">${m.title}</span>
+                            <span class="vv-dd-arrow">&rarr;</span>
+                        </a>
+                    `;
+                });
+            }
+
+            dropdown.innerHTML = html;
+            dropdown.style.display = 'block';
+        }
+
         function filterDashboard() {
             const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
 
+            // Toggle clear button
+            if (clearBtn) {
+                clearBtn.style.display = query ? 'flex' : 'none';
+            }
+
+            // Update empty state text & links
+            if (query) {
+                if (emptyQueryEl) emptyQueryEl.textContent = query;
+                emptyEqTexts.forEach(el => el.textContent = query);
+                if (emptyProdLink) emptyProdLink.href = `/admin/products/product/?q=${encodeURIComponent(query)}`;
+                if (emptyOrderLink) emptyOrderLink.href = `/admin/orders/order/?q=${encodeURIComponent(query)}`;
+                if (emptyUserLink) emptyUserLink.href = `/admin/accounts/user/?q=${encodeURIComponent(query)}`;
+            }
+
+            renderDropdown(query);
+
+            let visibleCards = 0;
             appCards.forEach(card => {
                 const cardCat = card.getAttribute('data-category') || 'other';
                 const cardName = card.getAttribute('data-app-name') || '';
@@ -395,15 +489,47 @@
 
                 if (catMatch && (!query || modelMatchCount > 0 || cardName.includes(query))) {
                     card.style.display = '';
+                    visibleCards++;
                 } else {
                     card.style.display = 'none';
                 }
             });
+
+            if (noModulesBox) {
+                if (query && visibleCards === 0) {
+                    noModulesBox.style.display = 'block';
+                } else {
+                    noModulesBox.style.display = 'none';
+                }
+            }
         }
 
         if (searchInput) {
             searchInput.addEventListener('input', filterDashboard);
+            searchInput.addEventListener('focus', () => {
+                if (searchInput.value.trim()) {
+                    renderDropdown(searchInput.value.trim().toLowerCase());
+                }
+            });
         }
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (searchInput) {
+                    searchInput.value = '';
+                    filterDashboard();
+                    searchInput.focus();
+                }
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (dropdown && !e.target.closest('#vv-dash-search-form')) {
+                dropdown.style.display = 'none';
+            }
+        });
 
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {

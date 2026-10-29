@@ -1,4 +1,5 @@
 import uuid
+from decimal import Decimal
 from django.db import models
 from django.conf import settings
 
@@ -146,7 +147,9 @@ class OrderItem(TimeStampedModel, PublicIDModel):
 
     @property
     def line_total(self):
-        return self.unit_price * self.quantity
+        if self.unit_price is None:
+            return Decimal("0.00")
+        return self.unit_price * (self.quantity or 0)
 
 
 # ---------------------------------------------------------------------------

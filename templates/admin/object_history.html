@@ -1,0 +1,77 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block title %}{% blocktranslate with name=object %}Change history: {{ name }}{% endblocktranslate %} | Vendora Admin{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} history-page{% endblock %}
+
+{% block breadcrumbs %}
+<a href="{% url 'admin:index' %}" class="vv-crumb-link">Dashboard</a>
+<span class="vv-crumb-arrow">&rsaquo;</span>
+<a href="{% url 'admin:app_list' app_label=opts.app_label %}" class="vv-crumb-link">{{ opts.app_config.verbose_name }}</a>
+<span class="vv-crumb-arrow">&rsaquo;</span>
+<a href="{% url opts|admin_urlname:'changelist' %}" class="vv-crumb-link">{{ opts.verbose_name_plural|capfirst }}</a>
+<span class="vv-crumb-arrow">&rsaquo;</span>
+<a href="{% url opts|admin_urlname:'change' object.pk|admin_urlquote %}" class="vv-crumb-link">{{ object|truncatewords:"4" }}</a>
+<span class="vv-crumb-arrow">&rsaquo;</span>
+<span class="vv-crumb-active">{% translate 'History' %}</span>
+{% endblock %}
+
+{% block content_title %}
+<div class="vv-page-title-banner">
+    <div class="vv-title-group">
+        <h1 class="vv-main-title">{% translate 'Audit Trail &amp; History' %}</h1>
+        <div class="vv-title-badge">
+            <span class="vv-badge-dot"></span>
+            <span>{{ object|truncatewords:"6" }}</span>
+        </div>
+    </div>
+    
+    <div class="vv-banner-actions">
+        <a href="{% url opts|admin_urlname:'change' object.pk|admin_urlquote %}" class="vv-btn-secondary">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            <span>{% translate "Back to Editor" %}</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="vv-table-card">
+    <table id="change-history" class="vv-history-table">
+        <thead>
+            <tr>
+                <th scope="col">{% translate 'Date / Time' %}</th>
+                <th scope="col">{% translate 'User / Actor' %}</th>
+                <th scope="col">{% translate 'Action Description' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for action in action_list %}
+            <tr>
+                <td class="vv-history-date">
+                    <span class="vv-date-pill">{{ action.action_time|date:"DATETIME_FORMAT" }}</span>
+                </td>
+                <td class="vv-history-user">
+                    <div class="vv-user-chip">
+                        <span class="vv-avatar-mini">{{ action.user.get_username|slice:":1"|upper }}</span>
+                        <span>{{ action.user.get_username }}{% if action.user.get_full_name %} ({{ action.user.get_full_name }}){% endif %}</span>
+                    </div>
+                </td>
+                <td class="vv-history-action">
+                    {{ action.get_change_message }}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="3" class="vv-empty-table-cell">
+                    {% translate 'This object has no recorded change history yet.' %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

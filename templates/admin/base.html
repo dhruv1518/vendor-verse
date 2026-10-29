@@ -15,17 +15,17 @@
     {% block extrastyle %}{% endblock %}
 
     <!-- Vendora Modern Admin Design System -->
-    <link rel="stylesheet" href="{% static 'admin/css/vendora_admin.css' %}?v=2.2">
+    <link rel="stylesheet" href="{% static 'admin/css/vendora_admin.css' %}?v=7.0">
 
     {% block extrahead %}{% endblock %}
-    <script src="{% static 'admin/js/vendora_admin.js' %}?v=2.2" defer></script>
+    <script src="{% static 'admin/js/vendora_admin.js' %}?v=2.7" defer></script>
 </head>
 
-<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" data-theme="light">
+<body class="{% if is_popup %}popup {% endif %}{% if not user.is_authenticated %}unauthenticated {% endif %}{% block bodyclass %}{% endblock %}" data-theme="light">
 
-<div class="vv-admin-shell" id="vv-shell">
+<div class="vv-admin-shell{% if not user.is_authenticated %} vv-auth-shell{% endif %}" id="vv-shell">
 
-    {% if not is_popup %}
+    {% if not is_popup and user.is_authenticated %}
     <!-- ===== Unified Left Sidebar ===== -->
     <aside class="vv-sidebar" id="vv-sidebar">
         <!-- Sidebar Header / Brand -->
@@ -84,7 +84,7 @@
                             {% endif %}
 
                             {% if model.add_url %}
-                            <a href="{{ model.add_url }}" class="vv-sublink-btn-add add-related" title="Add new {{ model.name }}">+</a>
+                            <a href="{{ model.add_url }}" class="vv-sublink-btn-add" title="Add new {{ model.name }}">+</a>
                             {% endif %}
                         </div>
                         {% endfor %}
@@ -128,7 +128,7 @@
     <!-- ===== Main Content Area ===== -->
     <div class="vv-main-area">
 
-        {% if not is_popup %}
+        {% if not is_popup and user.is_authenticated %}
         <!-- Top Header Bar -->
         <header class="vv-topbar" id="vv-topbar">
             <div class="vv-topbar-left">

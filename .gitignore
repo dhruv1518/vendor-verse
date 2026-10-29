@@ -12,13 +12,23 @@ __pycache__/
 dist/
 build/
 
-# Database
+# Database & Backups
 db.sqlite3
 *.sql
+backup*.json
+dump*.json
+backup_data.json
+*.bak
+templates_backup/
 
 # Static & Media (generated)
 staticfiles/
 media/
+
+# Scratch & Temporary
+scratch/
+*.tmp
+~$*
 
 # OS files
 .DS_Store
@@ -31,8 +41,11 @@ desktop.ini
 *.swp
 *.swo
 
+# Testing & Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
 # Logs & State
 *.log
 .ai_quota_state.json
-*.tmp
-~$*

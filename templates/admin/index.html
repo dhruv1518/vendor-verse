@@ -1,7 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% load i18n static log admin_tags %}
 
-{% block coltype %}colMS{% endblock %}
+{% block coltype %}colM{% endblock %}
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 
 {% block content %}
@@ -83,7 +83,7 @@
                 <span class="vv-launchpad-subtitle">Instant feature shortcuts for common marketplace tasks</span>
             </div>
             <div class="vv-launchpad-buttons">
-                <a href="{% url 'admin:products_product_add' %}" class="vv-launch-btn primary add-related">
+                <a href="{% url 'admin:products_product_add' %}" class="vv-launch-btn primary">
                     <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
@@ -102,7 +102,7 @@
                     </svg>
                     <span>Seller Applications</span>
                 </a>
-                <a href="{% url 'admin:orders_coupon_add' %}" class="vv-launch-btn purple add-related">
+                <a href="{% url 'admin:orders_coupon_add' %}" class="vv-launch-btn purple">
                     <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
                     </svg>
@@ -111,14 +111,26 @@
             </div>
         </div>
 
-        <!-- Command & Quick Filter Bar -->
+        <!-- Command & Global Search Bar -->
         <div class="vv-dash-filter-bar">
-            <div class="vv-dash-search-box">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="#94a3b8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                </svg>
-                <input type="text" id="vv-dash-quick-filter" placeholder="Quick search modules (e.g. Products, Orders, Sellers, Users, Coupons)...">
-            </div>
+            <form id="vv-dash-search-form" action="{% url 'admin:products_product_changelist' %}" method="get" class="vv-dash-search-form" autocomplete="off">
+                <div class="vv-dash-search-box">
+                    <svg class="vv-dash-search-icon" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="#94a3b8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                    <input type="text" name="q" id="vv-dash-quick-filter" placeholder="Search marketplace products, orders, customers, or admin modules (Press Enter)..." autocomplete="off">
+                    <button type="button" id="vv-dash-search-clear" class="vv-dash-search-clear" title="Clear query" style="display: none;">&times;</button>
+                    <button type="submit" class="vv-dash-search-btn" title="Search marketplace records">
+                        <span>Search</span>
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                        </svg>
+                    </button>
+                </div>
+                <!-- Instant Command Palette Dropdown -->
+                <div id="vv-dash-search-dropdown" class="vv-dash-search-dropdown" style="display: none;"></div>
+            </form>
+
             <div class="vv-dash-category-tabs" id="vv-category-tabs">
                 <button type="button" class="vv-cat-tab active" data-cat="all">All Modules</button>
                 <button type="button" class="vv-cat-tab" data-cat="commerce">🛍️ Commerce</button>
@@ -164,7 +176,7 @@
                         {% endif %}
 
                         {% if model.add_url %}
-                        <a href="{{ model.add_url }}" class="vv-btn-tile-add add-related" title="Add new {{ model.name }}">
+                        <a href="{{ model.add_url }}" class="vv-btn-tile-add" title="Add new {{ model.name }}">
                             <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                             </svg>
@@ -176,6 +188,30 @@
                 </ul>
             </div>
             {% endfor %}
+        </div>
+
+        <!-- Empty State when searching -->
+        <div id="vv-dash-no-modules" class="vv-dash-no-modules" style="display: none;">
+            <div class="vv-dash-empty-card">
+                <div class="vv-dash-empty-icon">
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                </div>
+                <h3 class="vv-dash-empty-title">No admin module named &ldquo;<span id="vv-empty-query"></span>&rdquo;</h3>
+                <p class="vv-dash-empty-sub">Search marketplace database records directly:</p>
+                <div class="vv-dash-empty-actions">
+                    <a id="vv-empty-prod-link" href="{% url 'admin:products_product_changelist' %}" class="vv-btn-primary">
+                        <span>🛍️ Search Products for</span> &ldquo;<span class="vv-eq-text"></span>&rdquo; &rarr;
+                    </a>
+                    <a id="vv-empty-order-link" href="{% url 'admin:orders_order_changelist' %}" class="vv-btn-secondary">
+                        <span>📦 Search Orders</span>
+                    </a>
+                    <a id="vv-empty-user-link" href="{% url 'admin:accounts_user_changelist' %}" class="vv-btn-secondary">
+                        <span>👥 Search Users</span>
+                    </a>
+                </div>
+            </div>
         </div>
         {% else %}
         <div class="vv-app-card" style="padding: 32px; text-align: center;">

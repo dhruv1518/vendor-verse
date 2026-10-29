@@ -1,0 +1,28 @@
+{% load i18n %}
+<details data-filter-title="{{ title }}" class="vv-filter-group" open>
+  <summary class="vv-filter-summary">
+    <div class="vv-filter-summary-inner">
+      <span class="vv-filter-summary-dot"></span>
+      <span class="vv-filter-summary-title">{% blocktranslate with filter_title=title %}By {{ filter_title }}{% endblocktranslate %}</span>
+    </div>
+    <svg class="vv-filter-chevron" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+    </svg>
+  </summary>
+  <ul class="vv-filter-options">
+  {% for choice in choices %}
+    <li class="vv-filter-item{% if choice.selected %} selected{% endif %}">
+      <a href="{{ choice.query_string|iriencode }}" class="vv-filter-link">
+        <span class="vv-filter-text">{{ choice.display }}</span>
+        {% if choice.selected %}
+          <span class="vv-filter-check">
+            <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+          </span>
+        {% endif %}
+      </a>
+    </li>
+  {% endfor %}
+  </ul>
+</details>
